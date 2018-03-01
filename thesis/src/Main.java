@@ -10,6 +10,7 @@ public class Main {
 		ParseReview parserObject = new ParseReview();
 		
 		Document[] reviewArray = parserObject.chooseAndParse();
+		//comment
 
 	}
 
