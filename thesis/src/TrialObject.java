@@ -28,22 +28,36 @@ public class TrialObject {
 	
 	public TrialObject(Document review, int studyNumber){
 					
-		//Traverses XML until the desired study is found
-					NodeList rootList = review.getElementsByTagName("COCHRANE_REVIEW");
-					Node rootNode = rootList.item(0);
-					Element rootElement = (Element) rootNode;
+					//Creates rootElement
 					
-					NodeList characteristicsOfStudiesList = rootElement.getElementsByTagName("CHARACTERISTICS_OF_STUDIES");
-					Node characteristicsOfStudiesNode = characteristicsOfStudiesList.item(0);
-					Element characteristicsOfStudiesElement = (Element) characteristicsOfStudiesNode;
+					Element rootElement = null;
+					try {
+						NodeList rootList = review.getElementsByTagName("COCHRANE_REVIEW");
+						Node rootNode = rootList.item(0);
+						rootElement = (Element) rootNode;
+					} catch (Exception e11) {
+						// TODO Auto-generated catch block
+						e11.printStackTrace();
+					}
 					
-					NodeList characteristicsOfIncludedStudiesList = characteristicsOfStudiesElement.getElementsByTagName("CHARACTERISTICS_OF_INCLUDED_STUDIES");
-					Node characteristicsOfIncludedStudiesNode = characteristicsOfIncludedStudiesList.item(0);
-					Element characteristicsOfIncludedStudiesElement = (Element) characteristicsOfIncludedStudiesNode;
-					
-					NodeList includedStudiesList = characteristicsOfIncludedStudiesElement.getElementsByTagName("INCLUDED_CHAR");
-					Node studyToExtractNode = includedStudiesList.item(studyNumber);
-					Element studyToExtractElement = (Element) studyToExtractNode;
+					//Traverses the characteristics of included studies part of the revman file. This is where bias tables and prose information are located
+					Element studyToExtractElement = null;
+					try {
+						NodeList characteristicsOfStudiesList = rootElement.getElementsByTagName("CHARACTERISTICS_OF_STUDIES");
+						Node characteristicsOfStudiesNode = characteristicsOfStudiesList.item(0);
+						Element characteristicsOfStudiesElement = (Element) characteristicsOfStudiesNode;
+						
+						NodeList characteristicsOfIncludedStudiesList = characteristicsOfStudiesElement.getElementsByTagName("CHARACTERISTICS_OF_INCLUDED_STUDIES");
+						Node characteristicsOfIncludedStudiesNode = characteristicsOfIncludedStudiesList.item(0);
+						Element characteristicsOfIncludedStudiesElement = (Element) characteristicsOfIncludedStudiesNode;
+						
+						NodeList includedStudiesList = characteristicsOfIncludedStudiesElement.getElementsByTagName("INCLUDED_CHAR");
+						Node studyToExtractNode = includedStudiesList.item(studyNumber);
+						studyToExtractElement = (Element) studyToExtractNode;
+					} catch (Exception e10) {
+						// TODO Auto-generated catch block
+						e10.printStackTrace();
+					}
 					
 					//Extracts information into variables
 					revManID = studyToExtractElement.getAttribute("STUDY_ID"); //Gets revman ID for study
@@ -51,24 +65,30 @@ public class TrialObject {
 					String[] cacheArray = cache.split("-");
 					mainAuthor = cacheArray[0]; //Taken name of author from ID
 					
-					
-					NodeList studiesAndReferencesList = rootElement.getElementsByTagName("STUDIES_AND_REFERENCES");
-					Node studiesAndReferencesNode = studiesAndReferencesList.item(0);
-					Element studiesAndReferencesElement = (Element) studiesAndReferencesNode;
-					
-					NodeList studiesList = studiesAndReferencesElement.getElementsByTagName("STUDIES");
-					Node studiesNode = studiesList.item(0);
-					Element studiesElement = (Element) studiesNode;
-					
-					
-					NodeList includedStudiesBList = studiesElement.getElementsByTagName("INCLUDED_STUDIES");
-					Node includedStudiesNode = includedStudiesBList.item(0);
-					Element includedStudiesElement = (Element) includedStudiesNode;
-					
-					
-					NodeList studyList = includedStudiesElement.getElementsByTagName("STUDY");
-					Node studyNode = studyList.item(studyNumber);
-					Element studyElement = (Element) studyNode;
+					//Traverses the revman file's Studies and references section
+					Element studyElement = null;
+					try {
+						NodeList studiesAndReferencesList = rootElement.getElementsByTagName("STUDIES_AND_REFERENCES");
+						Node studiesAndReferencesNode = studiesAndReferencesList.item(0);
+						Element studiesAndReferencesElement = (Element) studiesAndReferencesNode;
+						
+						NodeList studiesList = studiesAndReferencesElement.getElementsByTagName("STUDIES");
+						Node studiesNode = studiesList.item(0);
+						Element studiesElement = (Element) studiesNode;
+						
+						
+						NodeList includedStudiesBList = studiesElement.getElementsByTagName("INCLUDED_STUDIES");
+						Node includedStudiesNode = includedStudiesBList.item(0);
+						Element includedStudiesElement = (Element) includedStudiesNode;
+						
+						
+						NodeList studyList = includedStudiesElement.getElementsByTagName("STUDY");
+						Node studyNode = studyList.item(studyNumber);
+						studyElement = (Element) studyNode;
+					} catch (Exception e9) {
+						// TODO Auto-generated catch block
+						e9.printStackTrace();
+					}
 					
 					try {
 						cache = studyElement.getAttribute("YEAR");
