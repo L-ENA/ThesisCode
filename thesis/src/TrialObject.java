@@ -11,7 +11,7 @@ public class TrialObject {
 	protected String doi;
 	protected int crgID;
 	protected String revManID;//check
-	protected String[] references;
+	protected String[] references; //check
 	//protected RANDOMIZATIONTYPE randomisation:
 	//protected ALLOCATIONTYPE allocation;
 	//protected BLINDINGTYPE blinding;
@@ -60,10 +60,11 @@ public class TrialObject {
 					}
 					
 					//Extracts information into variables
-					revManID = studyToExtractElement.getAttribute("STUDY_ID"); //Gets revman ID for study
+					//Gets revman ID for study
+					revManID = studyToExtractElement.getAttribute("STUDY_ID"); 
 					String cache = revManID.replaceAll("STD-", "");
 					String[] cacheArray = cache.split("-");
-					mainAuthor = cacheArray[0]; //Taken name of author from ID
+					mainAuthor = cacheArray[0]; //Take name of author from ID
 					
 					//Traverses the revman file's Studies and references section
 					Element studyElement = null;
@@ -101,21 +102,22 @@ public class TrialObject {
 					
 					
 					
-					System.out.println("Year of publication: " + year + " Count of included studies: " + counter);
-					counter++;
+					System.out.println("Year of publication: " + year);
 					System.out.println("Main author of Study: " + mainAuthor);
 					System.out.println("RevMan ID: "+ revManID);
 					
-					//This for-loop runs through all references for the included study and saves relevant fields into an array that is created to hold information in the following positions:
+					//This following for-loop runs through all references for the included study and saves relevant fields into an array that is created to hold information in the following positions:
 					//0th, 9th ..index -> Type of publication, eg. Journal ->"TYPE"
 					//1st, 10th..index -> Primary attribute: Yes or No ->"PRIMARY"
 					//2nd ->Names of all authors of this publication ->"AU"
 					//3rd->Title of publication->"TI"
 					//4th->Name of Journal->Journal->"SO"
 					//5-> Year published->"YR"
-					//6->"VL"
-					//7-> Number ->"NO"
+					//6->"VL"??????????
+					//7-> Number ->"NO"??????????
 					//8-> Pages ->"PG"
+					
+					//if a filed is not available, eg. if the reference refers to a conference protocol that lacks page numbers, empty "" space is inserted
 				
 					
 					NodeList referencesList = studyElement.getElementsByTagName("REFERENCE");
@@ -129,32 +131,28 @@ public class TrialObject {
 							Node referenceNode = referencesList.item(i);
 							referenceElement = (Element) referenceNode;
 						} catch (Exception e7) {
-							// TODO Auto-generated catch block
-							e7.printStackTrace();
 						}
 					
 						try {
 							if (referenceElement != null){
-							references[arrayCounter] = referenceElement.getAttribute("TYPE"); // 0th, 9th ... index of array represents type of publication, e.g. Journal article
-							System.out.println(referenceElement.getAttribute("TYPE"));
+							references[arrayCounter] = referenceElement.getAttribute("TYPE"); 
+							//System.out.println(referenceElement.getAttribute("TYPE"));
+							} else {
+								references[arrayCounter] = "";
 							}
 						} catch (Exception e6) {
-							// TODO Auto-generated catch block
-							e6.printStackTrace();
 						}
-						
 						arrayCounter++;
 						
 						try {
 							if (referenceElement != null){
-							references[arrayCounter] = referenceElement.getAttribute("PRIMARY"); //1st, 10th index of array represents primary attribute: Yes or No
-							System.out.println(referenceElement.getAttribute("PRIMARY"));
+							references[arrayCounter] = referenceElement.getAttribute("PRIMARY");
+							//System.out.println(referenceElement.getAttribute("PRIMARY"));
+							} else {
+								references[arrayCounter] = "";
 							}
 						} catch (Exception e5) {
-							// TODO Auto-generated catch block
-							e5.printStackTrace();
 						}
-						
 						arrayCounter++;
 						
 						
@@ -171,7 +169,9 @@ public class TrialObject {
 						try {
 							if (auElement != null){
 							references[arrayCounter] = auElement.getTextContent().replaceAll("\n", "").trim(); //2nd, 11th... Authors names for this reference
-							System.out.println(auElement.getTextContent().replaceAll("\n", "").trim());
+							//System.out.println(auElement.getTextContent().replaceAll("\n", "").trim());
+							} else {
+								references[arrayCounter] = "";
 							}
 						} catch (DOMException e4) {
 							// TODO Auto-generated catch block
@@ -194,7 +194,9 @@ public class TrialObject {
 						try {
 							if (tiElement != null){
 							references[arrayCounter] = tiElement.getTextContent().replaceAll("\n", "").trim();
-							System.out.println(tiElement.getTextContent().replaceAll("\n", "").trim());
+							//System.out.println(tiElement.getTextContent().replaceAll("\n", "").trim());
+							} else {
+								references[arrayCounter] = "";
 							}
 						} catch (DOMException e3) {
 							// TODO Auto-generated catch block
@@ -217,7 +219,9 @@ public class TrialObject {
 						try {
 							if (soElement != null){
 							references[arrayCounter] = soElement.getTextContent().replaceAll("\n", "").trim();
-							System.out.println(soElement.getTextContent().replaceAll("\n", "").trim());
+							//System.out.println(soElement.getTextContent().replaceAll("\n", "").trim());
+							} else {
+								references[arrayCounter] = "";
 							}
 						} catch (DOMException e2) {
 							// TODO Auto-generated catch block
@@ -240,7 +244,9 @@ public class TrialObject {
 						try {
 							if (yrElement != null){
 							references[arrayCounter] = yrElement.getTextContent().replaceAll("\n", "").trim();
-							System.out.println(yrElement.getTextContent().replaceAll("\n", "").trim());
+							//System.out.println(yrElement.getTextContent().replaceAll("\n", "").trim());
+							} else {
+								references[arrayCounter] = "";
 							}
 						} catch (DOMException e1) {
 							// TODO Auto-generated catch block
@@ -263,7 +269,9 @@ public class TrialObject {
 						try {
 							if (vlElement != null){
 							references[arrayCounter] = vlElement.getTextContent().replaceAll("\n", "").trim();
-							System.out.println(vlElement.getTextContent().replaceAll("\n", "").trim());
+							//System.out.println(vlElement.getTextContent().replaceAll("\n", "").trim());
+							} else {
+								references[arrayCounter] = "";
 							}
 						} catch (DOMException e) {
 							// TODO Auto-generated catch block
@@ -284,7 +292,9 @@ public class TrialObject {
 						try {
 							if (noElement != null){
 							references[arrayCounter] = noElement.getTextContent().replaceAll("\n", "").trim();
-							System.out.println(noElement.getTextContent().replaceAll("\n", "").trim());
+							//System.out.println(noElement.getTextContent().replaceAll("\n", "").trim());
+							} else {
+								references[arrayCounter] = "";
 							}
 						} catch (DOMException e) {
 							// TODO Auto-generated catch block
@@ -306,7 +316,9 @@ public class TrialObject {
 						try {
 							if (pgElement != null){
 							references[arrayCounter] = pgElement.getTextContent().replaceAll("\n", "").trim();
-							System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
+							//System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
+							} else {
+								references[arrayCounter] = "";
 							}
 						} catch (DOMException e) {
 							// TODO Auto-generated catch block
@@ -322,7 +334,9 @@ public class TrialObject {
 					
 					
 							
-					
+					for (int j = 0; j<references.length; j++){
+						System.out.println(references[j]);
+					}
 					
 					
 					System.out.println();

@@ -42,18 +42,17 @@ JFileChooser chooser = new JFileChooser();
 	
 	protected int numberOfIncludedStudies(Document rm5){
 		
-		// Gets root node of parsed XML document + Element
+		// Gets root element of parsed XML document, moves to included studies section and returns length of included studies list.
 		NodeList rootList = rm5.getElementsByTagName("COCHRANE_REVIEW");
 		Node rootNode = rootList.item(0);
 		Element rootElement = (Element) rootNode;
 		
-		//Makes nodelist of elements with tagname "SOF_TABLE" that are contained in the rootElement and continues 
-		//this game step by step to dive deeper into XML structure.
 		NodeList characteristicsOfStudiesList = rootElement.getElementsByTagName("CHARACTERISTICS_OF_STUDIES");
 		Node characteristicsOfStudiesNode = characteristicsOfStudiesList.item(0);
 		Element characteristicsOfStudiesElement = (Element) characteristicsOfStudiesNode;
 		
-		NodeList characteristicsOfIncludedStudiesList = characteristicsOfStudiesElement.getElementsByTagName("CHARACTERISTICS_OF_INCLUDED_STUDIES");
+		NodeList characteristicsOfIncludedStudiesList = 
+				characteristicsOfStudiesElement.getElementsByTagName("CHARACTERISTICS_OF_INCLUDED_STUDIES");
 		Node characteristicsOfIncludedStudiesNode = characteristicsOfIncludedStudiesList.item(0);
 		Element characteristicsOfIncludedStudiesElement = (Element) characteristicsOfIncludedStudiesNode;
 		
