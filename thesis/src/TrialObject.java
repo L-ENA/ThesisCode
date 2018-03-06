@@ -1,8 +1,13 @@
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import thesis.TrialDesign;
 
 public class TrialObject {
 	protected static int counter = 1;
@@ -12,6 +17,10 @@ public class TrialObject {
 	protected int crgID;
 	protected String revManID;//check
 	protected String[] references; //check
+	protected TrialDesign trialDesign;
+	protected boolean crossoverTrial = false;
+	protected boolean paralellTrial = false;
+	protected boolean factorialTrial = false;
 	//protected RANDOMIZATIONTYPE randomisation:
 	//protected ALLOCATIONTYPE allocation;
 	//protected BLINDINGTYPE blinding;
@@ -25,6 +34,8 @@ public class TrialObject {
 	protected int nrControl;
 	//protected SETTING setting;
 	//protected outcomeList : OutcomeObjects
+	
+	Matcher m;
 	
 	public TrialObject(Document review, int studyNumber){
 					
@@ -40,6 +51,7 @@ public class TrialObject {
 						e11.printStackTrace();
 					}
 					
+					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Traverses the characteristics of included studies part of the revman file. This is where bias tables and prose information are located
 					Element studyToExtractElement = null;
 					try {
@@ -66,6 +78,39 @@ public class TrialObject {
 					String[] cacheArray = cache.split("-");
 					mainAuthor = cacheArray[0]; //Take name of author from ID
 					
+					//////////////////////////////////////////////////////////////////////////////////////////////////
+					//extracts prose about methods and tries to match this prose to create a standardised output
+					NodeList charMethodsList = studyToExtractElement.getElementsByTagName("CHAR_METHODS");
+					Node charMethodsNode = charMethodsList.item(0);
+					Element charMethodsElement = (Element) charMethodsNode;
+					
+					//NodeList methodParagraphList = charMethodsElement.getElementsByTagName("P");
+					//Node methodNode = methodParagraphList.item(0);
+					//Element methodElement = (Element) methodNode;
+						
+					String methodString = charMethodsElement.getTextContent();
+					String[] methodStringArray = methodString.split("\\.");
+					
+					Pattern design = Pattern.compile("([Dd]esign)+");
+					Pattern parallelDesign = Pattern.compile("([pP]arallel)+");
+				
+					
+					for (int k = 0; k<methodStringArray.length; k++){
+						
+						m = design.matcher(methodStringArray[k]);
+						if (m.find()){
+							m = parallelDesign.matcher(methodStringArray[k]);
+							if (m.find()){
+								paralellTrial = true;
+								System.out.println(mainAuthor + " " + paralellTrial);
+							}
+								
+							
+						}
+					}
+					
+					
+					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Traverses the revman file's Studies and references section
 					Element studyElement = null;
 					try {
@@ -102,22 +147,22 @@ public class TrialObject {
 					
 					
 					
-					System.out.println("Year of publication: " + year);
-					System.out.println("Main author of Study: " + mainAuthor);
-					System.out.println("RevMan ID: "+ revManID);
+					//System.out.println("Year of publication: " + year);
+				//	System.out.println("Main author of Study: " + mainAuthor);
+					//System.out.println("RevMan ID: "+ revManID);
 					
 					//This following for-loop runs through all references for the included study and saves relevant fields into an array that is created to hold information in the following positions:
 					//0th, 9th ..index -> Type of publication, eg. Journal ->"TYPE"
-					//1st, 10th..index -> Primary attribute: Yes or No ->"PRIMARY"
-					//2nd ->Names of all authors of this publication ->"AU"
-					//3rd->Title of publication->"TI"
-					//4th->Name of Journal->Journal->"SO"
-					//5-> Year published->"YR"
-					//6->"VL"??????????
-					//7-> Number ->"NO"??????????
-					//8-> Pages ->"PG"
+					//1st..., 10th..index -> Primary attribute: Yes or No ->"PRIMARY"
+					//2nd... ->Names of all authors of this publication ->"AU"
+					//3rd...->Title of publication->"TI"
+					//4th...->Name of Journal->Journal->"SO"
+					//5...-> Year published->"YR"
+					//6...->Volume ->"VL" 
+					//7...-> Issue ->"NO"
+					//8...-> Pages ->"PG"
 					
-					//if a filed is not available, eg. if the reference refers to a conference protocol that lacks page numbers, empty "" space is inserted
+					//if a filed is not available, eg. if the reference refers to a conference protocol that lacks page numbers, empty "" space is inserted and next position of array is tried to be filled
 				
 					
 					NodeList referencesList = studyElement.getElementsByTagName("REFERENCE");
@@ -335,7 +380,7 @@ public class TrialObject {
 					
 							
 					for (int j = 0; j<references.length; j++){
-						System.out.println(references[j]);
+						//System.out.println(references[j]);
 					}
 					
 					
