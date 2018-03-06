@@ -26,7 +26,8 @@ JFileChooser chooser = new JFileChooser();
 		File review = chooser.getSelectedFile().getAbsoluteFile();
 
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-		
+		builderFactory.setIgnoringComments(true);
+		builderFactory.setIgnoringElementContentWhitespace(true);
 
 			Document rm5 = null;
 			try {
