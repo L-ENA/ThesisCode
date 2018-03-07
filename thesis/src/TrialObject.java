@@ -95,31 +95,53 @@ public class TrialObject {
 					String[] methodStringArray = methodString.split("\\.");
 					
 					Pattern design = Pattern.compile("([Dd]esign)+");
+					//parallel
 					Pattern parallelDesign = Pattern.compile("([pP]arallel)+");
+					Pattern parallelDesignCleaner = Pattern.compile("([Dd]esign)+|([pP]arallel)+|([Gg]roup(s)?)+|[:(),.]+");
 				
 					//cross over, crossed over, crossover, cross-over, crossed-over + caps variations
 					Pattern crossoverDesign = Pattern.compile("([Cc]ross(ed)?-?\\s?[Oo](ver))+");
 					Pattern crossoverDesignCleaner = Pattern.compile("([Dd]esign)+|([Cc]ross(ed)?-?\\s?[Oo](ver))+|[:(),.]+");
 					//factorial, fully crossed + caps variation
 					Pattern factorialDesign = Pattern.compile("(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+");
-					Pattern factorialDesignCleaner = Pattern.compile("([Dd]esign[:-]?)+|(([Ff]actorial[:-]?)|([Ff]ully\\s[Cc]rossed[:-]?))+|[()]+");
-					Pattern beginningEnd = Pattern.compile("^[.,-:]|[.,-:$]");
+					Pattern factorialDesignCleaner = Pattern.compile("([Dd]esign)+|(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+|[:(),.]+");
+					Pattern beginningEndArray = Pattern.compile("^\\W+|[^\\w)]$"); //All special characters at beginning plus all special characters without closing brackets at end, because of factorial design
+					Pattern beginningEnd = Pattern.compile("^\\W+|\\W+$");	//All special chars at beginning and end
 					for (int k = 0; k<methodStringArray.length; k++){
 						
-						m = design.matcher(methodStringArray[k]);
-						if (m.find()){
-							m = parallelDesign.matcher(methodStringArray[k]);
-							if (m.find()){
-								paralellTrial = true;
-								//System.out.println(mainAuthor + " " + paralellTrial);
+						m = beginningEndArray.matcher(methodStringArray[k]);	//Factorial design with brackets causes problems otherwise
+						methodStringArray[k] = m.replaceAll("");
+						m = design.matcher(methodStringArray[k]);	//Uses regex pattern to identify if this line is about design of trial
+						
+						if (m.find()){	//To see if this String contains info on trial design
+							m = parallelDesign.matcher(methodStringArray[k]); 	//Uses regex pattern for identifying parallel trials
+							if (m.find()){	//To see if this trial is a parallel trial. Returns true if the trial is parallel
+								paralellTrial = true;	//Boolean to store that this trial is parallel
+								designProse = methodStringArray[k].trim();	//stores intact description of the trial
+								m = parallelDesignCleaner.matcher(methodStringArray[k]);	//uses regex pattern for cleaning parellel trial
+								designAddedInfo = m.replaceAll("").trim();	//cleans additional info from prose
+								m = beginningEnd.matcher(designAddedInfo);	//regex pattern for cleaning beginning/end from non-word characters
+								designAddedInfo = m.replaceAll("");	//cleans additional info from prose
+								
+								if (designAddedInfo.length() != 0)	//capitalises first letter
+									designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
+								
+								System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
+								
 							} else {
-								m = crossoverDesign.matcher(methodStringArray[k]);
+								m = crossoverDesign.matcher(methodStringArray[k]); 
 								if (m.find()){
 									crossoverTrial = true;
 									designProse = methodStringArray[k].trim();
 									m = crossoverDesignCleaner.matcher(methodStringArray[k]);
 									designAddedInfo = m.replaceAll("").trim();
-									System.out.println(mainAuthor  +": " + designAddedInfo +". " + designProse + ".");
+									m = beginningEnd.matcher(designAddedInfo);
+								
+									designAddedInfo = m.replaceAll("");
+									if (designAddedInfo.length() != 0)
+										designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
+									
+									System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
 								} else {
 									m = factorialDesign.matcher(methodStringArray[k]);
 									if (m.find()){
@@ -128,8 +150,13 @@ public class TrialObject {
 										m = factorialDesignCleaner.matcher(methodStringArray[k]);
 										designAddedInfo = m.replaceAll("").trim();
 										m = beginningEnd.matcher(designAddedInfo);
+									
 										designAddedInfo = m.replaceAll("");
-										System.out.println(mainAuthor  +": " + designAddedInfo +". " + designProse + ".");
+										if (designAddedInfo.length() != 0)
+												designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
+										
+										
+										System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + " .Prose: " + designProse);
 									} else {
 										noDesignFound = true;
 									}
