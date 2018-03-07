@@ -21,6 +21,9 @@ public class TrialObject {
 	protected boolean crossoverTrial = false;
 	protected boolean paralellTrial = false;
 	protected boolean factorialTrial = false;
+	protected boolean noDesignFound = false;
+	protected String designProse;
+	protected String designAddedInfo;
 	//protected RANDOMIZATIONTYPE randomisation:
 	//protected ALLOCATIONTYPE allocation;
 	//protected BLINDINGTYPE blinding;
@@ -94,7 +97,13 @@ public class TrialObject {
 					Pattern design = Pattern.compile("([Dd]esign)+");
 					Pattern parallelDesign = Pattern.compile("([pP]arallel)+");
 				
-					
+					//cross over, crossed over, crossover, cross-over, crossed-over + caps variations
+					Pattern crossoverDesign = Pattern.compile("([Cc]ross(ed)?-?\\s?[Oo](ver))+");
+					Pattern crossoverDesignCleaner = Pattern.compile("([Dd]esign)+|([Cc]ross(ed)?-?\\s?[Oo](ver))+|[:(),.]+");
+					//factorial, fully crossed + caps variation
+					Pattern factorialDesign = Pattern.compile("(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+");
+					Pattern factorialDesignCleaner = Pattern.compile("([Dd]esign[:-]?)+|(([Ff]actorial[:-]?)|([Ff]ully\\s[Cc]rossed[:-]?))+|[()]+");
+					Pattern beginningEnd = Pattern.compile("^[.,-:]|[.,-:$]");
 					for (int k = 0; k<methodStringArray.length; k++){
 						
 						m = design.matcher(methodStringArray[k]);
@@ -102,8 +111,31 @@ public class TrialObject {
 							m = parallelDesign.matcher(methodStringArray[k]);
 							if (m.find()){
 								paralellTrial = true;
-								System.out.println(mainAuthor + " " + paralellTrial);
+								//System.out.println(mainAuthor + " " + paralellTrial);
+							} else {
+								m = crossoverDesign.matcher(methodStringArray[k]);
+								if (m.find()){
+									crossoverTrial = true;
+									designProse = methodStringArray[k].trim();
+									m = crossoverDesignCleaner.matcher(methodStringArray[k]);
+									designAddedInfo = m.replaceAll("").trim();
+									System.out.println(mainAuthor  +": " + designAddedInfo +". " + designProse + ".");
+								} else {
+									m = factorialDesign.matcher(methodStringArray[k]);
+									if (m.find()){
+										factorialTrial = true;
+										designProse = methodStringArray[k].trim();
+										m = factorialDesignCleaner.matcher(methodStringArray[k]);
+										designAddedInfo = m.replaceAll("").trim();
+										m = beginningEnd.matcher(designAddedInfo);
+										designAddedInfo = m.replaceAll("");
+										System.out.println(mainAuthor  +": " + designAddedInfo +". " + designProse + ".");
+									} else {
+										noDesignFound = true;
+									}
+								}
 							}
+							
 								
 							
 						}
