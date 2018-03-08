@@ -7,7 +7,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import thesis.TrialDesign;
 
 public class TrialObject {
 	protected static int counter = 1;
@@ -17,11 +16,11 @@ public class TrialObject {
 	protected int crgID;
 	protected String revManID;//check
 	protected String[] references; //check
-	protected TrialDesign trialDesign;
+
 	protected boolean crossoverTrial = false;
 	protected boolean paralellTrial = false;
 	protected boolean factorialTrial = false;
-	protected boolean noDesignFound = false;
+	protected boolean otherDesign = false;
 	protected String designProse;
 	protected String designAddedInfo;
 	//protected RANDOMIZATIONTYPE randomisation:
@@ -29,6 +28,22 @@ public class TrialObject {
 	//protected BLINDINGTYPE blinding;
 	//protected ATTRITIONTYPE attrition;
 	//protected REPORTINGTYPE reporting;
+	
+	protected String selectionBiasRandomSequenceJudgement;
+	protected String selectionBiasRandomSequenceBiasRisk;
+	protected String selectionBiasAllocationConcealmentBiasRisk;
+	protected String selectionBiasAllocationConcealmentJudgement;
+	protected String performanceBiasRisk;
+	protected String performanceBiasJudgement;
+	protected String detectionBiasRisk;
+	protected String detectionBiasJudgement;
+	protected String attritionBiasRisk;
+	protected String attritionBiasJudgement;
+	protected String reportingBiasRisk;
+	protected String reportingBiasJudgement;
+	protected String otherBiasRisk;
+	protected String otherBiasJudgement;
+	
 	protected int nrOfParticipants;
 	protected String interventionGroup;
 	protected String controlGroup;
@@ -38,7 +53,25 @@ public class TrialObject {
 	//protected SETTING setting;
 	//protected outcomeList : OutcomeObjects
 	
-	Matcher m;
+	private Matcher m;
+	private Pattern design = Pattern.compile("([Dd]esign)+");
+	//parallel
+	private Pattern parallelDesign = Pattern.compile("([pP]arallel)+|([Bb]etween\\s[Pp]atient(s)?)+|([Nn]on(-|\\s)[Cc]ross(ed)?-?\\s?[Oo](ver))+");
+	private Pattern parallelDesignCleaner = Pattern.compile("([Dd]esign)+|([pP]arallel)+|([Gg]roup(s)?)+|([Ss]tud(y|ies))?+|[:(),.]+");
+	//cross over, crossed over, crossover, cross-over, crossed-over + caps variations
+	private Pattern crossoverDesign = Pattern.compile("([Cc]ross(ed)?-?\\s?[Oo](ver))+");
+	private Pattern crossoverDesignCleaner = Pattern.compile("([Dd]esign)+|([Cc]ross(ed)?-?\\s?[Oo](ver))+|[:(),.]+");
+	//factorial, fully crossed + caps variation
+	private Pattern factorialDesign = Pattern.compile("(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+");
+	private Pattern factorialDesignCleaner = Pattern.compile("([Dd]esign)+|(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+|[:(),.]+");
+	
+	//patterns for beginning/end of strings
+	private Pattern beginningEndArray = Pattern.compile("^\\W+|[^\\w)]$"); //All special characters at beginning plus all special characters without closing brackets at end, because of factorial design
+	private Pattern beginningEnd = Pattern.compile("^\\W+|\\W+$");	//All special chars at beginning and end
+	private Pattern endPunctuationCleaner = Pattern.compile("([^.!?\"']$)");	//matches when neither .!?"' at end of sentence
+	private Pattern endPunctuationCleaner2 = Pattern.compile("([^!?.][\"'])$");	//to be applied afer other punctuation regex. matches when there is no !?. before "'
+	private Element qualityItemsElement;
+	private NodeList qualityItemList;
 	
 	public TrialObject(Document review, int studyNumber){
 					
@@ -57,10 +90,11 @@ public class TrialObject {
 					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Traverses the characteristics of included studies part of the revman file. This is where bias tables and prose information are located
 					Element studyToExtractElement = null;
+					Element characteristicsOfStudiesElement = null;
 					try {
 						NodeList characteristicsOfStudiesList = rootElement.getElementsByTagName("CHARACTERISTICS_OF_STUDIES");
 						Node characteristicsOfStudiesNode = characteristicsOfStudiesList.item(0);
-						Element characteristicsOfStudiesElement = (Element) characteristicsOfStudiesNode;
+						characteristicsOfStudiesElement = (Element) characteristicsOfStudiesNode;
 						
 						NodeList characteristicsOfIncludedStudiesList = characteristicsOfStudiesElement.getElementsByTagName("CHARACTERISTICS_OF_INCLUDED_STUDIES");
 						Node characteristicsOfIncludedStudiesNode = characteristicsOfIncludedStudiesList.item(0);
@@ -81,6 +115,51 @@ public class TrialObject {
 					String[] cacheArray = cache.split("-");
 					mainAuthor = cacheArray[0]; //Take name of author from ID
 					
+					NodeList qualityItemsList = rootElement.getElementsByTagName("QUALITY_ITEMS");
+					Node qualityItemsNode = qualityItemsList.item(0);
+					qualityItemsElement = (Element) qualityItemsNode;
+					
+					String[] biasArray;
+					
+					biasArray = biasAnalyser(0, "random sequence generation");
+					selectionBiasRandomSequenceBiasRisk = biasArray[0];
+					selectionBiasRandomSequenceJudgement = biasArray[1];
+					
+					biasArray = biasAnalyser(1, "allocation concealment");
+					selectionBiasAllocationConcealmentBiasRisk = biasArray[0];
+					selectionBiasAllocationConcealmentJudgement = biasArray[1];
+					
+					biasArray = biasAnalyser(2, "performance bias");
+					performanceBiasRisk = biasArray[0];
+					performanceBiasJudgement = biasArray[1];
+					
+					biasArray = biasAnalyser(3, "detection bias");
+					detectionBiasRisk = biasArray[0];
+					detectionBiasJudgement = biasArray[1];
+					
+					biasArray = biasAnalyser(4, "incomplete outcome data");
+					attritionBiasRisk = biasArray[0];
+					attritionBiasJudgement = biasArray[1];
+					
+					biasArray = biasAnalyser(5, "selective reporting");
+					reportingBiasRisk = biasArray[0];
+					reportingBiasJudgement = biasArray[1];
+					
+					biasArray = biasAnalyser(6, "other bias");
+					otherBiasRisk = biasArray[0];
+					otherBiasJudgement = biasArray[1];
+					
+					System.out.println(mainAuthor + "\n" +
+							" RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
+							+ "\n" + ". allocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
+							+ "\n" + ". performanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
+							+ "\n" + ". detectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
+							+ "\n" + ". attritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
+							+ "\n" + ". reportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
+							+ "\n" + ". otherBias: " + otherBiasRisk + ". " + otherBiasJudgement
+							);
+					
+					
 					//////////////////////////////////////////////////////////////////////////////////////////////////
 					//extracts prose about methods and tries to match this prose to create a standardised output
 					NodeList charMethodsList = studyToExtractElement.getElementsByTagName("CHAR_METHODS");
@@ -94,77 +173,16 @@ public class TrialObject {
 					String methodString = charMethodsElement.getTextContent();
 					String[] methodStringArray = methodString.split("\\.");
 					
-					Pattern design = Pattern.compile("([Dd]esign)+");
-					//parallel
-					Pattern parallelDesign = Pattern.compile("([pP]arallel)+");
-					Pattern parallelDesignCleaner = Pattern.compile("([Dd]esign)+|([pP]arallel)+|([Gg]roup(s)?)+|[:(),.]+");
-				
-					//cross over, crossed over, crossover, cross-over, crossed-over + caps variations
-					Pattern crossoverDesign = Pattern.compile("([Cc]ross(ed)?-?\\s?[Oo](ver))+");
-					Pattern crossoverDesignCleaner = Pattern.compile("([Dd]esign)+|([Cc]ross(ed)?-?\\s?[Oo](ver))+|[:(),.]+");
-					//factorial, fully crossed + caps variation
-					Pattern factorialDesign = Pattern.compile("(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+");
-					Pattern factorialDesignCleaner = Pattern.compile("([Dd]esign)+|(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+|[:(),.]+");
-					Pattern beginningEndArray = Pattern.compile("^\\W+|[^\\w)]$"); //All special characters at beginning plus all special characters without closing brackets at end, because of factorial design
-					Pattern beginningEnd = Pattern.compile("^\\W+|\\W+$");	//All special chars at beginning and end
+					
+					
 					for (int k = 0; k<methodStringArray.length; k++){
 						
 						m = beginningEndArray.matcher(methodStringArray[k]);	//Factorial design with brackets causes problems otherwise
 						methodStringArray[k] = m.replaceAll("");
-						m = design.matcher(methodStringArray[k]);	//Uses regex pattern to identify if this line is about design of trial
 						
-						if (m.find()){	//To see if this String contains info on trial design
-							m = parallelDesign.matcher(methodStringArray[k]); 	//Uses regex pattern for identifying parallel trials
-							if (m.find()){	//To see if this trial is a parallel trial. Returns true if the trial is parallel
-								paralellTrial = true;	//Boolean to store that this trial is parallel
-								designProse = methodStringArray[k].trim();	//stores intact description of the trial
-								m = parallelDesignCleaner.matcher(methodStringArray[k]);	//uses regex pattern for cleaning parellel trial
-								designAddedInfo = m.replaceAll("").trim();	//cleans additional info from prose
-								m = beginningEnd.matcher(designAddedInfo);	//regex pattern for cleaning beginning/end from non-word characters
-								designAddedInfo = m.replaceAll("");	//cleans additional info from prose
-								
-								if (designAddedInfo.length() != 0)	//capitalises first letter
-									designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
-								
-								System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
-								
-							} else {
-								m = crossoverDesign.matcher(methodStringArray[k]); 
-								if (m.find()){
-									crossoverTrial = true;
-									designProse = methodStringArray[k].trim();
-									m = crossoverDesignCleaner.matcher(methodStringArray[k]);
-									designAddedInfo = m.replaceAll("").trim();
-									m = beginningEnd.matcher(designAddedInfo);
-								
-									designAddedInfo = m.replaceAll("");
-									if (designAddedInfo.length() != 0)
-										designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
-									
-									System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
-								} else {
-									m = factorialDesign.matcher(methodStringArray[k]);
-									if (m.find()){
-										factorialTrial = true;
-										designProse = methodStringArray[k].trim();
-										m = factorialDesignCleaner.matcher(methodStringArray[k]);
-										designAddedInfo = m.replaceAll("").trim();
-										m = beginningEnd.matcher(designAddedInfo);
-									
-										designAddedInfo = m.replaceAll("");
-										if (designAddedInfo.length() != 0)
-												designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
-										
-										
-										System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + " .Prose: " + designProse);
-									} else {
-										noDesignFound = true;
-									}
-								}
-							}
-							
-								
-							
+						m = design.matcher(methodStringArray[k]);	
+						if (m.find()){	//Uses regex pattern to identify if this line is about design of trial
+							designVerifyer(methodStringArray[k]);
 						}
 					}
 					
@@ -448,6 +466,112 @@ public class TrialObject {
 					
 					
 					
+	}
+	
+	private void designVerifyer(String str){
+		
+		//To see if this String contains info on trial design
+		m = parallelDesign.matcher(str); 	//Uses regex pattern for identifying parallel trials
+		if (m.find()){	//To see if this trial is a parallel trial. Returns true if the trial is parallel
+			paralellTrial = true;	//Boolean to store that this trial is parallel
+			designProse = str.trim();	//stores intact description of the trial
+			m = parallelDesignCleaner.matcher(str);	//uses regex pattern for cleaning parellel trial
+			designAddedInfo = m.replaceAll("").trim();	//cleans additional info from prose
+			m = beginningEnd.matcher(designAddedInfo);	//regex pattern for cleaning beginning/end from non-word characters
+			designAddedInfo = m.replaceAll("");	//cleans additional info from prose
+			
+			if (designAddedInfo.length() != 0)	//capitalises first letter
+				designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
+			
+			//System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
+			
+		} else {
+			m = crossoverDesign.matcher(str); 
+			if (m.find()){
+				crossoverTrial = true;
+				designProse = str.trim();
+				m = crossoverDesignCleaner.matcher(str);
+				designAddedInfo = m.replaceAll("").trim();
+				m = beginningEnd.matcher(designAddedInfo);
+			
+				designAddedInfo = m.replaceAll("");
+				if (designAddedInfo.length() != 0)
+					designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
+				
+				//System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
+			} else {
+				m = factorialDesign.matcher(str);
+				if (m.find()){
+					factorialTrial = true;
+					designProse = str.trim();
+					m = factorialDesignCleaner.matcher(str);
+					designAddedInfo = m.replaceAll("").trim();
+					m = beginningEnd.matcher(designAddedInfo);
+				
+					designAddedInfo = m.replaceAll("");
+					if (designAddedInfo.length() != 0)
+							designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
+					
+					
+					//System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + " .Prose: " + designProse);
+				} else {
+					otherDesign = true;
+					designProse = str.trim();
+					designAddedInfo = "";
+				}
+			}
+		}
+		
+	}
+	
+	private String[] biasAnalyser(int index, String description){
+		
+		String[] forReturn = {"", ""}; //index 0 will hold choice of bias risk, index 1 will hold judgement/quotes
+		qualityItemList = qualityItemsElement.getElementsByTagName("QUALITY_ITEM");
+		Node specificItemNode = qualityItemList.item(index);	//Index navigates to the desired bias item
+		Element specificItemElement = (Element) specificItemNode;
+		
+		NodeList nameList = specificItemElement.getElementsByTagName("NAME");
+		Node nameNode = nameList.item(0);
+		Element nameElement = (Element) nameNode;
+		
+		NodeList qualityItemDataList = specificItemElement.getElementsByTagName("QUALITY_ITEM_DATA");
+		Node qualityItemDataNode = qualityItemDataList.item(0);
+		Element qualityItemDataElement = (Element) qualityItemDataNode;
+		
+		NodeList specificItemDataEntryList = qualityItemDataElement.getElementsByTagName("QUALITY_ITEM_DATA_ENTRY");
+		int entryLength = specificItemDataEntryList.getLength();
+		
+		String biasVerification = nameElement.getTextContent().toLowerCase();
+		if (entryLength != 0 && biasVerification.contains(description) ) {
+			for (int l = 0; l < entryLength; l++) {
+				Node specificDataEntryNode = specificItemDataEntryList.item(l);
+				Element specificDataEntryElement = (Element) specificDataEntryNode;
+				if (specificDataEntryElement.getAttribute("STUDY_ID").equals(revManID)) { //searches the desired trial for this object
+					if (specificDataEntryElement.getAttribute("RESULT").equals("UNKNOWN")) { //These are the options from RevMans dropdown menu in the bias table
+						forReturn[0] = "Unclear Risk";
+					} else if (specificDataEntryElement.getAttribute("RESULT").equals("YES")) {
+						forReturn[0] = "Low risk";
+					} else if (specificDataEntryElement.getAttribute("RESULT").equals("NO")) {
+						forReturn[0] = "High risk";
+					} else {
+						forReturn[0] = "Information on " + description + " could not be extracted";	//if anything unexpected happens
+					}
+					forReturn[1] = specificDataEntryElement.getTextContent().trim().replaceAll("\n", ", ");
+					
+					m = endPunctuationCleaner.matcher(forReturn[1]);
+					if (m.find())										//Cleaning data: Patterns match when there is NO .!?"' at the very end 
+						forReturn[1] = forReturn[1] + ".";				//and while there is also no .!? before the last "'  -> in this case a full stop will be inserted
+					m = endPunctuationCleaner2.matcher(forReturn[1]);
+					if (m.find())
+						forReturn[1] = forReturn[1] + ".";
+				}
+			} 
+		} else {
+			index++;
+			return biasAnalyser(index, description);
+		}
+		return forReturn;
 	}
 	
 
