@@ -23,6 +23,7 @@ public class TrialObject {
 	protected boolean otherDesign = false;
 	protected String designProse;
 	protected String designAddedInfo;
+	protected String countries = "";
 	//protected RANDOMIZATIONTYPE randomisation:
 	//protected ALLOCATIONTYPE allocation;
 	//protected BLINDINGTYPE blinding;
@@ -53,6 +54,8 @@ public class TrialObject {
 	//protected SETTING setting;
 	//protected outcomeList : OutcomeObjects
 	
+	private int breakBiasVerification;
+	
 	private Matcher m;
 	private Pattern design = Pattern.compile("([Dd]esign)+");
 	//parallel
@@ -68,10 +71,12 @@ public class TrialObject {
 	//patterns for beginning/end of strings
 	private Pattern beginningEndArray = Pattern.compile("^\\W+|[^\\w)]$"); //All special characters at beginning plus all special characters without closing brackets at end, because of factorial design
 	private Pattern beginningEnd = Pattern.compile("^\\W+|\\W+$");	//All special chars at beginning and end
-	private Pattern endPunctuationCleaner = Pattern.compile("([^.!?\"']$)");	//matches when neither .!?"' at end of sentence
-	private Pattern endPunctuationCleaner2 = Pattern.compile("([^!?.][\"'])$");	//to be applied afer other punctuation regex. matches when there is no !?. before "'
+	private Pattern endPunctuationCleanerA = Pattern.compile("([^.!?\"']$)");	//matches when neither .!?"' at end of sentence. Needs 
+	private Pattern endPunctuationCleanerB = Pattern.compile("([^!?.][\"'])$");	//to be applied after other punctuation regex. matches when there is no !?. before "'
 	private Element qualityItemsElement;
+	Element studyElement;
 	private NodeList qualityItemList;
+	private NodeList referencesList;
 	
 	public TrialObject(Document review, int studyNumber){
 					
@@ -119,45 +124,47 @@ public class TrialObject {
 					Node qualityItemsNode = qualityItemsList.item(0);
 					qualityItemsElement = (Element) qualityItemsNode;
 					
+					qualityItemList = qualityItemsElement.getElementsByTagName("QUALITY_ITEM");
+					breakBiasVerification = qualityItemList.getLength();
 					String[] biasArray;
 					
 					biasArray = biasAnalyser(0, "random sequence generation");
 					selectionBiasRandomSequenceBiasRisk = biasArray[0];
 					selectionBiasRandomSequenceJudgement = biasArray[1];
 					
-					biasArray = biasAnalyser(1, "allocation concealment");
+					biasArray = biasAnalyser(0, "allocation concealment");
 					selectionBiasAllocationConcealmentBiasRisk = biasArray[0];
 					selectionBiasAllocationConcealmentJudgement = biasArray[1];
 					
-					biasArray = biasAnalyser(2, "performance bias");
+					biasArray = biasAnalyser(0, "performance bias");
 					performanceBiasRisk = biasArray[0];
 					performanceBiasJudgement = biasArray[1];
 					
-					biasArray = biasAnalyser(3, "detection bias");
+					biasArray = biasAnalyser(0, "detection bias");
 					detectionBiasRisk = biasArray[0];
 					detectionBiasJudgement = biasArray[1];
 					
-					biasArray = biasAnalyser(4, "incomplete outcome data");
+					biasArray = biasAnalyser(0, "incomplete outcome data");
 					attritionBiasRisk = biasArray[0];
 					attritionBiasJudgement = biasArray[1];
 					
-					biasArray = biasAnalyser(5, "selective reporting");
+					biasArray = biasAnalyser(0, "selective reporting");
 					reportingBiasRisk = biasArray[0];
 					reportingBiasJudgement = biasArray[1];
 					
-					biasArray = biasAnalyser(6, "other bias");
+					biasArray = biasAnalyser(0, "other bias");
 					otherBiasRisk = biasArray[0];
 					otherBiasJudgement = biasArray[1];
 					
-					System.out.println(mainAuthor + "\n" +
-							" RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
-							+ "\n" + ". allocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
-							+ "\n" + ". performanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
-							+ "\n" + ". detectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
-							+ "\n" + ". attritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
-							+ "\n" + ". reportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
-							+ "\n" + ". otherBias: " + otherBiasRisk + ". " + otherBiasJudgement
-							);
+					//System.out.println(mainAuthor + "\n" +
+						//	" RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
+							//+ "\n" + ". allocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
+							//+ "\n" + ". performanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
+							//+ "\n" + ". detectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
+							//+ "\n" + ". attritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
+							//+ "\n" + ". reportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
+							//+ "\n" + ". otherBias: " + otherBiasRisk + ". " + otherBiasJudgement
+							//);
 					
 					
 					//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,17 +173,22 @@ public class TrialObject {
 					Node charMethodsNode = charMethodsList.item(0);
 					Element charMethodsElement = (Element) charMethodsNode;
 					
+					
+					
 					//NodeList methodParagraphList = charMethodsElement.getElementsByTagName("P");
 					//Node methodNode = methodParagraphList.item(0);
 					//Element methodElement = (Element) methodNode;
 						
 					String methodString = charMethodsElement.getTextContent();
-					String[] methodStringArray = methodString.split("\\.");
+
 					
+				
+			
 					
+					String[] methodStringArray = methodString.split("\\."); // splits text at every full stop
 					
 					for (int k = 0; k<methodStringArray.length; k++){
-						
+						//System.out.println(methodStringArray[k]);
 						m = beginningEndArray.matcher(methodStringArray[k]);	//Factorial design with brackets causes problems otherwise
 						methodStringArray[k] = m.replaceAll("");
 						
@@ -184,12 +196,35 @@ public class TrialObject {
 						if (m.find()){	//Uses regex pattern to identify if this line is about design of trial
 							designVerifyer(methodStringArray[k]);
 						}
+
+						}
+					
+					
+					//Extracts prose from participant section and tries to match
+					NodeList charParticipantsList = studyToExtractElement.getElementsByTagName("CHAR_PARTICIPANTS");
+					Node charParticipantsNode = charParticipantsList.item(0);
+					Element charParticipantsElement = (Element) charParticipantsNode; 
+					
+					//Searches the big method and participants Strings for country names
+					String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cambodia","Cameroon","Canada","Cabo Verde","China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","Norway","Oman","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","Uruguay","USSR","Uzbekistan","USA","Vanuatu","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
+					for (int i = 0; i < countryList.length; i++){
+							if (methodString.contains(countryList[i])){
+								countries = countries + countryList[i] + ", ";
+							}
+						}
+						countries = countries.trim().replaceAll(",$", "");
+					String participantString = charParticipantsElement.getTextContent();
+					for (int i = 0; i < countryList.length; i++){
+						if (participantString.contains(countryList[i])){
+							countries = countries + countryList[i] + ", ";
+						}
 					}
+					countries = countries.trim().replaceAll(",$", "");
 					
-					
+					//System.out.println(mainAuthor + ": " + countries);
 					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Traverses the revman file's Studies and references section
-					Element studyElement = null;
+					
 					try {
 						NodeList studiesAndReferencesList = rootElement.getElementsByTagName("STUDIES_AND_REFERENCES");
 						Node studiesAndReferencesNode = studiesAndReferencesList.item(0);
@@ -221,245 +256,16 @@ public class TrialObject {
 						cache = revManID.replaceAll("[^\\d.]", "");
 						year = Integer.parseInt(cache); //Takes year of publication from ID
 					}
-					
-					
-					
 					//System.out.println("Year of publication: " + year);
-				//	System.out.println("Main author of Study: " + mainAuthor);
+					//System.out.println("Main author of Study: " + mainAuthor);
 					//System.out.println("RevMan ID: "+ revManID);
 					
-					//This following for-loop runs through all references for the included study and saves relevant fields into an array that is created to hold information in the following positions:
-					//0th, 9th ..index -> Type of publication, eg. Journal ->"TYPE"
-					//1st..., 10th..index -> Primary attribute: Yes or No ->"PRIMARY"
-					//2nd... ->Names of all authors of this publication ->"AU"
-					//3rd...->Title of publication->"TI"
-					//4th...->Name of Journal->Journal->"SO"
-					//5...-> Year published->"YR"
-					//6...->Volume ->"VL" 
-					//7...-> Issue ->"NO"
-					//8...-> Pages ->"PG"
+					referenceExtracting(); //Extracts all information on references of this trial. See method below for more details
 					
-					//if a filed is not available, eg. if the reference refers to a conference protocol that lacks page numbers, empty "" space is inserted and next position of array is tried to be filled
-				
-					
-					NodeList referencesList = studyElement.getElementsByTagName("REFERENCE");
-					int numberReferences = referencesList.getLength();
-					references = new String[numberReferences * 9];
-					int arrayCounter = 0;
-					
-					for (int i = 0; i < numberReferences; i++){
-						Element referenceElement = null;
-						try {
-							Node referenceNode = referencesList.item(i);
-							referenceElement = (Element) referenceNode;
-						} catch (Exception e7) {
-						}
-					
-						try {
-							if (referenceElement != null){
-							references[arrayCounter] = referenceElement.getAttribute("TYPE"); 
-							//System.out.println(referenceElement.getAttribute("TYPE"));
-							} else {
-								references[arrayCounter] = "";
-							}
-						} catch (Exception e6) {
-						}
-						arrayCounter++;
-						
-						try {
-							if (referenceElement != null){
-							references[arrayCounter] = referenceElement.getAttribute("PRIMARY");
-							//System.out.println(referenceElement.getAttribute("PRIMARY"));
-							} else {
-								references[arrayCounter] = "";
-							}
-						} catch (Exception e5) {
-						}
-						arrayCounter++;
-						
-						
-						Element auElement = null;
-						try {
-							NodeList auList = referenceElement.getElementsByTagName("AU");
-							Node auNode = auList.item(0);
-							auElement = (Element) auNode;
-						} catch (Exception e5) {
-							// TODO Auto-generated catch block
-							e5.printStackTrace();
-						}
-						
-						try {
-							if (auElement != null){
-							references[arrayCounter] = auElement.getTextContent().replaceAll("\n", "").trim(); //2nd, 11th... Authors names for this reference
-							//System.out.println(auElement.getTextContent().replaceAll("\n", "").trim());
-							} else {
-								references[arrayCounter] = "";
-							}
-						} catch (DOMException e4) {
-							// TODO Auto-generated catch block
-							e4.printStackTrace();
-						}
-						
-						arrayCounter++;
-						
-						
-						Element tiElement = null;
-						try {
-							NodeList tiList = referenceElement.getElementsByTagName("TI");
-							Node tiNode = tiList.item(0);
-							tiElement = (Element) tiNode;
-						} catch (Exception e4) {
-							// TODO Auto-generated catch block
-							e4.printStackTrace();
-						}
-						
-						try {
-							if (tiElement != null){
-							references[arrayCounter] = tiElement.getTextContent().replaceAll("\n", "").trim();
-							//System.out.println(tiElement.getTextContent().replaceAll("\n", "").trim());
-							} else {
-								references[arrayCounter] = "";
-							}
-						} catch (DOMException e3) {
-							// TODO Auto-generated catch block
-							e3.printStackTrace();
-						}
-						
-						arrayCounter++;
-						
-						
-						Element soElement = null;
-						try {
-							NodeList soList = referenceElement.getElementsByTagName("SO");
-							Node soNode = soList.item(0);
-							soElement = (Element) soNode;
-						} catch (Exception e3) {
-							// TODO Auto-generated catch block
-							e3.printStackTrace();
-						}
-						
-						try {
-							if (soElement != null){
-							references[arrayCounter] = soElement.getTextContent().replaceAll("\n", "").trim();
-							//System.out.println(soElement.getTextContent().replaceAll("\n", "").trim());
-							} else {
-								references[arrayCounter] = "";
-							}
-						} catch (DOMException e2) {
-							// TODO Auto-generated catch block
-							e2.printStackTrace();
-						}
-						
-						arrayCounter++;
-						
-						
-						Element yrElement = null;
-						try {
-							NodeList yrList = referenceElement.getElementsByTagName("YR");
-							Node yrNode = yrList.item(0);
-							yrElement = (Element) yrNode;
-						} catch (Exception e2) {
-							// TODO Auto-generated catch block
-							e2.printStackTrace();
-						}
-						
-						try {
-							if (yrElement != null){
-							references[arrayCounter] = yrElement.getTextContent().replaceAll("\n", "").trim();
-							//System.out.println(yrElement.getTextContent().replaceAll("\n", "").trim());
-							} else {
-								references[arrayCounter] = "";
-							}
-						} catch (DOMException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						
-						arrayCounter++;
-						
-						
-						Element vlElement = null;
-						try {
-							NodeList vlList = referenceElement.getElementsByTagName("VL");
-							Node vlNode = vlList.item(0);
-							vlElement = (Element) vlNode;
-						} catch (Exception e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						
-						try {
-							if (vlElement != null){
-							references[arrayCounter] = vlElement.getTextContent().replaceAll("\n", "").trim();
-							//System.out.println(vlElement.getTextContent().replaceAll("\n", "").trim());
-							} else {
-								references[arrayCounter] = "";
-							}
-						} catch (DOMException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						arrayCounter++;
-						
-						Element noElement = null;
-						try {
-							NodeList noList = referenceElement.getElementsByTagName("NO");
-							Node noNode = noList.item(0);
-							noElement = (Element) noNode;
-						} catch (Exception e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						
-						try {
-							if (noElement != null){
-							references[arrayCounter] = noElement.getTextContent().replaceAll("\n", "").trim();
-							//System.out.println(noElement.getTextContent().replaceAll("\n", "").trim());
-							} else {
-								references[arrayCounter] = "";
-							}
-						} catch (DOMException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-						arrayCounter++;
-						
-						Element pgElement = null;
-						try {
-							NodeList pgList = referenceElement.getElementsByTagName("PG");
-							Node pgNode = pgList.item(0);
-							pgElement = (Element) pgNode;
-						} catch (Exception e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						
-						try {
-							if (pgElement != null){
-							references[arrayCounter] = pgElement.getTextContent().replaceAll("\n", "").trim();
-							//System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
-							} else {
-								references[arrayCounter] = "";
-							}
-						} catch (DOMException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						arrayCounter++;
-						
-						
-					
-						
-						
-					}
-					
-					
-							
-					for (int j = 0; j<references.length; j++){
+					//System.out.println(mainAuthor + ":");
+					//for (int j = 0; j<references.length; j++){
 						//System.out.println(references[j]);
-					}
-					
+					//}
 					
 					System.out.println();
 					
@@ -467,6 +273,237 @@ public class TrialObject {
 					
 					
 	}
+	
+	 
+	
+	private void referenceExtracting(){
+		//This following for-loop runs through all references for the included study and saves relevant fields into an array that is created to hold information in the following positions:
+		//0th, 9th ..index -> Type of publication, eg. Journal ->"TYPE"
+		//1st..., 10th..index -> Primary attribute: Yes or No ->"PRIMARY"
+		//2nd... ->Names of all authors of this publication ->"AU"
+		//3rd...->Title of publication->"TI"
+		//4th...->Name of Journal->Journal->"SO"
+		//5...-> Year published->"YR"
+		//6...->Volume ->"VL" 
+		//7...-> Issue ->"NO"
+		//8...-> Pages ->"PG"
+		
+		//if a filed is not available, eg. if the reference refers to a conference protocol that lacks page numbers, empty "" space is inserted and next position of array is tried to be filled
+	
+		
+		referencesList = studyElement.getElementsByTagName("REFERENCE");
+		int numberReferences = referencesList.getLength();
+		references = new String[numberReferences * 9];
+		int arrayCounter = 0;
+		for (int i = 0; i < numberReferences; i++){
+			Element referenceElement = null;
+			try {
+				Node referenceNode = referencesList.item(i);
+				referenceElement = (Element) referenceNode;
+			} catch (Exception e7) {
+			}
+		
+			try {
+				if (referenceElement != null){
+				references[arrayCounter] = referenceElement.getAttribute("TYPE"); 
+				//System.out.println(referenceElement.getAttribute("TYPE"));
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (Exception e6) {
+			}
+			arrayCounter++;
+			
+			try {
+				if (referenceElement != null){
+				references[arrayCounter] = referenceElement.getAttribute("PRIMARY");
+				//System.out.println(referenceElement.getAttribute("PRIMARY"));
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (Exception e5) {
+			}
+			arrayCounter++;
+			
+			
+			Element auElement = null;
+			try {
+				NodeList auList = referenceElement.getElementsByTagName("AU");
+				Node auNode = auList.item(0);
+				auElement = (Element) auNode;
+			} catch (Exception e5) {
+				// TODO Auto-generated catch block
+				e5.printStackTrace();
+			}
+			
+			try {
+				if (auElement != null){
+				references[arrayCounter] = auElement.getTextContent().replaceAll("\n", "").trim(); //2nd, 11th... Authors names for this reference
+				//System.out.println(auElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e4) {
+				// TODO Auto-generated catch block
+				e4.printStackTrace();
+			}
+			
+			arrayCounter++;
+			
+			
+			Element tiElement = null;
+			try {
+				NodeList tiList = referenceElement.getElementsByTagName("TI");
+				Node tiNode = tiList.item(0);
+				tiElement = (Element) tiNode;
+			} catch (Exception e4) {
+				// TODO Auto-generated catch block
+				e4.printStackTrace();
+			}
+			
+			try {
+				if (tiElement != null){
+				references[arrayCounter] = tiElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(tiElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+			
+			arrayCounter++;
+			
+			
+			Element soElement = null;
+			try {
+				NodeList soList = referenceElement.getElementsByTagName("SO");
+				Node soNode = soList.item(0);
+				soElement = (Element) soNode;
+			} catch (Exception e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+			
+			try {
+				if (soElement != null){
+				references[arrayCounter] = soElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(soElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			
+			arrayCounter++;
+			
+			
+			Element yrElement = null;
+			try {
+				NodeList yrList = referenceElement.getElementsByTagName("YR");
+				Node yrNode = yrList.item(0);
+				yrElement = (Element) yrNode;
+			} catch (Exception e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			
+			try {
+				if (yrElement != null){
+				references[arrayCounter] = yrElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(yrElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			arrayCounter++;
+			
+			
+			Element vlElement = null;
+			try {
+				NodeList vlList = referenceElement.getElementsByTagName("VL");
+				Node vlNode = vlList.item(0);
+				vlElement = (Element) vlNode;
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			try {
+				if (vlElement != null){
+				references[arrayCounter] = vlElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(vlElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			arrayCounter++;
+			
+			Element noElement = null;
+			try {
+				NodeList noList = referenceElement.getElementsByTagName("NO");
+				Node noNode = noList.item(0);
+				noElement = (Element) noNode;
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			try {
+				if (noElement != null){
+				references[arrayCounter] = noElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(noElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			arrayCounter++;
+			
+			Element pgElement = null;
+			try {
+				NodeList pgList = referenceElement.getElementsByTagName("PG");
+				Node pgNode = pgList.item(0);
+				pgElement = (Element) pgNode;
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			try {
+				if (pgElement != null){
+				references[arrayCounter] = pgElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			arrayCounter++;
+			
+			
+		
+			
+			
+		}
+	}
+	
+	private void countryVerifyer(String str){}
 	
 	private void designVerifyer(String str){
 		
@@ -525,11 +562,12 @@ public class TrialObject {
 	}
 	
 	private String[] biasAnalyser(int index, String description){
-		
 		String[] forReturn = {"", ""}; //index 0 will hold choice of bias risk, index 1 will hold judgement/quotes
-		qualityItemList = qualityItemsElement.getElementsByTagName("QUALITY_ITEM");
+		
 		Node specificItemNode = qualityItemList.item(index);	//Index navigates to the desired bias item
 		Element specificItemElement = (Element) specificItemNode;
+		
+		
 		
 		NodeList nameList = specificItemElement.getElementsByTagName("NAME");
 		Node nameNode = nameList.item(0);
@@ -559,17 +597,20 @@ public class TrialObject {
 					}
 					forReturn[1] = specificDataEntryElement.getTextContent().trim().replaceAll("\n", ", ");
 					
-					m = endPunctuationCleaner.matcher(forReturn[1]);
-					if (m.find())										//Cleaning data: Patterns match when there is NO .!?"' at the very end 
+					m = endPunctuationCleanerA.matcher(forReturn[1]);
+					if (m.find())										//Cleaning data: Patterns match when there is no either .!?"' at the very end 
 						forReturn[1] = forReturn[1] + ".";				//and while there is also no .!? before the last "'  -> in this case a full stop will be inserted
-					m = endPunctuationCleaner2.matcher(forReturn[1]);
+					m = endPunctuationCleanerB.matcher(forReturn[1]);
 					if (m.find())
 						forReturn[1] = forReturn[1] + ".";
 				}
 			} 
 		} else {
-			index++;
-			return biasAnalyser(index, description);
+			if (breakBiasVerification > (index + 1)){ 	// breakBiasVerification contains amount of nodes that can be analysed
+				return biasAnalyser((index + 1), description); 	// as long as there are more nodes to be analysed the recursion is active
+			} else {
+				return new String[] {"Information could not be retrieved", "Information could not be retrieved"};	//no more nodes, possibly the description String has to be changed or the bias item is not there
+			}
 		}
 		return forReturn;
 	}
