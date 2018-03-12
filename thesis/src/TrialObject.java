@@ -118,7 +118,7 @@ public class TrialObject {
 					//Gets revman ID for study
 					revManID = studyToExtractElement.getAttribute("STUDY_ID"); 
 					String cache = revManID.replaceAll("STD-", ""); 
-					String[] cacheArray = cache.split("-\\d+");	//Splits at - when this is directly followed by a number. otherwise double names such as Bristol-Myers cause errors
+					String[] cacheArray = cache.split("-\\d+");	//Splits at "-"+ digit
 					mainAuthor = cacheArray[0]; //Take name of author from ID
 					
 					NodeList qualityItemsList = rootElement.getElementsByTagName("QUALITY_ITEMS");
