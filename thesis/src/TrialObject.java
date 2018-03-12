@@ -53,6 +53,7 @@ public class TrialObject {
 	protected int nrControl;
 	//protected SETTING setting;
 	//protected outcomeList : OutcomeObjects
+	protected String meerKatCountry;
 	
 	private int breakBiasVerification;
 	
@@ -116,8 +117,8 @@ public class TrialObject {
 					//Extracts information into variables
 					//Gets revman ID for study
 					revManID = studyToExtractElement.getAttribute("STUDY_ID"); 
-					String cache = revManID.replaceAll("STD-", "");
-					String[] cacheArray = cache.split("-");
+					String cache = revManID.replaceAll("STD-", ""); 
+					String[] cacheArray = cache.split("-\\d+");	//Splits at - when this is directly followed by a number. otherwise double names such as Bristol-Myers cause errors
 					mainAuthor = cacheArray[0]; //Take name of author from ID
 					
 					NodeList qualityItemsList = rootElement.getElementsByTagName("QUALITY_ITEMS");
@@ -156,15 +157,15 @@ public class TrialObject {
 					otherBiasRisk = biasArray[0];
 					otherBiasJudgement = biasArray[1];
 					
-					//System.out.println(mainAuthor + "\n" +
-						//	" RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
-							//+ "\n" + ". allocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
-							//+ "\n" + ". performanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
-							//+ "\n" + ". detectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
-							//+ "\n" + ". attritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
-							//+ "\n" + ". reportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
-							//+ "\n" + ". otherBias: " + otherBiasRisk + ". " + otherBiasJudgement
-							//);
+//					System.out.println(mainAuthor + "\n" +
+//							" RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
+//							+ "\n" + ". allocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
+//							+ "\n" + ". performanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
+//							+ "\n" + ". detectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
+//							+ "\n" + ". attritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
+//							+ "\n" + ". reportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
+//							+ "\n" + ". otherBias: " + otherBiasRisk + ". " + otherBiasJudgement
+//							);
 					
 					
 					//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -204,24 +205,52 @@ public class TrialObject {
 					NodeList charParticipantsList = studyToExtractElement.getElementsByTagName("CHAR_PARTICIPANTS");
 					Node charParticipantsNode = charParticipantsList.item(0);
 					Element charParticipantsElement = (Element) charParticipantsNode; 
+					String[] extractedCountries;
 					
-					//Searches the big method and participants Strings for country names
-					String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cambodia","Cameroon","Canada","Cabo Verde","China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","Norway","Oman","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","Uruguay","USSR","Uzbekistan","USA","Vanuatu","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
+					//Searches the big method String for country names. Writes them to String in alphabetical order and 
+					//also creates output in MeerKatBE syntax
+					String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cambodia","Cameroon","Canada","Cabo Verde","China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","Norway","Oman","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","UK", "Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","Uruguay","USA","USSR","Uzbekistan","Vanuatu","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
+					
 					for (int i = 0; i < countryList.length; i++){
 							if (methodString.contains(countryList[i])){
 								countries = countries + countryList[i] + ", ";
 							}
 						}
+					countries = countries.trim().replaceAll(",$", "");
+					extractedCountries = countries.split("(,\\s)");
+					if (extractedCountries.length > 1){
+						meerKatCountry = "Multi-Center";
+						for (int i = 0; i < extractedCountries.length; i++){
+							meerKatCountry = meerKatCountry + "//" + extractedCountries[i];
+						}
+					} else {
+						meerKatCountry = countries;
+					}
+					//Extracts countries from "Participants" section of table	
+					
+					if(countries.equals("")){
+						String participantString = charParticipantsElement.getTextContent();
+						for (int i = 0; i < countryList.length; i++){
+							if (participantString.contains(countryList[i])){
+								countries = countries + countryList[i] + ", ";
+							}
+						}
 						countries = countries.trim().replaceAll(",$", "");
-					String participantString = charParticipantsElement.getTextContent();
-					for (int i = 0; i < countryList.length; i++){
-						if (participantString.contains(countryList[i])){
-							countries = countries + countryList[i] + ", ";
+						extractedCountries = countries.split(",\\s");
+						if (extractedCountries.length > 1){
+							meerKatCountry = meerKatCountry + "Multi-Center";
+							for (int i = 0; i < extractedCountries.length; i++){
+								meerKatCountry = meerKatCountry + "//" + extractedCountries[i];
+							}
+						} else {
+							meerKatCountry = countries;
 						}
 					}
-					countries = countries.trim().replaceAll(",$", "");
 					
-					//System.out.println(mainAuthor + ": " + countries);
+					
+//					System.out.println(mainAuthor + ": " + countries);
+//					System.out.println(meerKatCountry);
+					
 					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Traverses the revman file's Studies and references section
 					
@@ -256,16 +285,81 @@ public class TrialObject {
 						cache = revManID.replaceAll("[^\\d.]", "");
 						year = Integer.parseInt(cache); //Takes year of publication from ID
 					}
-					//System.out.println("Year of publication: " + year);
-					//System.out.println("Main author of Study: " + mainAuthor);
-					//System.out.println("RevMan ID: "+ revManID);
+//					System.out.println("Year of publication: " + year);
+//					System.out.println("Main author of Study: " + mainAuthor);
+//					System.out.println("RevMan ID: "+ revManID);
 					
 					referenceExtracting(); //Extracts all information on references of this trial. See method below for more details
 					
-					//System.out.println(mainAuthor + ":");
-					//for (int j = 0; j<references.length; j++){
-						//System.out.println(references[j]);
-					//}
+//					System.out.println(mainAuthor + ":");
+//					for (int j = 0; j<references.length; j++){
+//						System.out.println(references[j]);
+//					}
+					
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					//Extracts OutcomeObjects for this trial
+					
+					System.out.println(mainAuthor);
+					
+					NodeList analysesAndDataList = rootElement.getElementsByTagName("ANALYSES_AND_DATA");
+					Node analysesAndDataNode = analysesAndDataList.item(0);
+					Element analysesAndDataElement = (Element) analysesAndDataNode;
+					
+					NodeList comparisonList = analysesAndDataElement.getElementsByTagName("COMPARISON");
+					for (int i = 0; i < comparisonList.getLength(); i++){
+						Node comparisonNode = comparisonList.item(i);
+						Element comparisonElement = (Element) comparisonNode;
+						
+						NodeList comparisonNameList = comparisonElement.getElementsByTagName("NAME");
+						Node comparisonNameNode = comparisonNameList.item(0);
+						Element comparisonNameElement = (Element) comparisonNameNode; //takeOver for comparisonname and groupnames
+						String comparisonName = comparisonNameElement.getTextContent(); //plus grouplabels
+						
+						NodeList dichOutcomeList = comparisonElement.getElementsByTagName("DICH_OUTCOME");
+						for (int l = 0; l < dichOutcomeList.getLength(); l++){
+							Node dichOutcomeNode = dichOutcomeList.item(l);
+							Element dichOutcomeElement = (Element) dichOutcomeNode;
+							
+							NodeList dichOutcomeNameList = dichOutcomeElement.getElementsByTagName("NAME");
+							Node dichOutcomeNameNode = dichOutcomeNameList.item(0);
+							Element dichOutcomeNameElement = (Element) dichOutcomeNameNode;
+							String outcomeName = dichOutcomeNameElement.getTextContent();
+							
+							NodeList dichSubgroupList = dichOutcomeElement.getElementsByTagName("DICH_SUBGROUP");
+							for (int j = 0; j <dichSubgroupList.getLength(); j++){
+								Node dichSubgroupNode = dichSubgroupList.item(j);
+								Element dichSubgroupElement = (Element) dichSubgroupNode;
+								
+								NodeList dichDataList = dichSubgroupElement.getElementsByTagName("DICH_DATA");
+								for (int k = 0; k < dichDataList.getLength(); k++){
+									Node dichDataNode = dichDataList.item(k);
+									Element dichDataElement = (Element) dichDataNode;
+									
+									if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
+										
+										System.out.println(comparisonName);
+										System.out.println(outcomeName);
+										
+										OutcomeObject dOBJ = new DichOutcomeObject(revManID, comparisonList);
+									}
+								}
+							}
+						}
+						
+						
+						
+						
+//						NodeList comparisonNameList = comparisonElement.getElementsByTagName("NAME");
+//						Node comparisonNameNode = comparisonNameList.item(0);
+//						Element comparisonNameElement = (Element) comparisonNameNode;
+//						
+//						comparisonName = comparisonNameElement.getTextContent();
+//						System.out.println(comparisonName);
+					}
+					
+					
+				
+				
 					
 					System.out.println();
 					
@@ -503,7 +597,7 @@ public class TrialObject {
 		}
 	}
 	
-	private void countryVerifyer(String str){}
+
 	
 	private void designVerifyer(String str){
 		
@@ -520,8 +614,8 @@ public class TrialObject {
 			if (designAddedInfo.length() != 0)	//capitalises first letter
 				designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
 			
-			//System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
-			
+//			System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
+//			
 		} else {
 			m = crossoverDesign.matcher(str); 
 			if (m.find()){
@@ -535,7 +629,7 @@ public class TrialObject {
 				if (designAddedInfo.length() != 0)
 					designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
 				
-				//System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
+//				System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
 			} else {
 				m = factorialDesign.matcher(str);
 				if (m.find()){
@@ -550,7 +644,7 @@ public class TrialObject {
 							designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
 					
 					
-					//System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + " .Prose: " + designProse);
+//					System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + " .Prose: " + designProse);
 				} else {
 					otherDesign = true;
 					designProse = str.trim();
