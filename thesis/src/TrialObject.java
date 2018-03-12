@@ -313,7 +313,7 @@ public class TrialObject {
 						NodeList comparisonNameList = comparisonElement.getElementsByTagName("NAME");
 						Node comparisonNameNode = comparisonNameList.item(0);
 						Element comparisonNameElement = (Element) comparisonNameNode; //takeOver for comparisonname and groupnames
-						String comparisonName = comparisonNameElement.getTextContent(); //plus grouplabels
+						
 						
 						NodeList dichOutcomeList = comparisonElement.getElementsByTagName("DICH_OUTCOME");
 						for (int l = 0; l < dichOutcomeList.getLength(); l++){
@@ -323,7 +323,7 @@ public class TrialObject {
 							NodeList dichOutcomeNameList = dichOutcomeElement.getElementsByTagName("NAME");
 							Node dichOutcomeNameNode = dichOutcomeNameList.item(0);
 							Element dichOutcomeNameElement = (Element) dichOutcomeNameNode;
-							String outcomeName = dichOutcomeNameElement.getTextContent();
+							
 							
 							NodeList dichSubgroupList = dichOutcomeElement.getElementsByTagName("DICH_SUBGROUP");
 							for (int j = 0; j <dichSubgroupList.getLength(); j++){
@@ -337,10 +337,10 @@ public class TrialObject {
 									
 									if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
 										
-										System.out.println(comparisonName);
-										System.out.println(outcomeName);
 										
-										OutcomeObject dOBJ = new DichOutcomeObject(dichDataElement);
+										
+										
+										OutcomeObject dOBJ = new DichOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement);
 									}
 								}
 							}

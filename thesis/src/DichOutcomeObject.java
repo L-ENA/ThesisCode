@@ -18,13 +18,18 @@ public class DichOutcomeObject extends OutcomeObject{
 	//What does "ORDER" attribute mean?
 	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
-	DichOutcomeObject(Element dichDataElement){
+	DichOutcomeObject(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement){
 		
 		group1Events = Integer.parseInt(dichDataElement.getAttribute("EVENTS_1"));
 		group2Events = Integer.parseInt(dichDataElement.getAttribute("EVENTS_2"));
 		group1Total = Integer.parseInt(dichDataElement.getAttribute("TOTAL_1"));
 		group2Total = Integer.parseInt(dichDataElement.getAttribute("TOTAL_2"));
+		comparisonName = comparisonNameElement.getTextContent(); //plus grouplabels
+		outcomeName = dichOutcomeNameElement.getTextContent();
 		
+		
+		System.out.println(comparisonName);
+		System.out.println(outcomeName);
 		System.out.println(group1Events);
 		System.out.println(group2Events);
 		System.out.println(group1Total);
