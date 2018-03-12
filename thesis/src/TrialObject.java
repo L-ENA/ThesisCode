@@ -340,7 +340,7 @@ public class TrialObject {
 										System.out.println(comparisonName);
 										System.out.println(outcomeName);
 										
-										OutcomeObject dOBJ = new DichOutcomeObject(revManID, comparisonList);
+										OutcomeObject dOBJ = new DichOutcomeObject(dichDataElement);
 									}
 								}
 							}
