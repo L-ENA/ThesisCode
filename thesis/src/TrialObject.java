@@ -157,15 +157,7 @@ public class TrialObject {
 					otherBiasRisk = biasArray[0];
 					otherBiasJudgement = biasArray[1];
 					
-//					System.out.println(mainAuthor + "\n" +
-//							" RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
-//							+ "\n" + ". allocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
-//							+ "\n" + ". performanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
-//							+ "\n" + ". detectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
-//							+ "\n" + ". attritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
-//							+ "\n" + ". reportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
-//							+ "\n" + ". otherBias: " + otherBiasRisk + ". " + otherBiasJudgement
-//							);
+
 					
 					
 					//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -247,9 +239,7 @@ public class TrialObject {
 						}
 					}
 					
-					
-//					System.out.println(mainAuthor + ": " + countries);
-//					System.out.println(meerKatCountry);
+
 					
 					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Traverses the revman file's Studies and references section
@@ -285,21 +275,17 @@ public class TrialObject {
 						cache = revManID.replaceAll("[^\\d.]", "");
 						year = Integer.parseInt(cache); //Takes year of publication from ID
 					}
-//					System.out.println("Year of publication: " + year);
-//					System.out.println("Main author of Study: " + mainAuthor);
-//					System.out.println("RevMan ID: "+ revManID);
+
 					
 					referenceExtracting(); //Extracts all information on references of this trial. See method below for more details
 					
-//					System.out.println(mainAuthor + ":");
-//					for (int j = 0; j<references.length; j++){
-//						System.out.println(references[j]);
-//					}
+			
 					
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Extracts OutcomeObjects for this trial
 					
-					System.out.println(mainAuthor);
+					System.out.println("Main author of Study: " + mainAuthor + "------------------------------------------------------------------------------------");
+					
 					
 					NodeList analysesAndDataList = rootElement.getElementsByTagName("ANALYSES_AND_DATA");
 					Node analysesAndDataNode = analysesAndDataList.item(0);
@@ -337,10 +323,7 @@ public class TrialObject {
 									
 									if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
 										
-										
-										
-										
-										OutcomeObject dOBJ = new DichOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement);
+										OutcomeObject dOBJ = new DichOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
 									}
 								}
 							}
@@ -358,8 +341,29 @@ public class TrialObject {
 					}
 					
 					
-				
-				
+					
+					
+//					System.out.println("RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
+//							+ "\n" + "AllocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
+//							+ "\n" + "PerformanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
+//							+ "\n" + "DetectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
+//							+ "\n" + "AttritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
+//							+ "\n" + "ReportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
+//							+ "\n" + "OtherBias: " + otherBiasRisk + ". " + otherBiasJudgement
+//							);
+//				
+//					System.out.println(mainAuthor + ":");
+//					for (int j = 0; j<references.length; j++){
+//						System.out.println(references[j]);
+//					}
+					
+					//			System.out.println("Year of publication: " + year);
+					
+					//			System.out.println("RevMan ID: "+ revManID);
+					
+					//				
+//					System.out.println("Country or countries : " + countries);
+//					System.out.println(meerKatCountry);
 					
 					System.out.println();
 					
@@ -614,7 +618,7 @@ public class TrialObject {
 			if (designAddedInfo.length() != 0)	//capitalises first letter
 				designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
 			
-//			System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
+	//		System.out.println("Design: parallel" + ". PROSE DESIGN: " + designProse);
 //			
 		} else {
 			m = crossoverDesign.matcher(str); 
@@ -629,7 +633,7 @@ public class TrialObject {
 				if (designAddedInfo.length() != 0)
 					designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
 				
-//				System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + ". Prose: " + designProse);
+	//		System.out.println("Design: Crossover" + ". PROSE DESIGN: " + designProse);
 			} else {
 				m = factorialDesign.matcher(str);
 				if (m.find()){
@@ -644,7 +648,7 @@ public class TrialObject {
 							designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
 					
 					
-//					System.out.println(mainAuthor+ ". Added Info: " + designAddedInfo + " .Prose: " + designProse);
+	//			System.out.println("Design: factorial" + ". PROSE DESIGN: " + designProse);
 				} else {
 					otherDesign = true;
 					designProse = str.trim();
