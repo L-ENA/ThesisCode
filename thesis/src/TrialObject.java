@@ -12,6 +12,7 @@ public class TrialObject {
 	protected static int counter = 1;
 	protected String mainAuthor; //check
 	protected int year;//check
+	protected String authorYearLetter = ""; //for comparison with MeerKatBE
 	protected String doi;
 	protected int crgID;
 	protected String revManID;//check
@@ -117,9 +118,17 @@ public class TrialObject {
 					//Extracts information into variables
 					//Gets revman ID for study
 					revManID = studyToExtractElement.getAttribute("STUDY_ID"); 
-					String cache = revManID.replaceAll("STD-", ""); 
+					String cache = revManID.replaceAll("STD-", "").replaceAll("(_x002d_)", "-").replaceAll("(_x0026_)", "&");// replaces space with hyphen and at first puts & back 
 					String[] cacheArray = cache.split("-\\d+");	//Splits at "-"+ digit
 					mainAuthor = cacheArray[0]; //Take name of author from ID
+					
+					String yearLetter;
+					try {
+						yearLetter = cacheArray[1];
+					} catch (Exception e) {
+						// if this trialname/year is unique in the review
+						yearLetter = "";
+					}
 					
 					NodeList qualityItemsList = rootElement.getElementsByTagName("QUALITY_ITEMS");
 					Node qualityItemsNode = qualityItemsList.item(0);
@@ -271,8 +280,8 @@ public class TrialObject {
 						cache = studyElement.getAttribute("YEAR");
 						year = Integer.parseInt(cache); //converts String to int
 					} catch (NumberFormatException e8) {
-						// if year can't be extracted as attribute it is tried via revman-ID
-						cache = revManID.replaceAll("[^\\d.]", "");
+						// if year can't be extracted as attribute it is tried via revman-ID. In case there is a hyphen or..., the characters resulting from this are eliminated and the String is restored to normal
+						cache = revManID.replaceAll("(_x002d_)", "-").replace("(_x0026_)", "&").replaceAll("[^\\d.]", "");
 						year = Integer.parseInt(cache); //Takes year of publication from ID
 					}
 
@@ -284,7 +293,7 @@ public class TrialObject {
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Extracts OutcomeObjects for this trial
 					
-					System.out.println("Main author of Study: " + mainAuthor + "------------------------------------------------------------------------------------");
+						//System.out.println("Main author of Study: " + mainAuthor + "------------------------------------------------------------------------------------");
 					
 					
 					NodeList analysesAndDataList = rootElement.getElementsByTagName("ANALYSES_AND_DATA");
@@ -341,26 +350,28 @@ public class TrialObject {
 					}
 					
 					
+					System.out.println(mainAuthor);
 					
-					
-//					System.out.println("RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
-//							+ "\n" + "AllocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
-//							+ "\n" + "PerformanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
-//							+ "\n" + "DetectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
-//							+ "\n" + "AttritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
-//							+ "\n" + "ReportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
-//							+ "\n" + "OtherBias: " + otherBiasRisk + ". " + otherBiasJudgement
-//							);
+					System.out.println("RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
+							+ "\n" + "AllocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
+							+ "\n" + "PerformanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
+							+ "\n" + "DetectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
+							+ "\n" + "AttritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
+							+ "\n" + "ReportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
+							+ "\n" + "OtherBias: " + otherBiasRisk + ". " + otherBiasJudgement
+							);
 //				
-//					System.out.println(mainAuthor + ":");
+					
 //					for (int j = 0; j<references.length; j++){
 //						System.out.println(references[j]);
 //					}
 					
-					//			System.out.println("Year of publication: " + year);
-					
-					//			System.out.println("RevMan ID: "+ revManID);
-					
+//								System.out.println(year);
+//					
+//								System.out.println(revManID);
+//								authorYearLetter = mainAuthor + year + yearLetter;
+//								System.out.println(authorYearLetter);
+//					
 					//				
 //					System.out.println("Country or countries : " + countries);
 //					System.out.println(meerKatCountry);

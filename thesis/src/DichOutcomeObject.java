@@ -54,11 +54,11 @@ public class DichOutcomeObject extends OutcomeObject{
 		outcomeName = dichOutcomeNameElement.getTextContent();
 		
 		
-		System.out.println("-----------" +comparisonName);
-		System.out.println(outcomeName );
-		System.out.println(subgroupName);
-		System.out.println(group1Name + " Total: " + group1Total + ". Events: " + group1Events );
-		System.out.println(group2Name + " Total: " + group2Total + ". Events: " + group2Events );
+//		System.out.println("-----------" +comparisonName);
+//		System.out.println(outcomeName );
+//		System.out.println(subgroupName);
+//		System.out.println(group1Name + " Total: " + group1Total + ". Events: " + group1Events );
+//		System.out.println(group2Name + " Total: " + group2Total + ". Events: " + group2Events );
 //		System.out.println(graphLabel1);
 //		System.out.println(graphLabel2);
 		
