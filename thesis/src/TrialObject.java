@@ -350,16 +350,16 @@ public class TrialObject {
 					}
 					
 					
-					System.out.println(mainAuthor);
-					
-					System.out.println("RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
-							+ "\n" + "AllocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
-							+ "\n" + "PerformanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
-							+ "\n" + "DetectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
-							+ "\n" + "AttritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
-							+ "\n" + "ReportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
-							+ "\n" + "OtherBias: " + otherBiasRisk + ". " + otherBiasJudgement
-							);
+//					System.out.println(mainAuthor);
+//					
+//					System.out.println("RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
+//							+ "\n" + "AllocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
+//							+ "\n" + "PerformanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
+//							+ "\n" + "DetectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
+//							+ "\n" + "AttritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
+//							+ "\n" + "ReportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
+//							+ "\n" + "OtherBias: " + otherBiasRisk + ". " + otherBiasJudgement
+//							);
 //				
 					
 //					for (int j = 0; j<references.length; j++){
