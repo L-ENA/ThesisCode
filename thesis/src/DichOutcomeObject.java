@@ -1,3 +1,6 @@
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -17,6 +20,12 @@ public class DichOutcomeObject extends OutcomeObject{
 	protected int group1Total;
 	protected int group2Total;
 	
+	private Pattern invalidIC = Pattern.compile("(\\b[Ee]xperiment(al)?)|(\\b[Cc]ontrol)|(\\b[Cc]ombination(s)?)");
+	private Pattern splitPattern = Pattern.compile("(\\b[Vv]ersus)+|(\\b[Vv]s[.]?)+|(\\b[Cc]ompared\\s(with|to)+)");	//splits comparison name at word boundary plus Versus, versus, Vs., Vs, ...
+	private Matcher m;
+	private String[] invalidNames = {"Experimental", "experimental", "Control", "control", "Controls", "controls", "Combination", "combination", "combinations", "Combinations"};
+	private String[] splitComparison = new String[2];
+	//Combination, combinations, experimental, control
 	//What does "ORDER" attribute mean?
 	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
@@ -25,7 +34,11 @@ public class DichOutcomeObject extends OutcomeObject{
 		NodeList groupLabel1List = dichOutcomeElement.getElementsByTagName("GROUP_LABEL_1");
 		Node groupLabel1Node = groupLabel1List.item(0);
 		Element groupLabel1Element = (Element) groupLabel1Node;
-		group1Name = groupLabel1Element.getTextContent();
+		group1Name = groupLabel1Element.getTextContent();	//gets intervention name
+		group1Name= group1Name.substring(0, 1).toUpperCase() + group1Name.substring(1);	//capitalises first letter of intervention name
+		
+		
+		
 		
 		NodeList groupLabel2List = dichOutcomeElement.getElementsByTagName("GROUP_LABEL_2");
 		Node groupLabel2Node = groupLabel2List.item(0);
@@ -54,11 +67,24 @@ public class DichOutcomeObject extends OutcomeObject{
 		outcomeName = dichOutcomeNameElement.getTextContent();
 		
 		
-//		System.out.println("-----------" +comparisonName);
+		
+		System.out.println("-----------" +comparisonName);
 //		System.out.println(outcomeName );
 //		System.out.println(subgroupName);
-//		System.out.println(group1Name + " Total: " + group1Total + ". Events: " + group1Events );
-//		System.out.println(group2Name + " Total: " + group2Total + ". Events: " + group2Events );
+		System.out.println("Intervention: " + group1Name); //+ " Total: " + group1Total + ". Events: " + group1Events );
+		m = invalidIC.matcher(group1Name);
+		if (m.find()){
+			interventionCleaner();
+		}
+		System.out.println("Intervention: " + group1Name); //+ " Total: " + group1Total + ". Events: " + group1Events );
+		System.out.println("Control: " +group2Name); //+ " Total: " + group2Total + ". Events: " + group2Events );
+		
+		m = invalidIC.matcher(group2Name);
+		if (m.find()){
+			controlCleaner();
+		}
+		System.out.println("Control: " +group2Name); //+ " Total: " + group2Total + ". Events: " + group2Events );
+		
 //		System.out.println(graphLabel1);
 //		System.out.println(graphLabel2);
 		
@@ -66,6 +92,25 @@ public class DichOutcomeObject extends OutcomeObject{
 //		System.out.println(group2Events);
 //		System.out.println(group1Total);
 //		System.out.println(group2Total);
+	}
+	
+	private void interventionCleaner(){
+		
+		m = splitPattern.matcher(comparisonName);
+		splitComparison = splitPattern.split(comparisonName);
+		
+		group1Name = splitComparison[0];
+		group1Name = group1Name.toLowerCase();
+		group1Name= group1Name.substring(0, 1).toUpperCase() + group1Name.substring(1);
+		
+	}
+	private void controlCleaner(){
+		m = splitPattern.matcher(comparisonName);
+		splitComparison = splitPattern.split(comparisonName);
+		
+		group2Name = splitComparison[1];
+		group2Name = group2Name.toLowerCase();
+		group2Name= group2Name.substring(0, 1).toUpperCase() + group2Name.substring(1);
 	}
 
 }
