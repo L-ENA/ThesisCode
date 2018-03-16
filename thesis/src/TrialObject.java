@@ -293,7 +293,7 @@ public class TrialObject {
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Extracts OutcomeObjects for this trial
 					
-						System.out.println("Main author of Study: " + mainAuthor + "------------------------------------------------------------------------------------");
+						System.out.println("Main author of Study: " + mainAuthor);
 					
 					
 					NodeList analysesAndDataList = rootElement.getElementsByTagName("ANALYSES_AND_DATA");
