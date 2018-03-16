@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +57,7 @@ public class TrialObject {
 	//protected SETTING setting;
 	//protected outcomeList : OutcomeObjects
 	protected String meerKatCountry;
+	protected List<OutcomeObject> outcomeList = new ArrayList<>();
 	
 	private int breakBiasVerification;
 	
@@ -129,6 +132,8 @@ public class TrialObject {
 						// if this trialname/year is unique in the review
 						yearLetter = "";
 					}
+					
+					
 					
 					NodeList qualityItemsList = rootElement.getElementsByTagName("QUALITY_ITEMS");
 					Node qualityItemsNode = qualityItemsList.item(0);
@@ -332,7 +337,9 @@ public class TrialObject {
 									
 									if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
 										
-										OutcomeObject dOBJ = new DichOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
+										OutcomeObject dobj = new DichOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
+										outcomeList.add(dobj);
+										System.out.println("Outcome added to list");
 									}
 								}
 							}
@@ -375,7 +382,7 @@ public class TrialObject {
 					//				
 //					System.out.println("Country or countries : " + countries);
 //					System.out.println(meerKatCountry);
-					
+					authorYearLetter = mainAuthor+year+yearLetter;
 					System.out.println();
 					
 					
