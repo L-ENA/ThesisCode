@@ -1,3 +1,7 @@
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,26 +13,26 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
+
 public class Main {
 	
 
 	
-	public static void main(String[] args) throws ParserConfigurationException {
-		List<TrialObject> trialList = new ArrayList<>();
+	public static void main(String[] args)  throws ParserConfigurationException{
 		
-		ParseReview parser = new ParseReview();
-		Document review = parser.chooseAndParse(); //contains reviews specified by user
-		int numberOfStudies = parser.numberOfIncludedStudies(review);
 		
-	for (int i = 0; i < numberOfStudies; i++){
-			
-			TrialObject a = new TrialObject(review, i);
-			trialList.add(a);
-			System.out.println("Trial " + a.authorYearLetter + " added!");
-			
-			
-			
-		}
+		Database d = new Database();
+		d.makeList();
+	
+	
+	try {
+		XMLEncoder x = new XMLEncoder(new BufferedOutputStream(new FileOutputStream("FirstData.xml")));
+		x.writeObject(d);
+		x.close();
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 		
 
 	}

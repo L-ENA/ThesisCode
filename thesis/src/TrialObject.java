@@ -10,11 +10,436 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class TrialObject {
+public class TrialObject implements java.io.Serializable{
+	
+	public TrialObject() {
+		super();
+	}
+
+
+
+	public String getMainAuthor() {
+		return mainAuthor;
+	}
+
+
+
+	public void setMainAuthor(String mainAuthor) {
+		this.mainAuthor = mainAuthor;
+	}
+
+
+
+	public int getYear() {
+		return year;
+	}
+
+
+
+	public void setYear(int year) {
+		this.year = year;
+	}
+
+
+
+	public String getAuthorYearLetter() {
+		return aauthorYearLetter;
+	}
+
+
+
+	public void setAuthorYearLetter(String authorYearLetter) {
+		this.aauthorYearLetter = authorYearLetter;
+	}
+
+
+
+	public String getDoi() {
+		return doi;
+	}
+
+
+
+	public void setDoi(String doi) {
+		this.doi = doi;
+	}
+
+
+
+	public int getCrgID() {
+		return crgID;
+	}
+
+
+
+	public void setCrgID(int crgID) {
+		this.crgID = crgID;
+	}
+
+
+
+	public String getRevManID() {
+		return revManID;
+	}
+
+
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+
+
+
+	public String[] getReferences() {
+		return references;
+	}
+
+
+
+	public void setReferences(String[] references) {
+		this.references = references;
+	}
+
+
+
+	public boolean isCrossoverTrial() {
+		return crossoverTrial;
+	}
+
+
+
+	public void setCrossoverTrial(boolean crossoverTrial) {
+		this.crossoverTrial = crossoverTrial;
+	}
+
+
+
+	public boolean isParalellTrial() {
+		return paralellTrial;
+	}
+
+
+
+	public void setParalellTrial(boolean paralellTrial) {
+		this.paralellTrial = paralellTrial;
+	}
+
+
+
+	public boolean isFactorialTrial() {
+		return factorialTrial;
+	}
+
+
+
+	public void setFactorialTrial(boolean factorialTrial) {
+		this.factorialTrial = factorialTrial;
+	}
+
+
+
+	public boolean isOtherDesign() {
+		return otherDesign;
+	}
+
+
+
+	public void setOtherDesign(boolean otherDesign) {
+		this.otherDesign = otherDesign;
+	}
+
+
+
+	public String getDesignProse() {
+		return designProse;
+	}
+
+
+
+	public void setDesignProse(String designProse) {
+		this.designProse = designProse;
+	}
+
+
+
+	public String getDesignAddedInfo() {
+		return designAddedInfo;
+	}
+
+
+
+	public void setDesignAddedInfo(String designAddedInfo) {
+		this.designAddedInfo = designAddedInfo;
+	}
+
+
+
+	public String getCountries() {
+		return countries;
+	}
+
+
+
+	public void setCountries(String countries) {
+		this.countries = countries;
+	}
+
+
+
+	public String getSelectionBiasRandomSequenceJudgement() {
+		return selectionBiasRandomSequenceJudgement;
+	}
+
+
+
+	public void setSelectionBiasRandomSequenceJudgement(String selectionBiasRandomSequenceJudgement) {
+		this.selectionBiasRandomSequenceJudgement = selectionBiasRandomSequenceJudgement;
+	}
+
+
+
+	public String getSelectionBiasRandomSequenceBiasRisk() {
+		return selectionBiasRandomSequenceBiasRisk;
+	}
+
+
+
+	public void setSelectionBiasRandomSequenceBiasRisk(String selectionBiasRandomSequenceBiasRisk) {
+		this.selectionBiasRandomSequenceBiasRisk = selectionBiasRandomSequenceBiasRisk;
+	}
+
+
+
+	public String getSelectionBiasAllocationConcealmentBiasRisk() {
+		return selectionBiasAllocationConcealmentBiasRisk;
+	}
+
+
+
+	public void setSelectionBiasAllocationConcealmentBiasRisk(String selectionBiasAllocationConcealmentBiasRisk) {
+		this.selectionBiasAllocationConcealmentBiasRisk = selectionBiasAllocationConcealmentBiasRisk;
+	}
+
+
+
+	public String getSelectionBiasAllocationConcealmentJudgement() {
+		return selectionBiasAllocationConcealmentJudgement;
+	}
+
+
+
+	public void setSelectionBiasAllocationConcealmentJudgement(String selectionBiasAllocationConcealmentJudgement) {
+		this.selectionBiasAllocationConcealmentJudgement = selectionBiasAllocationConcealmentJudgement;
+	}
+
+
+
+	public String getPerformanceBiasRisk() {
+		return performanceBiasRisk;
+	}
+
+
+
+	public void setPerformanceBiasRisk(String performanceBiasRisk) {
+		this.performanceBiasRisk = performanceBiasRisk;
+	}
+
+
+
+	public String getPerformanceBiasJudgement() {
+		return performanceBiasJudgement;
+	}
+
+
+
+	public void setPerformanceBiasJudgement(String performanceBiasJudgement) {
+		this.performanceBiasJudgement = performanceBiasJudgement;
+	}
+
+
+
+	public String getDetectionBiasRisk() {
+		return detectionBiasRisk;
+	}
+
+
+
+	public void setDetectionBiasRisk(String detectionBiasRisk) {
+		this.detectionBiasRisk = detectionBiasRisk;
+	}
+
+
+
+	public String getDetectionBiasJudgement() {
+		return detectionBiasJudgement;
+	}
+
+
+
+	public void setDetectionBiasJudgement(String detectionBiasJudgement) {
+		this.detectionBiasJudgement = detectionBiasJudgement;
+	}
+
+
+
+	public String getAttritionBiasRisk() {
+		return attritionBiasRisk;
+	}
+
+
+
+	public void setAttritionBiasRisk(String attritionBiasRisk) {
+		this.attritionBiasRisk = attritionBiasRisk;
+	}
+
+
+
+	public String getAttritionBiasJudgement() {
+		return attritionBiasJudgement;
+	}
+
+
+
+	public void setAttritionBiasJudgement(String attritionBiasJudgement) {
+		this.attritionBiasJudgement = attritionBiasJudgement;
+	}
+
+
+
+	public String getReportingBiasRisk() {
+		return reportingBiasRisk;
+	}
+
+
+
+	public void setReportingBiasRisk(String reportingBiasRisk) {
+		this.reportingBiasRisk = reportingBiasRisk;
+	}
+
+
+
+	public String getReportingBiasJudgement() {
+		return reportingBiasJudgement;
+	}
+
+
+
+	public void setReportingBiasJudgement(String reportingBiasJudgement) {
+		this.reportingBiasJudgement = reportingBiasJudgement;
+	}
+
+
+
+	public String getOtherBiasRisk() {
+		return otherBiasRisk;
+	}
+
+
+
+	public void setOtherBiasRisk(String otherBiasRisk) {
+		this.otherBiasRisk = otherBiasRisk;
+	}
+
+
+
+	public String getOtherBiasJudgement() {
+		return otherBiasJudgement;
+	}
+
+
+
+	public void setOtherBiasJudgement(String otherBiasJudgement) {
+		this.otherBiasJudgement = otherBiasJudgement;
+	}
+
+
+
+	public int getNrOfParticipants() {
+		return nrOfParticipants;
+	}
+
+
+
+	public void setNrOfParticipants(int nrOfParticipants) {
+		this.nrOfParticipants = nrOfParticipants;
+	}
+
+
+
+	public String getInterventionGroup() {
+		return interventionGroup;
+	}
+
+
+
+	public void setInterventionGroup(String interventionGroup) {
+		this.interventionGroup = interventionGroup;
+	}
+
+
+
+	public String getControlGroup() {
+		return controlGroup;
+	}
+
+
+
+	public void setControlGroup(String controlGroup) {
+		this.controlGroup = controlGroup;
+	}
+
+
+
+	public int getNrIntervention() {
+		return nrIntervention;
+	}
+
+
+
+	public void setNrIntervention(int nrIntervention) {
+		this.nrIntervention = nrIntervention;
+	}
+
+
+
+	public int getNrControl() {
+		return nrControl;
+	}
+
+
+
+	public void setNrControl(int nrControl) {
+		this.nrControl = nrControl;
+	}
+
+
+
+	public String getMeerKatCountry() {
+		return meerKatCountry;
+	}
+
+
+
+	public void setMeerKatCountry(String meerKatCountry) {
+		this.meerKatCountry = meerKatCountry;
+	}
+
+
+
+	public List<OutcomeObject> getOutcomeList() {
+		return outcomeList;
+	}
+
+
+
+	public void setOutcomeList(List<OutcomeObject> outcomeList) {
+		this.outcomeList = outcomeList;
+	}
+
 	protected static int counter = 1;
 	protected String mainAuthor; //check
 	protected int year;//check
-	protected String authorYearLetter = ""; //for comparison with MeerKatBE
+	protected String aauthorYearLetter = ""; //for comparison with MeerKatBE
 	protected String doi;
 	protected int crgID;
 	protected String revManID;//check
@@ -382,7 +807,7 @@ public class TrialObject {
 					//				
 //					System.out.println("Country or countries : " + countries);
 //					System.out.println(meerKatCountry);
-					authorYearLetter = mainAuthor+year+yearLetter;
+					aauthorYearLetter = mainAuthor+year+yearLetter;
 					System.out.println();
 					
 					

@@ -5,8 +5,116 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class DichOutcomeObject extends OutcomeObject{
+public class DichOutcomeObject extends OutcomeObject implements java.io.Serializable{
 	
+	public DichOutcomeObject() {
+		super();
+	}
+
+	@Override
+	public String toString() {
+		return "DichOutcomeObject [comparisonName=" + comparisonName + ", outcomeName=" + outcomeName + ", group1Name="
+				+ group1Name + ", group1NameProse=" + group1NameProse + ", group2Name=" + group2Name
+				+ ", group2NameProse=" + group2NameProse + ", isGroup1Intervention=" + isGroup1Intervention
+				+ ", subgroupName=" + subgroupName + ", group1Events=" + group1Events + ", group2Events=" + group2Events
+				+ ", group1Total=" + group1Total + ", group2Total=" + group2Total + "]";
+	}
+
+	public String getComparisonName() {
+		return comparisonName;
+	}
+
+	public void setComparisonName(String comparisonName) {
+		this.comparisonName = comparisonName;
+	}
+
+	public String getOutcomeName() {
+		return outcomeName;
+	}
+
+	public void setOutcomeName(String outcomeName) {
+		this.outcomeName = outcomeName;
+	}
+
+	public String getGroup1Name() {
+		return group1Name;
+	}
+
+	public void setGroup1Name(String group1Name) {
+		this.group1Name = group1Name;
+	}
+
+	public String getGroup1NameProse() {
+		return group1NameProse;
+	}
+
+	public void setGroup1NameProse(String group1NameProse) {
+		this.group1NameProse = group1NameProse;
+	}
+
+	public String getGroup2Name() {
+		return group2Name;
+	}
+
+	public void setGroup2Name(String group2Name) {
+		this.group2Name = group2Name;
+	}
+
+	public String getGroup2NameProse() {
+		return group2NameProse;
+	}
+
+	public void setGroup2NameProse(String group2NameProse) {
+		this.group2NameProse = group2NameProse;
+	}
+
+	public boolean isGroup1Intervention() {
+		return isGroup1Intervention;
+	}
+
+	public void setGroup1Intervention(boolean isGroup1Intervention) {
+		this.isGroup1Intervention = isGroup1Intervention;
+	}
+
+	public String getSubgroupName() {
+		return subgroupName;
+	}
+
+	public void setSubgroupName(String subgroupName) {
+		this.subgroupName = subgroupName;
+	}
+
+	public int getGroup1Events() {
+		return group1Events;
+	}
+
+	public void setGroup1Events(int group1Events) {
+		this.group1Events = group1Events;
+	}
+
+	public int getGroup2Events() {
+		return group2Events;
+	}
+
+	public void setGroup2Events(int group2Events) {
+		this.group2Events = group2Events;
+	}
+
+	public int getGroup1Total() {
+		return group1Total;
+	}
+
+	public void setGroup1Total(int group1Total) {
+		this.group1Total = group1Total;
+	}
+
+	public int getGroup2Total() {
+		return group2Total;
+	}
+
+	public void setGroup2Total(int group2Total) {
+		this.group2Total = group2Total;
+	}
 	protected String comparisonName = ""; 	// e.g. VITAMIN E versus PLACEBO
 	protected String outcomeName = ""; 	// e.g. Tardive dyskinesia: 1. Not improved to a clinically important extent
 	protected String group1Name = ""; 	// e.g. Vitamin E -> Group 1. Check if intervention is always group 1!!!!!!!!!!! Also: Vitamin e combination instead of drug name -> verify with prose
