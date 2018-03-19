@@ -3,6 +3,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -10,7 +13,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class TrialObject implements java.io.Serializable{
+public class TrialObject{
 	
 	public TrialObject() {
 		super();
@@ -89,7 +92,7 @@ public class TrialObject implements java.io.Serializable{
 	}
 
 
-
+@XmlElement
 	public String[] getReferences() {
 		return references;
 	}
@@ -425,10 +428,7 @@ public class TrialObject implements java.io.Serializable{
 	}
 
 
-
-	public List<OutcomeObject> getOutcomeList() {
-		return outcomeList;
-	}
+	
 
 
 
@@ -482,7 +482,23 @@ public class TrialObject implements java.io.Serializable{
 	//protected SETTING setting;
 	//protected outcomeList : OutcomeObjects
 	protected String meerKatCountry;
+	protected OutcomeObject dobj;
+	public OutcomeObject getDobj() {
+		return dobj;
+	}
+
+
+
+	public void setDobj(OutcomeObject dobj) {
+		this.dobj = dobj;
+	}
+
 	protected List<OutcomeObject> outcomeList = new ArrayList<>();
+	@XmlElementWrapper(name = "OutcomesWrapper")
+	@XmlElement
+	public List<OutcomeObject> getOutcomeList() {
+		return outcomeList;
+	}
 	
 	private int breakBiasVerification;
 	
@@ -724,6 +740,7 @@ public class TrialObject implements java.io.Serializable{
 					//Extracts OutcomeObjects for this trial
 					
 						System.out.println("Main author of Study: " + mainAuthor);
+						System.out.println(countries);
 					
 					
 					NodeList analysesAndDataList = rootElement.getElementsByTagName("ANALYSES_AND_DATA");
@@ -762,7 +779,7 @@ public class TrialObject implements java.io.Serializable{
 									
 									if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
 										
-										OutcomeObject dobj = new DichOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
+										dobj = new OutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
 										outcomeList.add(dobj);
 										System.out.println("Outcome added to list");
 									}

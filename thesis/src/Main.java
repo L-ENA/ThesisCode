@@ -1,10 +1,15 @@
 import java.beans.XMLEncoder;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
@@ -23,13 +28,18 @@ public class Main {
 		
 		Database d = new Database();
 		d.makeList();
+		StringWriter sw = new StringWriter();
 	
 	
 	try {
-		XMLEncoder x = new XMLEncoder(new BufferedOutputStream(new FileOutputStream("FirstData.xml")));
-		x.writeObject(d);
-		x.close();
-	} catch (FileNotFoundException e) {
+		JAXBContext jaxbContext = JAXBContext.newInstance(Database.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		jaxbMarshaller.marshal(d, new File("prayer.xml"));
+		//String xmlString = sw.toString();
+		//System.out.println(xmlString);
+		
+	} catch (JAXBException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}

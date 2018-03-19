@@ -1,16 +1,20 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
-
-public class Database implements java.io.Serializable{
+@XmlRootElement
+public class Database {
 	public Database() {
 		super();
 	}
 
 	List<TrialObject> trialList = new ArrayList<>();
+	
+	@XmlElement
 	public List<TrialObject> getTrialList() {
 		return trialList;
 	}
