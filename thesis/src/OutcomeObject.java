@@ -23,6 +23,7 @@ public class OutcomeObject {
 				+ ", subgroupName=" + subgroupName + ", group1Events=" + interventionEvents + ", group2Events=" + controlEvents
 				+ ", group1Total=" + interventionTotalN + ", group2Total=" + controlTotalN + "]";
 	}
+	
 @XmlElement
 	public String getComparisonName() {
 		return comparisonName;
@@ -134,6 +135,7 @@ public class OutcomeObject {
 	protected int interventionTotalN;
 	protected int controlTotalN;
 	
+	
 	private Pattern invalidIC = Pattern.compile("(\\b[Ee]xperiment(al)?)|(\\b[Cc]ontrol(s)?)|(\\b[Cc]ombination(s)?|([Cc]omparison(s)?))");//checks the first string extracted for I/C 
 	private Pattern addedInfoCombinationsIC = Pattern.compile("(\\b[Cc]ombination(s)?)[:-]\\s([\\w\\d+][.])?"); //if String includes "combination" in different variations, then either : or - followed by white space followed by either single letter or one or more digits followed by full stop
 	private Pattern addedInfoOtherAntipsyIC = Pattern.compile("(\\b[Oo]ther\\s((a)?typic(al)?\\s)?(antipsychotic)(s)?)[:-]\\s([\\w\\d+][.])?");
@@ -198,7 +200,8 @@ public class OutcomeObject {
 		}
 		controlGroupName = controlGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto\\s))", "//");
 		System.out.println("Control: " +controlGroupName); //+ " Total: " + group2Total + ". Events: " + group2Events );
-		
+		controlGroupName = controlGroupName.toLowerCase();
+		interventionGroupName = interventionGroupName.toLowerCase();
 //		System.out.println(graphLabel1);
 //		System.out.println(graphLabel2);
 		

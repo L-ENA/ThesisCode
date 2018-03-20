@@ -35,7 +35,7 @@ public class Main {
 		JAXBContext jaxbContext = JAXBContext.newInstance(Database.class);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		jaxbMarshaller.marshal(d, new File("prayer.xml"));
+		jaxbMarshaller.marshal(d, new File("haloperidolReview.xml"));
 		//String xmlString = sw.toString();
 		//System.out.println(xmlString);
 		

@@ -14,13 +14,13 @@ import org.w3c.dom.NodeList;
 
 
 public class TrialObject{
-	
+	///////////////////////////////////////////////////empty constructor for xml creation only
 	public TrialObject() {
 		super();
 	}
 
 
-
+//////////////////////////////////////////////////////////////////////////////getters and setters for attributes that will be in the exported xml
 	public String getMainAuthor() {
 		return mainAuthor;
 	}
@@ -428,14 +428,10 @@ public class TrialObject{
 	}
 
 
-	
-
-
-
 	public void setOutcomeList(List<OutcomeObject> outcomeList) {
 		this.outcomeList = outcomeList;
 	}
-
+//////////////////////////////////////////////////////////////////attributes
 	protected static int counter = 1;
 	protected String mainAuthor; //check
 	protected int year;//check
@@ -452,11 +448,6 @@ public class TrialObject{
 	protected String designProse;
 	protected String designAddedInfo;
 	protected String countries = "";
-	//protected RANDOMIZATIONTYPE randomisation:
-	//protected ALLOCATIONTYPE allocation;
-	//protected BLINDINGTYPE blinding;
-	//protected ATTRITIONTYPE attrition;
-	//protected REPORTINGTYPE reporting;
 	
 	protected String selectionBiasRandomSequenceJudgement;
 	protected String selectionBiasRandomSequenceBiasRisk;
@@ -479,29 +470,27 @@ public class TrialObject{
 
 	protected int nrIntervention;
 	protected int nrControl;
-	//protected SETTING setting;
-	//protected outcomeList : OutcomeObjects
 	protected String meerKatCountry;
-	protected OutcomeObject dobj;
+	protected OutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
+	protected ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. g and s
+	protected List<ReferenceObject> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects , needs getter and setters
+	
 	public OutcomeObject getDobj() {
 		return dobj;
 	}
-
-
 
 	public void setDobj(OutcomeObject dobj) {
 		this.dobj = dobj;
 	}
 
-	protected List<OutcomeObject> outcomeList = new ArrayList<>();
-	@XmlElementWrapper(name = "OutcomesWrapper")
+	protected List<OutcomeObject> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
+	
 	@XmlElement
 	public List<OutcomeObject> getOutcomeList() {
 		return outcomeList;
 	}
-	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////private attributes that are only needed internally
 	private int breakBiasVerification;
-	
 	private Matcher m;
 	private Pattern design = Pattern.compile("([Dd]esign)+");
 	//parallel
@@ -524,7 +513,7 @@ public class TrialObject{
 	private NodeList qualityItemList;
 	private NodeList referencesList;
 	
-	public TrialObject(Document review, int studyNumber){
+	public TrialObject(Document review, int studyNumber){//////////the constructor that fills all attributes
 					
 					//Creates rootElement
 					
@@ -534,7 +523,6 @@ public class TrialObject{
 						Node rootNode = rootList.item(0);
 						rootElement = (Element) rootNode;
 					} catch (Exception e11) {
-						// TODO Auto-generated catch block
 						e11.printStackTrace();
 					}
 					
@@ -555,7 +543,6 @@ public class TrialObject{
 						Node studyToExtractNode = includedStudiesList.item(studyNumber);
 						studyToExtractElement = (Element) studyToExtractNode;
 					} catch (Exception e10) {
-						// TODO Auto-generated catch block
 						e10.printStackTrace();
 					}
 					
@@ -656,7 +643,7 @@ public class TrialObject{
 					
 					//Searches the big method String for country names. Writes them to String in alphabetical order and 
 					//also creates output in MeerKatBE syntax
-					String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cambodia","Cameroon","Canada","Cabo Verde","China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","Norway","Oman","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","UK", "Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","Uruguay","USA","USSR","Uzbekistan","Vanuatu","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
+					String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cambodia","Cameroon","Canada","Cabo Verde","China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","Norway","Oman","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru", "Puerto Rico","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","UK", "Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","Uruguay","USA","USSR","Uzbekistan","Vanuatu","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
 					
 					for (int i = 0; i < countryList.length; i++){
 							if (methodString.contains(countryList[i])){
@@ -718,7 +705,6 @@ public class TrialObject{
 						Node studyNode = studyList.item(studyNumber);
 						studyElement = (Element) studyNode;
 					} catch (Exception e9) {
-						// TODO Auto-generated catch block
 						e9.printStackTrace();
 					}
 					
@@ -733,6 +719,18 @@ public class TrialObject{
 
 					
 					referenceExtracting(); //Extracts all information on references of this trial. See method below for more details
+					
+					for (int i = 0; i < references.length; i++){
+						if (references[i].equals("JOURNAL_ARTICLE")){
+							refObject = new JournalReferenceObject(references, i);
+							referenceList.add(refObject);
+							i = i + 8; 	//its plus 8 because +1 is added at the end of the loop
+						} else if (references[i].equals("CONFERENCE_PROC")){
+							refObject = new ConferenceReferenceObject(references, i);
+							referenceList.add(refObject);
+							i = i + 8;
+						}
+					}
 					
 			
 					
@@ -890,7 +888,6 @@ public class TrialObject{
 				Node auNode = auList.item(0);
 				auElement = (Element) auNode;
 			} catch (Exception e5) {
-				// TODO Auto-generated catch block
 				e5.printStackTrace();
 			}
 			
@@ -902,7 +899,6 @@ public class TrialObject{
 					references[arrayCounter] = "";
 				}
 			} catch (DOMException e4) {
-				// TODO Auto-generated catch block
 				e4.printStackTrace();
 			}
 			
@@ -915,7 +911,6 @@ public class TrialObject{
 				Node tiNode = tiList.item(0);
 				tiElement = (Element) tiNode;
 			} catch (Exception e4) {
-				// TODO Auto-generated catch block
 				e4.printStackTrace();
 			}
 			
@@ -927,7 +922,6 @@ public class TrialObject{
 					references[arrayCounter] = "";
 				}
 			} catch (DOMException e3) {
-				// TODO Auto-generated catch block
 				e3.printStackTrace();
 			}
 			
@@ -940,7 +934,6 @@ public class TrialObject{
 				Node soNode = soList.item(0);
 				soElement = (Element) soNode;
 			} catch (Exception e3) {
-				// TODO Auto-generated catch block
 				e3.printStackTrace();
 			}
 			
@@ -952,7 +945,6 @@ public class TrialObject{
 					references[arrayCounter] = "";
 				}
 			} catch (DOMException e2) {
-				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
 			
@@ -965,7 +957,6 @@ public class TrialObject{
 				Node yrNode = yrList.item(0);
 				yrElement = (Element) yrNode;
 			} catch (Exception e2) {
-				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
 			
@@ -977,7 +968,6 @@ public class TrialObject{
 					references[arrayCounter] = "";
 				}
 			} catch (DOMException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
@@ -990,7 +980,6 @@ public class TrialObject{
 				Node vlNode = vlList.item(0);
 				vlElement = (Element) vlNode;
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
@@ -1002,7 +991,6 @@ public class TrialObject{
 					references[arrayCounter] = "";
 				}
 			} catch (DOMException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			arrayCounter++;
@@ -1013,7 +1001,6 @@ public class TrialObject{
 				Node noNode = noList.item(0);
 				noElement = (Element) noNode;
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
@@ -1025,7 +1012,6 @@ public class TrialObject{
 					references[arrayCounter] = "";
 				}
 			} catch (DOMException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -1037,7 +1023,6 @@ public class TrialObject{
 				Node pgNode = pgList.item(0);
 				pgElement = (Element) pgNode;
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
@@ -1049,14 +1034,9 @@ public class TrialObject{
 					references[arrayCounter] = "";
 				}
 			} catch (DOMException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			arrayCounter++;
-			
-			
-		
-			
 			
 		}
 	}
