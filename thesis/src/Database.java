@@ -26,14 +26,14 @@ public class Database {
 		
 		
 		ParseReview parser = new ParseReview();
-		Document review = parser.chooseAndParse(); //contains reviews specified by user
-		int numberOfStudies = parser.numberOfIncludedStudies(review);
+		Document review = parser.chooseAndParse(); //contains reviews specified by user via pop up browsing window
+		int numberOfStudies = parser.numberOfIncludedStudies(review);//looks at how many trials there are to extract
 		
 	for (int i = 0; i < numberOfStudies; i++){
 			
-			TrialObject a = new TrialObject(review, i);
+			TrialObject a = new TrialObject(review, i);//extracts all data of the specified trial and dumps it into the trial list
 			trialList.add(a);
-			System.out.println("Trial " + a.aauthorYearLetter + " added!");
+			//System.out.println("Trial " + a.aauthorYearLetter + " added!");
 		}
 	}
 	

@@ -432,7 +432,7 @@ public class TrialObject{
 		this.outcomeList = outcomeList;
 	}
 //////////////////////////////////////////////////////////////////attributes
-	protected static int counter = 1;
+	//protected static int counter = 1;
 	protected String mainAuthor; //check
 	protected int year;//check
 	protected String aauthorYearLetter = ""; //for comparison with MeerKatBE
@@ -570,7 +570,7 @@ public class TrialObject{
 					qualityItemList = qualityItemsElement.getElementsByTagName("QUALITY_ITEM");
 					breakBiasVerification = qualityItemList.getLength();
 					String[] biasArray;
-					
+					///////extracts all info on biases that the review author added. The Risk is a three field option (High, low or unclear Risk), judgement of bias includes : justification or quotes from the trials
 					biasArray = biasAnalyser(0, "random sequence generation");
 					selectionBiasRandomSequenceBiasRisk = biasArray[0];
 					selectionBiasRandomSequenceJudgement = biasArray[1];
@@ -624,7 +624,7 @@ public class TrialObject{
 					
 					for (int k = 0; k<methodStringArray.length; k++){
 						//System.out.println(methodStringArray[k]);
-						m = beginningEndArray.matcher(methodStringArray[k]);	//Factorial design with brackets causes problems otherwise
+						m = beginningEndArray.matcher(methodStringArray[k]);	//Factorial trial design with brackets causes problems otherwise
 						methodStringArray[k] = m.replaceAll("");
 						
 						m = design.matcher(methodStringArray[k]);	
@@ -660,7 +660,7 @@ public class TrialObject{
 					} else {
 						meerKatCountry = countries;
 					}
-					//Extracts countries from "Participants" section of table	
+					//Extracts countries from "Participants" section of table. This info should be in Methods section above but we never know :) Sometimes it pops up here	
 					
 					if(countries.equals("")){
 						String participantString = charParticipantsElement.getTextContent();
@@ -718,17 +718,48 @@ public class TrialObject{
 					}
 
 					
-					referenceExtracting(); //Extracts all information on references of this trial. See method below for more details
+					referenceExtracting(); //Extracts all information on references of this trial. See method referenceExtracting() below for more details. Puts info into array of strings that will be further analysed below
 					
 					for (int i = 0; i < references.length; i++){
 						if (references[i].equals("JOURNAL_ARTICLE")){
 							refObject = new JournalReferenceObject(references, i);
 							referenceList.add(refObject);
-							i = i + 8; 	//its plus 8 because +1 is added at the end of the loop
+							i = i + 14; 	//its plus 14 because +1 is added at the end of the loop and this array contains new info to check on every 15th index
 						} else if (references[i].equals("CONFERENCE_PROC")){
 							refObject = new ConferenceReferenceObject(references, i);
 							referenceList.add(refObject);
-							i = i + 8;
+							i = i + 14;
+						} else if (references[i].equals("UNPUBLISHED")){
+							refObject = new UnpublishedReferenceObject(references, i);
+							referenceList.add(refObject);
+							i = i + 14;
+						} else if (references[i].equals("OTHER")){
+							refObject = new OtherReferenceObject(references, i);
+							referenceList.add(refObject);	
+							i = i + 14;
+						} else if (references[i].equals("BOOK_SECTION")){
+							refObject = new BookSectionReferenceObject(references, i);
+							i = i + 14;
+						} else if (references[i].equals("CORRESPONDENCE")){
+							refObject = new CorrespondenceReferenceObject(references, i);
+							referenceList.add(refObject);
+							i = i + 14;
+						} else if (references[i].equals("BOOK")){
+							refObject = new BookReferenceObject(references, i);
+							referenceList.add(refObject);
+							i = i + 14;
+						} else if (references[i].equals("COCHRANE_REVIEW")){
+							refObject = new CochraneReviewReferenceObject(references, i);
+							referenceList.add(refObject);
+							i = i + 14;
+						} else if (references[i].equals("COCHRANE_PROTOCOL")){
+							refObject = new CochraneProtocolReferenceObject(references, i);
+							referenceList.add(refObject);
+							i = i + 14;
+						}else if (references[i].equals("COMPUTER_PROGRAM")){
+							refObject = new SoftwareReferenceObject(references, i);
+							referenceList.add(refObject);
+							i = i + 14;
 						}
 					}
 					
@@ -834,8 +865,8 @@ public class TrialObject{
 	
 	private void referenceExtracting(){
 		//This following for-loop runs through all references for the included study and saves relevant fields into an array that is created to hold information in the following positions:
-		//0th, 9th ..index -> Type of publication, eg. Journal ->"TYPE"
-		//1st..., 10th..index -> Primary attribute: Yes or No ->"PRIMARY"
+		//0th,  ..index -> Type of publication, eg. Journal ->"TYPE"
+		//1st..., ..index -> Primary attribute: Yes or No ->"PRIMARY"
 		//2nd... ->Names of all authors of this publication ->"AU"
 		//3rd...->Title of publication->"TI"
 		//4th...->Name of Journal->Journal->"SO"
@@ -844,12 +875,19 @@ public class TrialObject{
 		//7...-> Issue ->"NO"
 		//8...-> Pages ->"PG"
 		
-		//if a filed is not available, eg. if the reference refers to a conference protocol that lacks page numbers, empty "" space is inserted and next position of array is tried to be filled
+		//9: TO original name
+		//10: EN: edition
+		//11: ED Editor
+		//12: PB Publisher
+		//13: CY City
+		//14: MD medium
+		
+		//if a field is not available, eg. if the reference refers to a conference protocol that lacks page numbers, empty "" space is inserted and next position of array is tried to be filled
 	
 		
 		referencesList = studyElement.getElementsByTagName("REFERENCE");
 		int numberReferences = referencesList.getLength();
-		references = new String[numberReferences * 9];
+		references = new String[numberReferences * 15];
 		int arrayCounter = 0;
 		for (int i = 0; i < numberReferences; i++){
 			Element referenceElement = null;
@@ -1029,6 +1067,132 @@ public class TrialObject{
 			try {
 				if (pgElement != null){
 				references[arrayCounter] = pgElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e) {
+				e.printStackTrace();
+			}
+			arrayCounter++;
+			
+			Element toElement = null;
+			try {
+				NodeList toList = referenceElement.getElementsByTagName("TO");
+				Node toNode = toList.item(0);
+				toElement = (Element) toNode;
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			try {
+				if (toElement != null){
+				references[arrayCounter] = toElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e) {
+				e.printStackTrace();
+			}
+			arrayCounter++;
+			
+			Element enElement = null;
+			try {
+				NodeList enList = referenceElement.getElementsByTagName("EN");
+				Node enNode = enList.item(0);
+				enElement = (Element) enNode;
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			try {
+				if (enElement != null){
+				references[arrayCounter] = enElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e) {
+				e.printStackTrace();
+			}
+			arrayCounter++;
+			
+			Element edElement = null;
+			try {
+				NodeList edList = referenceElement.getElementsByTagName("ED");
+				Node edNode = edList.item(0);
+				edElement = (Element) edNode;
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			try {
+				if (edElement != null){
+				references[arrayCounter] = edElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e) {
+				e.printStackTrace();
+			}
+			arrayCounter++;
+			
+			Element pbElement = null;
+			try {
+				NodeList pbList = referenceElement.getElementsByTagName("PB");
+				Node pbNode = pbList.item(0);
+				pbElement = (Element) pbNode;
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			try {
+				if (pbElement != null){
+				references[arrayCounter] = pbElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e) {
+				e.printStackTrace();
+			}
+			arrayCounter++;
+			
+			Element cyElement = null;
+			try {
+				NodeList cyList = referenceElement.getElementsByTagName("CY");
+				Node cyNode = cyList.item(0);
+				cyElement = (Element) cyNode;
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			try {
+				if (cyElement != null){
+				references[arrayCounter] = cyElement.getTextContent().replaceAll("\n", "").trim();
+				//System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
+				} else {
+					references[arrayCounter] = "";
+				}
+			} catch (DOMException e) {
+				e.printStackTrace();
+			}
+			arrayCounter++;
+			
+			Element mdElement = null;
+			try {
+				NodeList mdList = referenceElement.getElementsByTagName("MD");
+				Node mdNode = mdList.item(0);
+				mdElement = (Element) mdNode;
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			try {
+				if (mdElement != null){
+				references[arrayCounter] = mdElement.getTextContent().replaceAll("\n", "").trim();
 				//System.out.println(pgElement.getTextContent().replaceAll("\n", "").trim());
 				} else {
 					references[arrayCounter] = "";

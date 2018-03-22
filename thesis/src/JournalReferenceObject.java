@@ -20,6 +20,7 @@ public class JournalReferenceObject extends ReferenceObject {
 	protected String volume = "";
 	protected String issue = "";
 	protected String pages = "";
+	protected String originalTitle = "";
 	
 	public JournalReferenceObject(String[] referencesArray, int i){
 		type = "Journal article";
@@ -30,6 +31,7 @@ public class JournalReferenceObject extends ReferenceObject {
 		volume = referencesArray[i + 6];
 		issue = referencesArray[i + 7];
 		pages = referencesArray[i + 8];
+		originalTitle = referencesArray[i + 9];
 	}
 
 }

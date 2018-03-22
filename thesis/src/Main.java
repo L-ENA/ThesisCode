@@ -26,21 +26,18 @@ public class Main {
 	public static void main(String[] args)  throws ParserConfigurationException{
 		
 		
-		Database d = new Database();
+		Database d = new Database();//in Database class a list of trials in this review will be created
 		d.makeList();
-		StringWriter sw = new StringWriter();
-	
-	
+		
 	try {
 		JAXBContext jaxbContext = JAXBContext.newInstance(Database.class);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		jaxbMarshaller.marshal(d, new File("haloperidolReview.xml"));
-		//String xmlString = sw.toString();
-		//System.out.println(xmlString);
+		jaxbMarshaller.marshal(d, new File("haloperidolTest.xml"));	//puts database into a xml file
+		
 		
 	} catch (JAXBException e) {
-		// TODO Auto-generated catch block
+		
 		e.printStackTrace();
 	}
 		
