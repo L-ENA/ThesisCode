@@ -1,4 +1,4 @@
-package thesis;
+package core;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+
+import trialAndOutcome.TrialObject;
 @XmlRootElement
 public class Database {
 	public Database() {
