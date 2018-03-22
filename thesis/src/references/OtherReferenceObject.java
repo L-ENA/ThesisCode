@@ -1,3 +1,4 @@
+package references;
 
 public class OtherReferenceObject extends ReferenceObject{
 	

@@ -1,3 +1,4 @@
+package thesis;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -12,6 +13,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import references.BookSectionReferenceObject;
+import references.ReferenceObject;
+import references.BookReferenceObject;
+import references.CochraneProtocolReferenceObject;
+import references.CochraneReviewReferenceObject;
+import references.ConferenceReferenceObject;
+import references.CorrespondenceReferenceObject;
+import references.JournalReferenceObject;
+import references.OtherReferenceObject;
+import references.SoftwareReferenceObject;
+import references.UnpublishedReferenceObject;
+import references.ReferenceObject;
 
 public class TrialObject{
 	///////////////////////////////////////////////////empty constructor for xml creation only

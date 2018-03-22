@@ -1,3 +1,4 @@
+package references;
 
 public class CorrespondenceReferenceObject extends ReferenceObject{
 	protected String type = "Correspondence";

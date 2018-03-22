@@ -1,3 +1,4 @@
+package references;
 
 public class JournalReferenceObject extends ReferenceObject {
 	

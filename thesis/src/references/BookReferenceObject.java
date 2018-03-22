@@ -1,3 +1,4 @@
+package references;
 
 public class BookReferenceObject extends ReferenceObject{
 	protected String type = "Book";

@@ -1,3 +1,4 @@
+package references;
 
 public class CochraneReviewReferenceObject extends ReferenceObject{
 	protected String type = "CochraneReview";
