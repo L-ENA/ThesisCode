@@ -19,6 +19,7 @@ public class ConferenceReferenceObject extends ReferenceObject{
 		for (int j = 0; j < 3; j++){	//in case some extra info comes up it will be added in this String. If no info comes up the white space will be trimmed away and the String stays empty.
 			potentialFurtherInfo = potentialFurtherInfo + " " + referencesArray[i + j];
 			potentialFurtherInfo = potentialFurtherInfo.trim();
+			//test commit
 			
 		}
 		
