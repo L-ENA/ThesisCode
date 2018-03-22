@@ -729,7 +729,7 @@ public class TrialObject{
 						cache = revManID.replaceAll("(_x002d_)", "-").replace("(_x0026_)", "&").replaceAll("[^\\d.]", "");
 						year = Integer.parseInt(cache); //Takes year of publication from ID
 					}
-
+//test
 					
 					referenceExtracting(); //Extracts all information on references of this trial. See method referenceExtracting() below for more details. Puts info into array of strings that will be further analysed below
 					
