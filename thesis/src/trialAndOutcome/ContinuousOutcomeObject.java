@@ -1,5 +1,6 @@
 package trialAndOutcome;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,116 +14,6 @@ import org.w3c.dom.NodeList;
 public class ContinuousOutcomeObject {
 
 	
-	
-
-	
-	public ContinuousOutcomeObject() {
-		super();
-	}
-	public String toString() {
-		return "DichOutcomeObject [comparisonName=" + comparisonName + ", outcomeName=" + outcomeName + ", group1Name="
-				+ interventionGroupName + ", group1NameProse=" + interventionProse + ", group2Name=" + controlGroupName
-				+ ", group2NameProse=" + controlProse + ", isGroup1Intervention=" + isGroup1Intervention
-				+ ", subgroupName=" + subgroupName + ", group1Events=" + interventionEvents + ", group2Events=" + controlEvents
-				+ ", group1Total=" + interventionTotalN + ", group2Total=" + controlTotalN + "]";
-	}
-	
-@XmlElement
-	public String getComparisonName() {
-		return comparisonName;
-	}
-	//@XmlElement
-	public void setComparisonName(String comparisonName) {
-		this.comparisonName = comparisonName;
-	}
-	@XmlElement
-	public String getOutcomeName() {
-		return outcomeName;
-	}
-	//@XmlElement
-	public void setOutcomeName(String outcomeName) {
-		this.outcomeName = outcomeName;
-	}
-	//@XmlElement
-	public String getGroup1Name() {
-		return interventionGroupName;
-	}
-
-	public void setGroup1Name(String group1Name) {
-		this.interventionGroupName = group1Name;
-	}
-	//@XmlElement
-	public String getGroup1NameProse() {
-		return interventionProse;
-	}
-
-	public void setGroup1NameProse(String group1NameProse) {
-		this.interventionProse = group1NameProse;
-	}
-	//@XmlElement
-	public String getGroup2Name() {
-		return controlGroupName;
-	}
-
-	public void setGroup2Name(String group2Name) {
-		this.controlGroupName = group2Name;
-	}
-	//@XmlElement
-	public String getGroup2NameProse() {
-		return controlProse;
-	}
-
-	public void setGroup2NameProse(String group2NameProse) {
-		this.controlProse = group2NameProse;
-	}
-
-	public boolean isGroup1Intervention() {
-		return isGroup1Intervention;
-	}
-
-	public void setGroup1Intervention(boolean isGroup1Intervention) {
-		this.isGroup1Intervention = isGroup1Intervention;
-	}
-	//@XmlElement
-	public String getSubgroupName() {
-		return subgroupName;
-	}
-
-	public void setSubgroupName(String subgroupName) {
-		this.subgroupName = subgroupName;
-	}
-	//@XmlElement
-	public int getGroup1Events() {
-		return interventionEvents;
-	}
-
-	public void setGroup1Events(int group1Events) {
-		this.interventionEvents = group1Events;
-	}
-	//@XmlElement
-	public int getGroup2Events() {
-		return controlEvents;
-	}
-
-	public void setGroup2Events(int group2Events) {
-		this.controlEvents = group2Events;
-	}
-	//@XmlElement
-	public int getGroup1Total() {
-		return interventionTotalN;
-	}
-
-	public void setGroup1Total(int group1Total) {
-		this.interventionTotalN = group1Total;
-	}
-	//@XmlElement
-	public int getGroup2Total() {
-		return controlTotalN;
-	}
-
-	public void setGroup2Total(int group2Total) {
-		this.controlTotalN = group2Total;
-	}
 	protected String comparisonName = ""; 	// e.g. VITAMIN E versus PLACEBO
 	protected String outcomeName = ""; 	// e.g. Tardive dyskinesia: 1. Not improved to a clinically important extent
 	protected String interventionGroupName = ""; 	// e.g. Vitamin E -> Group 1. Check if intervention is always group 1!!!!!!!!!!! Also: Vitamin e combination instead of drug name -> verify with prose
@@ -133,8 +24,11 @@ public class ContinuousOutcomeObject {
 	protected String graphLabel2 = "";
 	protected boolean isGroup1Intervention = true; 	// if group 1 is not the intervention group this boolean will turn to false;
 	protected String subgroupName ="";	//e.g. short-term
-	protected int interventionEvents;
-	protected int controlEvents;
+	
+	protected float interventionMean;
+	protected float controlMean;
+	protected float interventionSD;
+	protected float controlSD;
 	protected int interventionTotalN;
 	protected int controlTotalN;
 	
@@ -151,40 +45,43 @@ public class ContinuousOutcomeObject {
 	//What does "ORDER" attribute mean?
 	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
-	ContinuousOutcomeObject(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement){
+	ContinuousOutcomeObject(Element contDataElement, Element comparisonNameElement, Element contOutcomeNameElement, Element contOutcomeElement, Element contSubgroupElement){
 		
-		NodeList groupLabel1List = dichOutcomeElement.getElementsByTagName("GROUP_LABEL_1");	//for intervention name
+		NodeList groupLabel1List = contOutcomeElement.getElementsByTagName("GROUP_LABEL_1");	//for intervention name
 		Node groupLabel1Node = groupLabel1List.item(0);
 		Element groupLabel1Element = (Element) groupLabel1Node;
 		interventionGroupName = groupLabel1Element.getTextContent().toLowerCase();	//gets intervention name and puts all in lower case
 		//group1Name= group1Name.substring(0, 1).toUpperCase() + group1Name.substring(1);	//optional: capitalises first letter of intervention name
 		
-		NodeList groupLabel2List = dichOutcomeElement.getElementsByTagName("GROUP_LABEL_2");	//for control name
+		NodeList groupLabel2List = contOutcomeElement.getElementsByTagName("GROUP_LABEL_2");	//for control name
 		Node groupLabel2Node = groupLabel2List.item(0);
 		Element groupLabel2Element = (Element) groupLabel2Node;
 		controlGroupName = groupLabel2Element.getTextContent().toLowerCase();
 		//group2Name = group2Name.substring(0, 1).toUpperCase() + group2Name.substring(1);
 		
-		NodeList graphLabel1List = dichOutcomeElement.getElementsByTagName("GRAPH_LABEL_1");
+		NodeList graphLabel1List = contOutcomeElement.getElementsByTagName("GRAPH_LABEL_1");
 		Element graphLabel1Element = (Element) graphLabel1List.item(0);
 		graphLabel1 = graphLabel1Element.getTextContent();
 		
-		NodeList graphLabel2List = dichOutcomeElement.getElementsByTagName("GRAPH_LABEL_2");
+		NodeList graphLabel2List = contOutcomeElement.getElementsByTagName("GRAPH_LABEL_2");
 		Element graphLabel2Element = (Element) graphLabel2List.item(0);
 		graphLabel2 = graphLabel2Element.getTextContent();
 		
-		NodeList dichNameOfSubgroupList = dichSubgroupElement.getElementsByTagName("NAME");
-		Element dichNameOfSubgroup = (Element) dichNameOfSubgroupList.item(0);
+		NodeList dichNameOfSubgroupList = contSubgroupElement.getElementsByTagName("NAME");
+		Element dichNameOfSubgroup = (Element) dichNameOfSubgroupList.item(0);//for subgroup name
 		subgroupName = dichNameOfSubgroup.getTextContent();
 		
 		
+		interventionMean = Float.parseFloat(contDataElement.getAttribute("MEAN_1")); //intervention and control mean
+		controlMean = Float.parseFloat(contDataElement.getAttribute("MEAN_2"));
 		
-		interventionEvents = Integer.parseInt(dichDataElement.getAttribute("EVENTS_1"));
-		controlEvents = Integer.parseInt(dichDataElement.getAttribute("EVENTS_2"));
-		interventionTotalN = Integer.parseInt(dichDataElement.getAttribute("TOTAL_1"));
-		controlTotalN = Integer.parseInt(dichDataElement.getAttribute("TOTAL_2"));
-		comparisonName = comparisonNameElement.getTextContent();
-		outcomeName = dichOutcomeNameElement.getTextContent();
+		interventionSD = Float.parseFloat(contDataElement.getAttribute("SD_1"));	//intervention and control standard deviation
+		controlSD = Float.parseFloat(contDataElement.getAttribute("SD_2"));
+		
+		interventionTotalN = Integer.parseInt(contDataElement.getAttribute("TOTAL_1"));	//intervention and control total nr of partcipants
+		controlTotalN = Integer.parseInt(contDataElement.getAttribute("TOTAL_2"));
+		comparisonName = comparisonNameElement.getTextContent();//comparison and outcome names to be stored with this outcome, if later the reviewer chooses to re-import only part of the trial the outcome name is important as it describes the numbers best
+		outcomeName = contOutcomeNameElement.getTextContent();
 		
 		System.out.println(comparisonName);
 //		System.out.println(outcomeName );
@@ -263,6 +160,139 @@ public class ContinuousOutcomeObject {
 		
 		
 				
+	}
+	
+	public ContinuousOutcomeObject() {
+		super();
+	}
+	
+	
+@Override
+	public String toString() {
+		return "ContinuousOutcomeObject [comparisonName=" + comparisonName + ", outcomeName=" + outcomeName
+				+ ", interventionGroupName=" + interventionGroupName + ", interventionProse=" + interventionProse
+				+ ", controlGroupName=" + controlGroupName + ", controlProse=" + controlProse + ", graphLabel1="
+				+ graphLabel1 + ", graphLabel2=" + graphLabel2 + ", isGroup1Intervention=" + isGroup1Intervention
+				+ ", subgroupName=" + subgroupName + ", interventionMean=" + interventionMean + ", controlMean="
+				+ controlMean + ", interventionSD=" + interventionSD + ", controlSD=" + controlSD
+				+ ", interventionTotalN=" + interventionTotalN + ", controlTotalN=" + controlTotalN + ", invalidIC="
+				+ invalidIC + ", addedInfoCombinationsIC=" + addedInfoCombinationsIC + ", addedInfoOtherAntipsyIC="
+				+ addedInfoOtherAntipsyIC + ", splitPattern=" + splitPattern + ", m=" + m + ", splitComparison="
+				+ Arrays.toString(splitComparison) + ", splitIC=" + Arrays.toString(splitIC) + "]";
+	}
+
+@XmlElement
+	public String getComparisonName() {
+		return comparisonName;
+	}
+	//@XmlElement
+	public void setComparisonName(String comparisonName) {
+		this.comparisonName = comparisonName;
+	}
+	@XmlElement
+	public String getOutcomeName() {
+		return outcomeName;
+	}
+	//@XmlElement
+	public void setOutcomeName(String outcomeName) {
+		this.outcomeName = outcomeName;
+	}
+	//@XmlElement
+	public String getGroup1Name() {
+		return interventionGroupName;
+	}
+
+	public void setGroup1Name(String group1Name) {
+		this.interventionGroupName = group1Name;
+	}
+	//@XmlElement
+	public String getGroup1NameProse() {
+		return interventionProse;
+	}
+
+	public void setGroup1NameProse(String group1NameProse) {
+		this.interventionProse = group1NameProse;
+	}
+	//@XmlElement
+	public String getGroup2Name() {
+		return controlGroupName;
+	}
+
+	public void setGroup2Name(String group2Name) {
+		this.controlGroupName = group2Name;
+	}
+	//@XmlElement
+	public String getGroup2NameProse() {
+		return controlProse;
+	}
+
+	public void setGroup2NameProse(String group2NameProse) {
+		this.controlProse = group2NameProse;
+	}
+
+	public boolean isGroup1Intervention() {
+		return isGroup1Intervention;
+	}
+
+	public void setGroup1Intervention(boolean isGroup1Intervention) {
+		this.isGroup1Intervention = isGroup1Intervention;
+	}
+	//@XmlElement
+	public String getSubgroupName() {
+		return subgroupName;
+	}
+
+	public void setSubgroupName(String subgroupName) {
+		this.subgroupName = subgroupName;
+	}
+	
+	//@XmlElement
+	public int getGroup1Total() {
+		return interventionTotalN;
+	}
+
+	public void setGroup1Total(int group1Total) {
+		this.interventionTotalN = group1Total;
+	}
+	//@XmlElement
+	public int getGroup2Total() {
+		return controlTotalN;
+	}
+
+	public void setGroup2Total(int group2Total) {
+		this.controlTotalN = group2Total;
+	}
+
+	public float getInterventionMean() {
+		return interventionMean;
+	}
+
+	public void setInterventionMean(float interventionMean) {
+		this.interventionMean = interventionMean;
+	}
+
+	public float getControlMean() {
+		return controlMean;
+	}
+
+	public void setControlMean(float controlMean) {
+		this.controlMean = controlMean;
+	}
+
+	public float getInterventionSD() {
+		return interventionSD;
+	}
+
+	public void setInterventionSD(float interventionSD) {
+		this.interventionSD = interventionSD;
+	}
+
+	public float getControlSD() {
+		return controlSD;
+	}
+
+	public void setControlSD(float controlSD) {
+		this.controlSD = controlSD;
 	}
 
 

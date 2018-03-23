@@ -484,15 +484,26 @@ public class TrialObject{
 	protected int nrIntervention;
 	protected int nrControl;
 	protected String meerKatCountry;
-	protected DichotomOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
+	protected DichotomousOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
+	protected ContinuousOutcomeObject cobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
 	protected ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. g and s
 	protected List<ReferenceObject> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects , needs getter and setters
 	
-	public DichotomOutcomeObject getDobj() {
+	public ContinuousOutcomeObject getCobj() {
+		return cobj;
+	}
+
+
+	public void setCobj(ContinuousOutcomeObject cobj) {
+		this.cobj = cobj;
+	}
+
+
+	public DichotomousOutcomeObject getDobj() {
 		return dobj;
 	}
 
-	public void setDobj(DichotomOutcomeObject dobj) {
+	public void setDobj(DichotomousOutcomeObject dobj) {
 		this.dobj = dobj;
 	}
 
@@ -784,7 +795,7 @@ public class TrialObject{
 						System.out.println("Main author of Study: " + mainAuthor);
 						System.out.println(countries);
 					
-					
+					//treverses xml to find data section
 					NodeList analysesAndDataList = rootElement.getElementsByTagName("ANALYSES_AND_DATA");
 					Node analysesAndDataNode = analysesAndDataList.item(0);
 					Element analysesAndDataElement = (Element) analysesAndDataNode;
@@ -799,37 +810,77 @@ public class TrialObject{
 						Element comparisonNameElement = (Element) comparisonNameNode; //takeOver for comparisonname and groupnames
 						
 						
-						NodeList dichOutcomeList = comparisonElement.getElementsByTagName("DICH_OUTCOME");
-						for (int l = 0; l < dichOutcomeList.getLength(); l++){
-							Node dichOutcomeNode = dichOutcomeList.item(l);
-							Element dichOutcomeElement = (Element) dichOutcomeNode;
-							
-							NodeList dichOutcomeNameList = dichOutcomeElement.getElementsByTagName("NAME");
-							Node dichOutcomeNameNode = dichOutcomeNameList.item(0);
-							Element dichOutcomeNameElement = (Element) dichOutcomeNameNode;
-							
-							
-							NodeList dichSubgroupList = dichOutcomeElement.getElementsByTagName("DICH_SUBGROUP");
-							for (int j = 0; j <dichSubgroupList.getLength(); j++){
-								Node dichSubgroupNode = dichSubgroupList.item(j);
-								Element dichSubgroupElement = (Element) dichSubgroupNode;
+						try {////////////looks for dichotomous outcomes by their tag name. Elements are created and used as parameters for object creation. All
+							//dichotomous outcome objects are traversed and it is checked if their ID equals the revman ID of the trial which outcomes 
+							//are supposed to extracted in this call. All outcomes are added to the object list
+							NodeList dichOutcomeList = comparisonElement.getElementsByTagName("DICH_OUTCOME");
+							for (int l = 0; l < dichOutcomeList.getLength(); l++){
+								Node dichOutcomeNode = dichOutcomeList.item(l);
+								Element dichOutcomeElement = (Element) dichOutcomeNode;
 								
-								NodeList dichDataList = dichSubgroupElement.getElementsByTagName("DICH_DATA");
-								for (int k = 0; k < dichDataList.getLength(); k++){
-									Node dichDataNode = dichDataList.item(k);
-									Element dichDataElement = (Element) dichDataNode;
+								NodeList dichOutcomeNameList = dichOutcomeElement.getElementsByTagName("NAME");
+								Node dichOutcomeNameNode = dichOutcomeNameList.item(0);
+								Element dichOutcomeNameElement = (Element) dichOutcomeNameNode;
+								
+								
+								NodeList dichSubgroupList = dichOutcomeElement.getElementsByTagName("DICH_SUBGROUP");
+								for (int j = 0; j <dichSubgroupList.getLength(); j++){
+									Node dichSubgroupNode = dichSubgroupList.item(j);
+									Element dichSubgroupElement = (Element) dichSubgroupNode;
 									
-									if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
+									NodeList dichDataList = dichSubgroupElement.getElementsByTagName("DICH_DATA");
+									for (int k = 0; k < dichDataList.getLength(); k++){
+										Node dichDataNode = dichDataList.item(k);
+										Element dichDataElement = (Element) dichDataNode;
 										
-										dobj = new DichotomOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
-										outcomeList.add(dobj);
-										System.out.println("Outcome added to list");
+										if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
+											
+											dobj = new DichotomousOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
+											outcomeList.add(dobj);
+											System.out.println("Outcome added to list");
+										}
 									}
 								}
 							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 						
-						
+						try {
+							NodeList contOutcomeList = comparisonElement.getElementsByTagName("CONT_OUTCOME");
+							for (int l = 0; l < contOutcomeList.getLength(); l++){
+								Node contOutcomeNode = contOutcomeList.item(l);
+								Element contOutcomeElement = (Element) contOutcomeNode;
+								
+								NodeList contOutcomeNameList = contOutcomeElement.getElementsByTagName("NAME");
+								Node contOutcomeNameNode = contOutcomeNameList.item(0);
+								Element contOutcomeNameElement = (Element) contOutcomeNameNode;
+								
+								
+								NodeList contSubgroupList = contOutcomeElement.getElementsByTagName("CONT_SUBGROUP");
+								for (int j = 0; j <contSubgroupList.getLength(); j++){
+									Node contSubgroupNode = contSubgroupList.item(j);
+									Element contSubgroupElement = (Element) contSubgroupNode;
+									
+									NodeList contDataList = contSubgroupElement.getElementsByTagName("CONT_DATA");
+									for (int k = 0; k < contDataList.getLength(); k++){
+										Node contDataNode = contDataList.item(k);
+										Element contDataElement = (Element) contDataNode;
+										
+										if (contDataElement.getAttribute("STUDY_ID").equals(revManID)){
+											
+											cobj = new ContinuousOutcomeObject(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement);
+											outcomeList.add(cobj);
+											System.out.println("Outcome added to list");
+										}
+									}
+								}
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						
 						
 //						NodeList comparisonNameList = comparisonElement.getElementsByTagName("NAME");

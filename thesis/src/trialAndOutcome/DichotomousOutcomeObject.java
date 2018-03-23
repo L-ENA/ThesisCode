@@ -9,12 +9,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 @XmlRootElement(name = "DichOutcome")
-public class DichotomOutcomeObject {
+public class DichotomousOutcomeObject {
 	
 	
 
 	
-	public DichotomOutcomeObject() {
+	public DichotomousOutcomeObject() {
 		super();
 	}
 	public String toString() {
@@ -149,7 +149,7 @@ public class DichotomOutcomeObject {
 	//What does "ORDER" attribute mean?
 	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
-	DichotomOutcomeObject(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement){
+	DichotomousOutcomeObject(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement){
 		
 		NodeList groupLabel1List = dichOutcomeElement.getElementsByTagName("GROUP_LABEL_1");	//for intervention name
 		Node groupLabel1Node = groupLabel1List.item(0);
