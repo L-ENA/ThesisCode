@@ -441,7 +441,7 @@ public class TrialObject{
 	}
 
 
-	public void setOutcomeList(List<OutcomeObject> outcomeList) {
+	public void setOutcomeList(List<Object> outcomeList) {
 		this.outcomeList = outcomeList;
 	}
 //////////////////////////////////////////////////////////////////attributes
@@ -484,22 +484,22 @@ public class TrialObject{
 	protected int nrIntervention;
 	protected int nrControl;
 	protected String meerKatCountry;
-	protected OutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
+	protected DichotomOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
 	protected ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. g and s
 	protected List<ReferenceObject> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects , needs getter and setters
 	
-	public OutcomeObject getDobj() {
+	public DichotomOutcomeObject getDobj() {
 		return dobj;
 	}
 
-	public void setDobj(OutcomeObject dobj) {
+	public void setDobj(DichotomOutcomeObject dobj) {
 		this.dobj = dobj;
 	}
 
-	protected List<OutcomeObject> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
+	protected List<Object> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
 	
 	@XmlElement
-	public List<OutcomeObject> getOutcomeList() {
+	public List<Object> getOutcomeList() {
 		return outcomeList;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////private attributes that are only needed internally
@@ -821,7 +821,7 @@ public class TrialObject{
 									
 									if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
 										
-										dobj = new OutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
+										dobj = new DichotomOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
 										outcomeList.add(dobj);
 										System.out.println("Outcome added to list");
 									}

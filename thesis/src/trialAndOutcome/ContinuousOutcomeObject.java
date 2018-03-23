@@ -1,4 +1,5 @@
 package trialAndOutcome;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,13 +9,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-@XmlRootElement(name = "DichOutcome")
-public class DichotomOutcomeObject {
+@XmlRootElement(name = "ContOutcome")
+public class ContinuousOutcomeObject {
+
 	
 	
 
 	
-	public DichotomOutcomeObject() {
+	public ContinuousOutcomeObject() {
 		super();
 	}
 	public String toString() {
@@ -149,7 +151,7 @@ public class DichotomOutcomeObject {
 	//What does "ORDER" attribute mean?
 	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
-	DichotomOutcomeObject(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement){
+	ContinuousOutcomeObject(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement){
 		
 		NodeList groupLabel1List = dichOutcomeElement.getElementsByTagName("GROUP_LABEL_1");	//for intervention name
 		Node groupLabel1Node = groupLabel1List.item(0);
@@ -262,5 +264,6 @@ public class DichotomOutcomeObject {
 		
 				
 	}
+
 
 }
