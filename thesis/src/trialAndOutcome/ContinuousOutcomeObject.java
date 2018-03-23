@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -13,6 +14,8 @@ import org.w3c.dom.NodeList;
 @XmlRootElement(name = "ContOutcome")
 public class ContinuousOutcomeObject {
 
+	@XmlAttribute
+    protected final String outcomeType ="Continuous";
 	
 	protected String comparisonName = ""; 	// e.g. VITAMIN E versus PLACEBO
 	protected String outcomeName = ""; 	// e.g. Tardive dyskinesia: 1. Not improved to a clinically important extent
@@ -181,7 +184,7 @@ public class ContinuousOutcomeObject {
 				+ Arrays.toString(splitComparison) + ", splitIC=" + Arrays.toString(splitIC) + "]";
 	}
 
-@XmlElement
+@XmlElement(name = "Comparison")
 	public String getComparisonName() {
 		return comparisonName;
 	}
@@ -189,7 +192,7 @@ public class ContinuousOutcomeObject {
 	public void setComparisonName(String comparisonName) {
 		this.comparisonName = comparisonName;
 	}
-	@XmlElement
+	@XmlElement(name = "Outcome")
 	public String getOutcomeName() {
 		return outcomeName;
 	}
@@ -197,7 +200,7 @@ public class ContinuousOutcomeObject {
 	public void setOutcomeName(String outcomeName) {
 		this.outcomeName = outcomeName;
 	}
-	//@XmlElement
+	@XmlElement(name = "Intervention")
 	public String getGroup1Name() {
 		return interventionGroupName;
 	}
@@ -213,7 +216,7 @@ public class ContinuousOutcomeObject {
 	public void setGroup1NameProse(String group1NameProse) {
 		this.interventionProse = group1NameProse;
 	}
-	//@XmlElement
+	@XmlElement(name = "Control")
 	public String getGroup2Name() {
 		return controlGroupName;
 	}
@@ -237,7 +240,7 @@ public class ContinuousOutcomeObject {
 	public void setGroup1Intervention(boolean isGroup1Intervention) {
 		this.isGroup1Intervention = isGroup1Intervention;
 	}
-	//@XmlElement
+	@XmlElement(name = "Subgroup")
 	public String getSubgroupName() {
 		return subgroupName;
 	}
@@ -246,7 +249,7 @@ public class ContinuousOutcomeObject {
 		this.subgroupName = subgroupName;
 	}
 	
-	//@XmlElement
+	@XmlElement(name = "Intervention_Total")
 	public int getGroup1Total() {
 		return interventionTotalN;
 	}
@@ -254,7 +257,7 @@ public class ContinuousOutcomeObject {
 	public void setGroup1Total(int group1Total) {
 		this.interventionTotalN = group1Total;
 	}
-	//@XmlElement
+	@XmlElement(name = "Control_Total")
 	public int getGroup2Total() {
 		return controlTotalN;
 	}
@@ -262,7 +265,7 @@ public class ContinuousOutcomeObject {
 	public void setGroup2Total(int group2Total) {
 		this.controlTotalN = group2Total;
 	}
-
+	@XmlElement(name = "Intervention_Mean")
 	public float getInterventionMean() {
 		return interventionMean;
 	}
@@ -270,7 +273,7 @@ public class ContinuousOutcomeObject {
 	public void setInterventionMean(float interventionMean) {
 		this.interventionMean = interventionMean;
 	}
-
+	@XmlElement(name = "Control_Mean")
 	public float getControlMean() {
 		return controlMean;
 	}
@@ -278,7 +281,7 @@ public class ContinuousOutcomeObject {
 	public void setControlMean(float controlMean) {
 		this.controlMean = controlMean;
 	}
-
+	@XmlElement(name = "Intervention_SD")
 	public float getInterventionSD() {
 		return interventionSD;
 	}
@@ -286,13 +289,17 @@ public class ContinuousOutcomeObject {
 	public void setInterventionSD(float interventionSD) {
 		this.interventionSD = interventionSD;
 	}
-
+	@XmlElement(name = "Control_SD")
 	public float getControlSD() {
 		return controlSD;
 	}
 
 	public void setControlSD(float controlSD) {
 		this.controlSD = controlSD;
+	}
+
+	public String getOutcomeType() {
+		return outcomeType;
 	}
 
 

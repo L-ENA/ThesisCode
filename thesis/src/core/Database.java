@@ -17,7 +17,7 @@ public class Database {
 
 	List<TrialObject> trialList = new ArrayList<>();
 	
-	@XmlElement
+	@XmlElement(name = "TRIAL")
 	public List<TrialObject> getTrialList() {
 		return trialList;
 	}

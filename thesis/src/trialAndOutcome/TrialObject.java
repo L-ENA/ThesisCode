@@ -509,7 +509,7 @@ public class TrialObject{
 
 	protected List<Object> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
 	
-	@XmlElement
+	@XmlElement(name = "OUTCOME")
 	public List<Object> getOutcomeList() {
 		return outcomeList;
 	}

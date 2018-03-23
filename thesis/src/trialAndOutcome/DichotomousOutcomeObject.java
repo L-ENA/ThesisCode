@@ -2,6 +2,7 @@ package trialAndOutcome;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -12,8 +13,13 @@ import org.w3c.dom.NodeList;
 public class DichotomousOutcomeObject {
 	
 	
-
+	@XmlAttribute
+    protected final String outcomeType ="Dichotomous";
 	
+	
+	public String getOutcomeType() {
+		return outcomeType;
+	}
 	public DichotomousOutcomeObject() {
 		super();
 	}
@@ -25,7 +31,7 @@ public class DichotomousOutcomeObject {
 				+ ", group1Total=" + interventionTotalN + ", group2Total=" + controlTotalN + "]";
 	}
 	
-@XmlElement
+@XmlElement(name = "Comparison")
 	public String getComparisonName() {
 		return comparisonName;
 	}
@@ -33,7 +39,7 @@ public class DichotomousOutcomeObject {
 	public void setComparisonName(String comparisonName) {
 		this.comparisonName = comparisonName;
 	}
-	@XmlElement
+	@XmlElement(name = "Outcome")
 	public String getOutcomeName() {
 		return outcomeName;
 	}
@@ -41,7 +47,7 @@ public class DichotomousOutcomeObject {
 	public void setOutcomeName(String outcomeName) {
 		this.outcomeName = outcomeName;
 	}
-	//@XmlElement
+	@XmlElement(name = "Intervention")
 	public String getGroup1Name() {
 		return interventionGroupName;
 	}
@@ -57,7 +63,7 @@ public class DichotomousOutcomeObject {
 	public void setGroup1NameProse(String group1NameProse) {
 		this.interventionProse = group1NameProse;
 	}
-	//@XmlElement
+	@XmlElement(name = "Control")
 	public String getGroup2Name() {
 		return controlGroupName;
 	}
@@ -81,7 +87,7 @@ public class DichotomousOutcomeObject {
 	public void setGroup1Intervention(boolean isGroup1Intervention) {
 		this.isGroup1Intervention = isGroup1Intervention;
 	}
-	//@XmlElement
+	@XmlElement(name = "Subgroup")
 	public String getSubgroupName() {
 		return subgroupName;
 	}
@@ -89,7 +95,7 @@ public class DichotomousOutcomeObject {
 	public void setSubgroupName(String subgroupName) {
 		this.subgroupName = subgroupName;
 	}
-	//@XmlElement
+	@XmlElement(name = "Intervention_Events")
 	public int getGroup1Events() {
 		return interventionEvents;
 	}
@@ -97,7 +103,7 @@ public class DichotomousOutcomeObject {
 	public void setGroup1Events(int group1Events) {
 		this.interventionEvents = group1Events;
 	}
-	//@XmlElement
+	@XmlElement(name = "Control_Events")
 	public int getGroup2Events() {
 		return controlEvents;
 	}
@@ -105,7 +111,7 @@ public class DichotomousOutcomeObject {
 	public void setGroup2Events(int group2Events) {
 		this.controlEvents = group2Events;
 	}
-	//@XmlElement
+	@XmlElement(name = "Intervention_Total")
 	public int getGroup1Total() {
 		return interventionTotalN;
 	}
@@ -113,7 +119,7 @@ public class DichotomousOutcomeObject {
 	public void setGroup1Total(int group1Total) {
 		this.interventionTotalN = group1Total;
 	}
-	//@XmlElement
+	@XmlElement(name = "Control_Total")
 	public int getGroup2Total() {
 		return controlTotalN;
 	}
