@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-@XmlRootElement(name = "ContOutcome")
+//@XmlRootElement(name = "ContOutcome")
 public class ContinuousOutcomeObject {
 
 	@XmlAttribute

@@ -1,6 +1,6 @@
 package references;
 
-public class ConferenceReferenceObject extends ReferenceObject{
+public class ConferenceReferenceObject {
 	//if the information in the references section points to conference proceedings
 	protected String type = "Conference proceedings";
 	protected String allAuthors = "";

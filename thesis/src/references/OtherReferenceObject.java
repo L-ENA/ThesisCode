@@ -1,6 +1,6 @@
 package references;
 
-public class OtherReferenceObject extends ReferenceObject{
+public class OtherReferenceObject {
 	
 	//if the information in the references section points to a reference of type "other". 
 			protected String type = "Other reference";

@@ -1,6 +1,6 @@
 package references;
 
-public class SoftwareReferenceObject extends ReferenceObject{
+public class SoftwareReferenceObject {
 	protected String type = "Software";
 	protected String allAuthors = "";
 	protected String title = "";

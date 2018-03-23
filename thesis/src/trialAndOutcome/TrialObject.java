@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import references.BookSectionReferenceObject;
-import references.ReferenceObject;
+
 import references.BookReferenceObject;
 import references.CochraneProtocolReferenceObject;
 import references.CochraneReviewReferenceObject;
@@ -24,7 +24,7 @@ import references.JournalReferenceObject;
 import references.OtherReferenceObject;
 import references.SoftwareReferenceObject;
 import references.UnpublishedReferenceObject;
-import references.ReferenceObject;
+
 
 public class TrialObject{
 	///////////////////////////////////////////////////empty constructor for xml creation only
@@ -486,9 +486,12 @@ public class TrialObject{
 	protected String meerKatCountry;
 	protected DichotomousOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
 	protected ContinuousOutcomeObject cobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
-	protected ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. g and s
-	protected List<ReferenceObject> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects , needs getter and setters
+	protected Object refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. g and s
 	
+	protected List<Object> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects , needs getter and setters
+	
+
+
 	public ContinuousOutcomeObject getCobj() {
 		return cobj;
 	}

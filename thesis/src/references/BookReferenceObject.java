@@ -1,6 +1,6 @@
 package references;
 
-public class BookReferenceObject extends ReferenceObject{
+public class BookReferenceObject{
 	protected String type = "Book";
 	protected String allAuthors = "";
 	protected String title = "";

@@ -1,6 +1,6 @@
 package references;
 
-public class CochraneProtocolReferenceObject extends ReferenceObject {
+public class CochraneProtocolReferenceObject{
 	protected String type = "Cochrane protocol";
 	protected String allAuthors = "";
 	protected String title = "";

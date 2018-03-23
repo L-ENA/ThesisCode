@@ -1,6 +1,6 @@
 package references;
 
-public class UnpublishedReferenceObject extends ReferenceObject{
+public class UnpublishedReferenceObject {
 
 	//if the information in the references section points to an unpublished reference
 		protected String type = "Unpublished reference";

@@ -1,6 +1,6 @@
 package references;
 
-public class CorrespondenceReferenceObject extends ReferenceObject{
+public class CorrespondenceReferenceObject {
 	protected String type = "Correspondence";
 	protected String allAuthors = "";
 	protected String title = "";
