@@ -70,29 +70,7 @@ public class TrialObject{
 
 
 
-	public String getDoi() {
-		return doi;
-	}
-
-
-
-	public void setDoi(String doi) {
-		this.doi = doi;
-	}
-
-
-
-	public int getCrgID() {
-		return crgID;
-	}
-
-
-
-	public void setCrgID(int crgID) {
-		this.crgID = crgID;
-	}
-
-
+	
 
 	public String getRevManID() {
 		return revManID;
@@ -393,8 +371,7 @@ public class TrialObject{
 	protected String mainAuthor; //check
 	protected int year;//check
 	protected String aauthorYearLetter = ""; //for comparison with MeerKatBE
-	protected String doi;
-	protected int crgID;
+	
 	protected String revManID;//check
 	protected String[] references; //check
 
