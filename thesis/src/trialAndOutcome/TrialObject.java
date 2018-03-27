@@ -1188,8 +1188,6 @@ public class TrialObject{
 		}
 	}
 	
-
-	
 	private void designVerifyer(String str){
 		
 		//To see if this String contains info on trial design

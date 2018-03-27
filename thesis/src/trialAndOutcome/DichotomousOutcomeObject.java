@@ -26,7 +26,7 @@ public class DichotomousOutcomeObject {
 	public String toString() {
 		return "DichOutcomeObject [comparisonName=" + comparisonName + ", outcomeName=" + outcomeName + ", group1Name="
 				+ interventionGroupName + ", group1NameProse=" + interventionProse + ", group2Name=" + controlGroupName
-				+ ", group2NameProse=" + controlProse + ", isGroup1Intervention=" + isGroup1Intervention
+				+ ", group2NameProse=" + controlProse + ", isGroup1Intervention=" 
 				+ ", subgroupName=" + subgroupName + ", group1Events=" + interventionEvents + ", group2Events=" + controlEvents
 				+ ", group1Total=" + interventionTotalN + ", group2Total=" + controlTotalN + "]";
 	}
@@ -80,13 +80,7 @@ public class DichotomousOutcomeObject {
 		this.controlProse = group2NameProse;
 	}
 
-	public boolean isGroup1Intervention() {
-		return isGroup1Intervention;
-	}
-
-	public void setGroup1Intervention(boolean isGroup1Intervention) {
-		this.isGroup1Intervention = isGroup1Intervention;
-	}
+	
 	@XmlElement(name = "Subgroup")
 	public String getSubgroupName() {
 		return subgroupName;
@@ -135,7 +129,6 @@ public class DichotomousOutcomeObject {
 	protected String controlProse = "";
 	protected String graphLabel1 = "";
 	protected String graphLabel2 = "";
-	protected boolean isGroup1Intervention = true; 	// if group 1 is not the intervention group this boolean will turn to false;
 	protected String subgroupName ="";	//e.g. short-term
 	protected int interventionEvents;
 	protected int controlEvents;
