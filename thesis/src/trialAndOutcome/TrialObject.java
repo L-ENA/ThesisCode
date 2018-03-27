@@ -370,63 +370,7 @@ public class TrialObject{
 
 
 
-	public int getNrOfParticipants() {
-		return nrOfParticipants;
-	}
-
-
-
-	public void setNrOfParticipants(int nrOfParticipants) {
-		this.nrOfParticipants = nrOfParticipants;
-	}
-
-
-
-	public String getInterventionGroup() {
-		return interventionGroup;
-	}
-
-
-
-	public void setInterventionGroup(String interventionGroup) {
-		this.interventionGroup = interventionGroup;
-	}
-
-
-
-	public String getControlGroup() {
-		return controlGroup;
-	}
-
-
-
-	public void setControlGroup(String controlGroup) {
-		this.controlGroup = controlGroup;
-	}
-
-
-
-	public int getNrIntervention() {
-		return nrIntervention;
-	}
-
-
-
-	public void setNrIntervention(int nrIntervention) {
-		this.nrIntervention = nrIntervention;
-	}
-
-
-
-	public int getNrControl() {
-		return nrControl;
-	}
-
-
-
-	public void setNrControl(int nrControl) {
-		this.nrControl = nrControl;
-	}
+	
 
 
 
@@ -477,12 +421,7 @@ public class TrialObject{
 	protected String otherBiasRisk;
 	protected String otherBiasJudgement;
 	
-	protected int nrOfParticipants;
-	protected String interventionGroup;
-	protected String controlGroup;
-
-	protected int nrIntervention;
-	protected int nrControl;
+	
 	protected String meerKatCountry;
 	protected DichotomousOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
 	protected ContinuousOutcomeObject cobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome

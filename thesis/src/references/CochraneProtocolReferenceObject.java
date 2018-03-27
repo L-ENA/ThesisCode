@@ -11,7 +11,7 @@ public class CochraneProtocolReferenceObject{
 	
 	public CochraneProtocolReferenceObject(String[] referencesArray, int i){
 		allAuthors = referencesArray[i + 2];
-		title = referencesArray [i + 4];
+		title = referencesArray [i + 3];
 		date = referencesArray[i + 5];
 		originalTitle = referencesArray[i + 9];
 		source = referencesArray [i + 4];

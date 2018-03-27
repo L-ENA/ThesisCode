@@ -21,7 +21,7 @@ public class Main {
 		JAXBContext jaxbContext = JAXBContext.newInstance(Database.class);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		jaxbMarshaller.marshal(d, new File("haloperidol1.xml"));	//puts database into a xml file
+		jaxbMarshaller.marshal(d, new File("vitE.xml"));	//puts database into a xml file
 		
 		
 	} catch (JAXBException e) {

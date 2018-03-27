@@ -22,7 +22,7 @@ public class SoftwareReferenceObject {
 		edition = referencesArray[i + 10];
 		publisher= referencesArray[i + 12];
 		city= referencesArray[i + 13];
-		medium = referencesArray[i + 13];
+		medium = referencesArray[i + 14];
 		
 	}
 
