@@ -25,7 +25,6 @@ public class ContinuousOutcomeObject {
 	protected String controlProse = "";
 	protected String graphLabel1 = "";
 	protected String graphLabel2 = "";
-	protected boolean isGroup1Intervention = true; 	// if group 1 is not the intervention group this boolean will turn to false;
 	protected String subgroupName ="";	//e.g. short-term
 	
 	protected float interventionMean;
@@ -175,7 +174,7 @@ public class ContinuousOutcomeObject {
 		return "ContinuousOutcomeObject [comparisonName=" + comparisonName + ", outcomeName=" + outcomeName
 				+ ", interventionGroupName=" + interventionGroupName + ", interventionProse=" + interventionProse
 				+ ", controlGroupName=" + controlGroupName + ", controlProse=" + controlProse + ", graphLabel1="
-				+ graphLabel1 + ", graphLabel2=" + graphLabel2 + ", isGroup1Intervention=" + isGroup1Intervention
+				+ graphLabel1 + ", graphLabel2=" + graphLabel2 + ", isGroup1Intervention=" 
 				+ ", subgroupName=" + subgroupName + ", interventionMean=" + interventionMean + ", controlMean="
 				+ controlMean + ", interventionSD=" + interventionSD + ", controlSD=" + controlSD
 				+ ", interventionTotalN=" + interventionTotalN + ", controlTotalN=" + controlTotalN + ", invalidIC="
@@ -233,13 +232,7 @@ public class ContinuousOutcomeObject {
 		this.controlProse = group2NameProse;
 	}
 
-	public boolean isGroup1Intervention() {
-		return isGroup1Intervention;
-	}
-
-	public void setGroup1Intervention(boolean isGroup1Intervention) {
-		this.isGroup1Intervention = isGroup1Intervention;
-	}
+	
 	@XmlElement(name = "Subgroup")
 	public String getSubgroupName() {
 		return subgroupName;
