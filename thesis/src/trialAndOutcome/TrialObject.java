@@ -383,6 +383,8 @@ public class TrialObject{
 	protected String designAddedInfo;
 	protected String countries = "";
 	
+	protected SETTING setting = SETTING.NOTAVAILABLE;
+	
 	protected String selectionBiasRandomSequenceJudgement;
 	protected String selectionBiasRandomSequenceBiasRisk;
 	protected String selectionBiasAllocationConcealmentBiasRisk;
@@ -445,6 +447,13 @@ public class TrialObject{
 	//factorial, fully crossed + caps variation
 	private Pattern factorialDesign = Pattern.compile("(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+");
 	private Pattern factorialDesignCleaner = Pattern.compile("([Dd]esign)+|(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+|[:(),.]+");
+	
+	private Pattern inPatient = Pattern.compile("([Ii]n[-\\s]?\\s?((and\\s|or\\s|\\s?/\\s?)out)?patient(s)?)");
+	private Pattern outPatient = Pattern.compile("([Oo]ut[-\\s]?\\s?((and\\s|or\\s|\\s?/\\s?)in)?patient(s)?)");
+	private Pattern emergencyRoom = Pattern.compile("([Ee]mergency\\sroom(s)?|[Ee]mergency\\sdepartment(s)?)");
+	private Pattern community = Pattern.compile("([Cc]ommunity|[Cc]ommunities)");
+	private Pattern hospital = Pattern.compile("([Ii]n\\s)?([Hh]ospital(i[sz]ed)?)");
+
 	
 	//patterns for beginning/end of strings
 	private Pattern beginningEndArray = Pattern.compile("^\\W+|[^\\w)]$"); //All special characters at beginning plus all special characters without closing brackets at end, because of factorial design
@@ -551,29 +560,21 @@ public class TrialObject{
 					Node charMethodsNode = charMethodsList.item(0);
 					Element charMethodsElement = (Element) charMethodsNode;
 					
-					
-					
-					//NodeList methodParagraphList = charMethodsElement.getElementsByTagName("P");
-					//Node methodNode = methodParagraphList.item(0);
-					//Element methodElement = (Element) methodNode;
-						
 					String methodString = charMethodsElement.getTextContent();
-
 					
-				
-			
-					
-					String[] methodStringArray = methodString.split("\\."); // splits text at every full stop
+					String[] methodStringArray = methodString.split("(?=(\\.[A-Za-z*]))|\\.\\n"); // splits text at every full stop that is followed by a linebreak or directly by word character
 					
 					for (int k = 0; k<methodStringArray.length; k++){
-						//System.out.println(methodStringArray[k]);
-						m = beginningEndArray.matcher(methodStringArray[k]);	//Factorial trial design with brackets causes problems otherwise
+						m = beginningEndArray.matcher(methodStringArray[k]);	//To make Strings neat. Sometimes they start with special chars, e.g. "."
 						methodStringArray[k] = m.replaceAll("");
+						//System.out.println(methodStringArray[k] );
 						
-						m = design.matcher(methodStringArray[k]);	
+						m = design.matcher(methodStringArray[k]);	//trial design is extracted in the following lines
 						if (m.find()){	//Uses regex pattern to identify if this line is about design of trial
-							designVerifyer(methodStringArray[k]);
+							designVerifyer(methodStringArray[k]);	
 						}
+						
+						cleanSetting(methodStringArray[k]);
 
 						}
 					
@@ -582,6 +583,18 @@ public class TrialObject{
 					NodeList charParticipantsList = studyToExtractElement.getElementsByTagName("CHAR_PARTICIPANTS");
 					Node charParticipantsNode = charParticipantsList.item(0);
 					Element charParticipantsElement = (Element) charParticipantsNode; 
+					
+					String participantString = charParticipantsElement.getTextContent();
+					String[] participantStringArray = participantString.split("(?=(\\.[A-Za-z]))|\\.\\n");// splits text at every full stop that is followed by a linebreak or directly by word character
+					
+					for (int i = 0; i < participantStringArray.length; i++){
+						m = beginningEndArray.matcher(participantStringArray[i]);	//To make Strings neat. Sometimes they start with special chars, e.g. "."
+						participantStringArray[i] = m.replaceAll("");
+						//System.out.println(participantStringArray[i] );
+						cleanSetting(participantStringArray[i]);
+					}
+					
+					
 					String[] extractedCountries;
 					
 					//Searches the big method String for country names. Writes them to String in alphabetical order and 
@@ -606,7 +619,7 @@ public class TrialObject{
 					//Extracts countries from "Participants" section of table. This info should be in Methods section above but we never know :) Sometimes it pops up here	
 					
 					if(countries.equals("")){
-						String participantString = charParticipantsElement.getTextContent();
+						
 						for (int i = 0; i < countryList.length; i++){
 							if (participantString.contains(countryList[i])){
 								countries = countries + countryList[i] + ", ";
@@ -712,7 +725,8 @@ public class TrialObject{
 					//Extracts OutcomeObjects for this trial
 					
 						System.out.println("Main author of Study: " + mainAuthor);
-						System.out.println(countries);
+						System.out.println(setting.getContent());
+						//System.out.println(countries);
 					
 					//treverses xml to find data section
 					NodeList analysesAndDataList = rootElement.getElementsByTagName("ANALYSES_AND_DATA");
@@ -756,7 +770,7 @@ public class TrialObject{
 											
 											dobj = new DichotomousOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
 											outcomeList.add(dobj);
-											System.out.println("Outcome added to list");
+											//System.out.println("Outcome added to list");
 										}
 									}
 								}
@@ -791,7 +805,7 @@ public class TrialObject{
 											
 											cobj = new ContinuousOutcomeObject(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement);
 											outcomeList.add(cobj);
-											System.out.println("Outcome added to list");
+											//System.out.println("Outcome added to list");
 										}
 									}
 								}
@@ -844,7 +858,42 @@ public class TrialObject{
 					
 	}
 	
-	 
+	 private void cleanSetting(String prose){
+		 if (prose.contains("Setting:")| prose.contains("Location:")| prose.contains("Design:")){
+			 
+			 m = emergencyRoom.matcher(prose);//looks for emergency room
+			 if (m.find()){
+				 setting = SETTING.EMERGENCY;
+			 }
+			 
+			 m = hospital.matcher(prose);//looks for outpatients
+			 if (m.find()){
+				 setting = SETTING.HOSPITAL;
+			 }
+			 
+			 m = community.matcher(prose);//looks for outpatients
+			 if (m.find()){
+				 setting = SETTING.COMMUNITY;
+			 }
+			 
+			 m = outPatient.matcher(prose);//looks for outpatients
+			 if (m.find()){
+				 setting = SETTING.OUTPATIENT;
+			 }
+			 
+			 m = inPatient.matcher(prose);//looks if this prose is about inpatiens
+			 if (m.find()){
+				 m = outPatient.matcher(prose);//looks if it is also about outpatients. If yes, the patient population is made up of both
+				 if (m.find()){
+					 setting = SETTING.INANDOUT;
+				 } else {
+					 setting = SETTING.INPATIENT;//it did not find outpatients, so the population consists only of inpatients
+				 }
+			 }
+			 
+			 
+		 }
+	 }
 	
 	private void referenceExtracting(){
 		//This following for-loop runs through all references for the included study and saves relevant fields into an array that is created to hold information in the following positions:

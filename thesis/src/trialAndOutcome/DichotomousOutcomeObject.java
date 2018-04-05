@@ -183,7 +183,7 @@ public class DichotomousOutcomeObject {
 		comparisonName = comparisonNameElement.getTextContent();
 		outcomeName = dichOutcomeNameElement.getTextContent();
 		
-		System.out.println(comparisonName);
+//		System.out.println(comparisonName);
 //		System.out.println(outcomeName );
 //		System.out.println(subgroupName);
 
@@ -192,14 +192,14 @@ public class DichotomousOutcomeObject {
 			interventionCleaner();	//intervention has to be filled and cleaned via comparison name
 		}
 		interventionGroupName = interventionGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto\\s))", "//");//easier to make a list later
-		System.out.println("Intervention: " + interventionGroupName); //+ " Total: " + group1Total + ". Events: " + group1Events );
+//		System.out.println("Intervention: " + interventionGroupName); //+ " Total: " + group1Total + ". Events: " + group1Events );
 	
 		m = invalidIC.matcher(controlGroupName);
 		if (m.find()){
 			controlCleaner();
 		}
 		controlGroupName = controlGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto\\s))", "//");
-		System.out.println("Control: " +controlGroupName); //+ " Total: " + group2Total + ". Events: " + group2Events );
+//		System.out.println("Control: " +controlGroupName); //+ " Total: " + group2Total + ". Events: " + group2Events );
 		controlGroupName = controlGroupName.toLowerCase();
 		interventionGroupName = interventionGroupName.toLowerCase();
 //		System.out.println(graphLabel1);
