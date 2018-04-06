@@ -383,7 +383,11 @@ public class TrialObject{
 	protected String designAddedInfo;
 	protected String countries = "";
 	
-	protected SETTING setting = SETTING.NOTAVAILABLE;
+	protected SETTING setting = SETTING.NOTAVAILABLE;	//will hold the final value for setting in which this trial was conducted
+	private boolean outP = false;	//Setting info can appear in various fields and be easily falsified by the occurrence of simple words such as "hospital". These boolean turn true if a very clear indication of the setting appears. If the final setting variable later differs from these clear indications, the setting variable will be adjusted.
+	private boolean inP = false;
+	private boolean bothP = false;
+	private boolean emergencyR = false;
 	
 	protected String selectionBiasRandomSequenceJudgement;
 	protected String selectionBiasRandomSequenceBiasRisk;
@@ -450,9 +454,9 @@ public class TrialObject{
 	
 	private Pattern inPatient = Pattern.compile("([Ii]n[-\\s]?\\s?((and\\s|or\\s|\\s?/\\s?)out)?patient(s)?)");
 	private Pattern outPatient = Pattern.compile("([Oo]ut[-\\s]?\\s?((and\\s|or\\s|\\s?/\\s?)in)?patient(s)?)");
-	private Pattern emergencyRoom = Pattern.compile("([Ee]mergency\\sroom(s)?|[Ee]mergency\\sdepartment(s)?)");
+	private Pattern emergencyRoom = Pattern.compile("([Ee]mergency\\s(rooms?|departments?))");
 	private Pattern community = Pattern.compile("([Cc]ommunity|[Cc]ommunities)");
-	private Pattern hospital = Pattern.compile("([Ii]n\\s)?([Hh]ospital(i[sz]ed)?)");
+	private Pattern hospital = Pattern.compile("([Ii]n\\s)?([Hh]ospital(i[sz]ed)?)|([Mm]ental\\shealth\\scente?re?)|([Pp]sychiatr(y|ic)|([Ii]ntensive\\scare))");
 
 	
 	//patterns for beginning/end of strings
@@ -599,7 +603,7 @@ public class TrialObject{
 					
 					//Searches the big method String for country names. Writes them to String in alphabetical order and 
 					//also creates output in MeerKatBE syntax
-					String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cambodia","Cameroon","Canada","Cabo Verde","China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia", "Europe", "Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","Norway","Oman","other countries","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru", "Puerto Rico","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","UK", "Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","United States","Uruguay","USA","USSR","Uzbekistan","Vanuatu","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
+					String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cambodia","Cameroon","Canada","Cabo Verde","China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","countries","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia", "Europe", "Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","Norway","Oman","other countries","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru", "Puerto Rico","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","UK", "Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","United States","Uruguay","USA","USSR","Uzbekistan","Vanuatu","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
 					
 					for (int i = 0; i < countryList.length; i++){
 							if (methodString.contains(countryList[i])){
@@ -726,6 +730,7 @@ public class TrialObject{
 					
 						System.out.println("Main author of Study: " + mainAuthor);
 						System.out.println(setting.getContent());
+						System.out.println(countries);
 						//System.out.println(countries);
 					
 					//treverses xml to find data section
@@ -859,35 +864,39 @@ public class TrialObject{
 	}
 	
 	 private void cleanSetting(String prose){
+		 
 		 if (prose.contains("Setting:")| prose.contains("Location:")| prose.contains("Design:")){
 			 
 			 m = emergencyRoom.matcher(prose);//looks for emergency room
 			 if (m.find()){
 				 setting = SETTING.EMERGENCY;
+				 emergencyR = true;
 			 }
 			 
-			 m = hospital.matcher(prose);//looks for outpatients
-			 if (m.find()){
+			 m = hospital.matcher(prose);//looks for hospital setting
+			 if (m.find() && emergencyR  == false){	//to avoid emergency room information to be overwritten when hospital name appears - emergency rooms are naturally located in hospitals anyway
 				 setting = SETTING.HOSPITAL;
 			 }
 			 
-			 m = community.matcher(prose);//looks for outpatients
+			 m = community.matcher(prose);//looks for community setting
 			 if (m.find()){
 				 setting = SETTING.COMMUNITY;
 			 }
 			 
 			 m = outPatient.matcher(prose);//looks for outpatients
-			 if (m.find()){
+			 if (m.find() || outP == true){	// if a clear reference to in, out, or mixed setting was found before, and this is the nth time this method was called, or because it said things like "hospital inpatients, admitted through emergency room", the following booleans make sure that the right value is re-written to the setting variable.
 				 setting = SETTING.OUTPATIENT;
+				 outP = true;
 			 }
 			 
 			 m = inPatient.matcher(prose);//looks if this prose is about inpatiens
-			 if (m.find()){
-				 m = outPatient.matcher(prose);//looks if it is also about outpatients. If yes, the patient population is made up of both
-				 if (m.find()){
+			 if (m.find() || inP == true ){
+				 if (outP == true || bothP == true){	//outP was set true before if outpatients came up
 					 setting = SETTING.INANDOUT;
+					 bothP = true;
 				 } else {
 					 setting = SETTING.INPATIENT;//it did not find outpatients, so the population consists only of inpatients
+					 inP = true;
 				 }
 			 }
 			 
