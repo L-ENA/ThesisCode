@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 //@XmlRootElement(name = "ContOutcome")
-public class ContinuousOutcomeObject {
+public class ContinuousOutcomeObject extends OutcomeObject{
 
 	@XmlAttribute
     protected final String outcomeType ="Continuous";

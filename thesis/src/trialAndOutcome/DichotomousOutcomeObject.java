@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 //@XmlRootElement(name = "DichOutcome")
-public class DichotomousOutcomeObject {
+public class DichotomousOutcomeObject extends OutcomeObject{
 	
 	
 	@XmlAttribute
