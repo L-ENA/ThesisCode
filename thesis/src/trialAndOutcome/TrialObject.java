@@ -22,6 +22,7 @@ import references.ConferenceReferenceObject;
 import references.CorrespondenceReferenceObject;
 import references.JournalReferenceObject;
 import references.OtherReferenceObject;
+import references.ReferenceObject;
 import references.SoftwareReferenceObject;
 import references.UnpublishedReferenceObject;
 
@@ -96,51 +97,7 @@ public class TrialObject{
 
 
 
-	public boolean isCrossoverTrial() {
-		return crossoverTrial;
-	}
-
-
-
-	public void setCrossoverTrial(boolean crossoverTrial) {
-		this.crossoverTrial = crossoverTrial;
-	}
-
-
-
-	public boolean isParalellTrial() {
-		return paralellTrial;
-	}
-
-
-
-	public void setParalellTrial(boolean paralellTrial) {
-		this.paralellTrial = paralellTrial;
-	}
-
-
-
-	public boolean isFactorialTrial() {
-		return factorialTrial;
-	}
-
-
-
-	public void setFactorialTrial(boolean factorialTrial) {
-		this.factorialTrial = factorialTrial;
-	}
-
-
-
-	public boolean isOtherDesign() {
-		return otherDesign;
-	}
-
-
-
-	public void setOtherDesign(boolean otherDesign) {
-		this.otherDesign = otherDesign;
-	}
+	
 
 
 
@@ -363,7 +320,7 @@ public class TrialObject{
 	}
 
 
-	public void setOutcomeList(List<Object> outcomeList) {
+	public void setOutcomeList(List<OutcomeObject> outcomeList) {
 		this.outcomeList = outcomeList;
 	}
 //////////////////////////////////////////////////////////////////attributes
@@ -375,20 +332,50 @@ public class TrialObject{
 	protected String revManID;//check
 	protected String[] references; //check
 
-	protected boolean crossoverTrial = false;
-	protected boolean paralellTrial = false;
-	protected boolean factorialTrial = false;
-	protected boolean otherDesign = false;
+	
 	protected String designProse;
 	protected String designAddedInfo;
 	protected String countries = "";
 	
-	protected SETTING setting = SETTING.NOTAVAILABLE;	//will hold the final value for setting in which this trial was conducted
+	protected SETTING trialSetting = SETTING.NOTAVAILABLE;	//will hold the final value for setting in which this trial was conducted
+	
+	public SETTING getSetting() {
+		return trialSetting;
+	}
+
+
+	public void setSetting(SETTING setting) {
+		this.trialSetting = setting;
+	}
 	private boolean outP = false;	//Setting info can appear in various fields and be easily falsified by the occurrence of simple words such as "hospital". These boolean turn true if a very clear indication of the setting appears. If the final setting variable later differs from these clear indications, the setting variable will be adjusted.
 	private boolean inP = false;
 	private boolean bothP = false;
 	private boolean emergencyR = false;
+	protected DESIGN trialDesign = DESIGN.NOTAVAILABLE;
 	
+	public DESIGN getTrialDesign() {
+		return trialDesign;
+	}
+
+
+	public void setTrialDesign(DESIGN trialDesign) {
+		this.trialDesign = trialDesign;
+	}
+	private boolean crossoverTrial = false;
+	private boolean paralellTrial = false;
+	private boolean factorialTrial = false;
+	private boolean otherDesign = false;
+	
+	protected BLINDNESS blindingMethod = BLINDNESS.NOTAVAILABLE;
+	
+	public BLINDNESS getBlindingMethod() {
+		return blindingMethod;
+	}
+
+
+	public void setBlindingMethod(BLINDNESS blindingMethod) {
+		this.blindingMethod = blindingMethod;
+	}
 	protected String selectionBiasRandomSequenceJudgement;
 	protected String selectionBiasRandomSequenceBiasRisk;
 	protected String selectionBiasAllocationConcealmentBiasRisk;
@@ -408,10 +395,28 @@ public class TrialObject{
 	protected String meerKatCountry;
 	protected DichotomousOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
 	protected ContinuousOutcomeObject cobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
-	protected Object refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. g and s
+	protected ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. 
+	protected List<ReferenceObject> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects
+
+
+	public ReferenceObject getRefObject() {
+		return refObject;
+	}
+
+
+	public void setRefObject(ReferenceObject refObject) {
+		this.refObject = refObject;
+	}
 	
-	protected List<Object> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects , needs getter and setters
 	
+	public List<ReferenceObject> getReferenceList() {
+		return referenceList;
+	}
+
+
+	public void setReferenceList(List<ReferenceObject> referenceList) {
+		this.referenceList = referenceList;
+	}
 
 
 	public ContinuousOutcomeObject getCobj() {
@@ -432,10 +437,10 @@ public class TrialObject{
 		this.dobj = dobj;
 	}
 
-	protected List<Object> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
+	protected List<OutcomeObject> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
 	
 	@XmlElement(name = "OUTCOME")
-	public List<Object> getOutcomeList() {
+	public List<OutcomeObject> getOutcomeList() {
 		return outcomeList;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////private attributes that are only needed internally
@@ -452,11 +457,18 @@ public class TrialObject{
 	private Pattern factorialDesign = Pattern.compile("(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+");
 	private Pattern factorialDesignCleaner = Pattern.compile("([Dd]esign)+|(([Ff]actorial)|([Ff]ully\\s[Cc]rossed))+|[:(),.]+");
 	
-	private Pattern inPatient = Pattern.compile("([Ii]n[-\\s]?\\s?((and\\s|or\\s|\\s?/\\s?)out)?patient(s)?)");
+	private Pattern inPatient = Pattern.compile("([Ii]n[-\\s]?\\s?((and\\s|or\\s|\\s?/\\s?)out)?patient(s)?)");//Setting patterns
 	private Pattern outPatient = Pattern.compile("([Oo]ut[-\\s]?\\s?((and\\s|or\\s|\\s?/\\s?)in)?patient(s)?)");
 	private Pattern emergencyRoom = Pattern.compile("([Ee]mergency\\s(rooms?|departments?))");
 	private Pattern community = Pattern.compile("([Cc]ommunity|[Cc]ommunities)");
 	private Pattern hospital = Pattern.compile("([Ii]n\\s)?([Hh]ospital(i[sz]ed)?)|([Mm]ental\\shealth\\scente?re?)|([Pp]sychiatr(y|ic)|([Ii]ntensive\\scare))");
+	
+	private Pattern blindness = Pattern.compile("([Bb]linding)|([Bb]lindness)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind)");
+	private Pattern doubleBlind = Pattern.compile("[Dd]ouble");
+	private Pattern singleBlind = Pattern.compile("([Ss]ingle)");
+	private Pattern tripleBlind = Pattern.compile("[Tt]riple");
+	private Pattern openLabel = Pattern.compile("([Oo]pen\\s?-?(([Tt]rial)|([Ll]abel)))|([Nn]on\\s?-?[Bb]lind)");
+	
 
 	
 	//patterns for beginning/end of strings
@@ -579,6 +591,7 @@ public class TrialObject{
 						}
 						
 						cleanSetting(methodStringArray[k]);
+						cleanBlindness(methodStringArray[k]);
 
 						}
 					
@@ -684,41 +697,52 @@ public class TrialObject{
 						if (references[i].equals("JOURNAL_ARTICLE")){
 							refObject = new JournalReferenceObject(references, i);
 							referenceList.add(refObject);
+							//System.out.println(refObject.getClass());
 							i = i + 14; 	//its plus 14 because +1 is added at the end of the loop and this array contains new info to check on every 15th index
 						} else if (references[i].equals("CONFERENCE_PROC")){
 							refObject = new ConferenceReferenceObject(references, i);
 							referenceList.add(refObject);
+							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("UNPUBLISHED")){
 							refObject = new UnpublishedReferenceObject(references, i);
 							referenceList.add(refObject);
+							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("OTHER")){
 							refObject = new OtherReferenceObject(references, i);
-							referenceList.add(refObject);	
+							referenceList.add(refObject);
+							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("BOOK_SECTION")){
 							refObject = new BookSectionReferenceObject(references, i);
+							referenceList.add(refObject);
+							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("CORRESPONDENCE")){
 							refObject = new CorrespondenceReferenceObject(references, i);
 							referenceList.add(refObject);
+							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("BOOK")){
 							refObject = new BookReferenceObject(references, i);
 							referenceList.add(refObject);
+							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("COCHRANE_REVIEW")){
 							refObject = new CochraneReviewReferenceObject(references, i);
 							referenceList.add(refObject);
+							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("COCHRANE_PROTOCOL")){
 							refObject = new CochraneProtocolReferenceObject(references, i);
 							referenceList.add(refObject);
+							//System.out.println(refObject.getClass());
 							i = i + 14;
 						}else if (references[i].equals("COMPUTER_PROGRAM")){
 							refObject = new SoftwareReferenceObject(references, i);
 							referenceList.add(refObject);
+							//System.out.println(refObject.getClass());
 							i = i + 14;
 						}
 					}
@@ -729,8 +753,9 @@ public class TrialObject{
 					//Extracts OutcomeObjects for this trial
 					
 						System.out.println("Main author of Study: " + mainAuthor);
-						System.out.println(setting.getContent());
+						System.out.println(trialSetting.getContent());
 						System.out.println(countries);
+						System.out.println(blindingMethod.getContent());
 						//System.out.println(countries);
 					
 					//treverses xml to find data section
@@ -869,33 +894,33 @@ public class TrialObject{
 			 
 			 m = emergencyRoom.matcher(prose);//looks for emergency room
 			 if (m.find()){
-				 setting = SETTING.EMERGENCY;
+				 trialSetting = SETTING.EMERGENCY;
 				 emergencyR = true;
 			 }
 			 
 			 m = hospital.matcher(prose);//looks for hospital setting
 			 if (m.find() && emergencyR  == false){	//to avoid emergency room information to be overwritten when hospital name appears - emergency rooms are naturally located in hospitals anyway
-				 setting = SETTING.HOSPITAL;
+				 trialSetting = SETTING.HOSPITAL;
 			 }
 			 
 			 m = community.matcher(prose);//looks for community setting
 			 if (m.find()){
-				 setting = SETTING.COMMUNITY;
+				 trialSetting = SETTING.COMMUNITY;
 			 }
 			 
 			 m = outPatient.matcher(prose);//looks for outpatients
 			 if (m.find() || outP == true){	// if a clear reference to in, out, or mixed setting was found before, and this is the nth time this method was called, or because it said things like "hospital inpatients, admitted through emergency room", the following booleans make sure that the right value is re-written to the setting variable.
-				 setting = SETTING.OUTPATIENT;
+				 trialSetting = SETTING.OUTPATIENT;
 				 outP = true;
 			 }
 			 
 			 m = inPatient.matcher(prose);//looks if this prose is about inpatiens
 			 if (m.find() || inP == true ){
 				 if (outP == true || bothP == true){	//outP was set true before if outpatients came up
-					 setting = SETTING.INANDOUT;
+					 trialSetting = SETTING.INANDOUT;
 					 bothP = true;
 				 } else {
-					 setting = SETTING.INPATIENT;//it did not find outpatients, so the population consists only of inpatients
+					 trialSetting = SETTING.INPATIENT;//it did not find outpatients, so the population consists only of inpatients
 					 inP = true;
 				 }
 			 }
@@ -1246,12 +1271,40 @@ public class TrialObject{
 		}
 	}
 	
+	private void cleanBlindness(String str){//looks which kind of blinding methods were extracted for this trial
+		
+		m = blindness.matcher(str);//checks if this String is about blindness at all
+		
+		if (m.find()){//this big if-construct attempts to determine which kind of blindness is present
+			m = doubleBlind.matcher(str);//looks for indication that the trial is double-blind
+			if (m.find()){
+				blindingMethod = BLINDNESS.DOUBLEBLIND;//the pattern matched so this trial is classified as double-blind
+			} else {//the pattern did not match so other options are explored. Blindness options are checked in order of decreasing likelihood.
+				m = singleBlind.matcher(str);
+				if (m.find()){
+					blindingMethod = BLINDNESS.SINGLEBLIND;
+					} else {
+						m = openLabel.matcher(str);
+						if (m.find()){
+							blindingMethod = BLINDNESS.OPENTRIAL;
+						} else {
+							m = tripleBlind.matcher(str);
+							if (m.find()){
+								blindingMethod = BLINDNESS.TRIPLEBLIND;
+							}
+						}
+					}
+				}
+			}
+		}
+		
 	private void designVerifyer(String str){
 		
 		//To see if this String contains info on trial design
 		m = parallelDesign.matcher(str); 	//Uses regex pattern for identifying parallel trials
 		if (m.find()){	//To see if this trial is a parallel trial. Returns true if the trial is parallel
 			paralellTrial = true;	//Boolean to store that this trial is parallel
+			trialDesign = DESIGN.PARALLEL;
 			designProse = str.trim();	//stores intact description of the trial
 			m = parallelDesignCleaner.matcher(str);	//uses regex pattern for cleaning parellel trial
 			designAddedInfo = m.replaceAll("").trim();	//cleans additional info from prose
@@ -1267,6 +1320,7 @@ public class TrialObject{
 			m = crossoverDesign.matcher(str); 
 			if (m.find()){
 				crossoverTrial = true;
+				trialDesign = DESIGN.CROSSOVER;
 				designProse = str.trim();
 				m = crossoverDesignCleaner.matcher(str);
 				designAddedInfo = m.replaceAll("").trim();
@@ -1281,6 +1335,7 @@ public class TrialObject{
 				m = factorialDesign.matcher(str);
 				if (m.find()){
 					factorialTrial = true;
+					trialDesign = DESIGN.FACTORIAL;
 					designProse = str.trim();
 					m = factorialDesignCleaner.matcher(str);
 					designAddedInfo = m.replaceAll("").trim();
@@ -1294,6 +1349,7 @@ public class TrialObject{
 	//			System.out.println("Design: factorial" + ". PROSE DESIGN: " + designProse);
 				} else {
 					otherDesign = true;
+					trialDesign = DESIGN.NOTAVAILABLE;
 					designProse = str.trim();
 					designAddedInfo = "";
 				}
