@@ -1,6 +1,6 @@
 package references;
 
-public class CochraneReviewReferenceObject {
+public class CochraneReviewReferenceObject extends ReferenceObject{
 	protected String type = "CochraneReview";
 	protected String allAuthors = "";
 	protected String title = "";
@@ -16,6 +16,62 @@ public class CochraneReviewReferenceObject {
 		originalTitle = referencesArray[i + 9];
 		source = referencesArray [i + 4];
 		volume = referencesArray[i + 6];
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getAllAuthors() {
+		return allAuthors;
+	}
+
+	public void setAllAuthors(String allAuthors) {
+		this.allAuthors = allAuthors;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getOriginalTitle() {
+		return originalTitle;
+	}
+
+	public void setOriginalTitle(String originalTitle) {
+		this.originalTitle = originalTitle;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getVolume() {
+		return volume;
+	}
+
+	public void setVolume(String volume) {
+		this.volume = volume;
 	}
 	
 }
