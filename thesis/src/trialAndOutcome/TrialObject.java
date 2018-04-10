@@ -33,349 +33,54 @@ public class TrialObject{
 		super();
 	}
 
-
-//////////////////////////////////////////////////////////////////////////////getters and setters for attributes that will be in the exported xml
-	public String getMainAuthor() {
-		return mainAuthor;
-	}
-
-
-
-	public void setMainAuthor(String mainAuthor) {
-		this.mainAuthor = mainAuthor;
-	}
-
-
-
-	public int getYear() {
-		return year;
-	}
-
-
-
-	public void setYear(int year) {
-		this.year = year;
-	}
-
-
-
-	public String getAuthorYearLetter() {
-		return aauthorYearLetter;
-	}
-
-
-
-	public void setAuthorYearLetter(String authorYearLetter) {
-		this.aauthorYearLetter = authorYearLetter;
-	}
-
-
-
-	
-
-	public String getRevManID() {
-		return revManID;
-	}
-
-
-
-	public void setRevManID(String revManID) {
-		this.revManID = revManID;
-	}
-
-
-@XmlElement
-	public String[] getReferences() {
-		return references;
-	}
-
-
-
-	public void setReferences(String[] references) {
-		this.references = references;
-	}
-
-
-
-	
-
-
-
-	public String getDesignProse() {
-		return designProse;
-	}
-
-
-
-	public void setDesignProse(String designProse) {
-		this.designProse = designProse;
-	}
-
-
-
-	public String getDesignAddedInfo() {
-		return designAddedInfo;
-	}
-
-
-
-	public void setDesignAddedInfo(String designAddedInfo) {
-		this.designAddedInfo = designAddedInfo;
-	}
-
-
-
-	public String getCountries() {
-		return countries;
-	}
-
-
-
-	public void setCountries(String countries) {
-		this.countries = countries;
-	}
-
-
-
-	public String getSelectionBiasRandomSequenceJudgement() {
-		return selectionBiasRandomSequenceJudgement;
-	}
-
-
-
-	public void setSelectionBiasRandomSequenceJudgement(String selectionBiasRandomSequenceJudgement) {
-		this.selectionBiasRandomSequenceJudgement = selectionBiasRandomSequenceJudgement;
-	}
-
-
-
-	public String getSelectionBiasRandomSequenceBiasRisk() {
-		return selectionBiasRandomSequenceBiasRisk;
-	}
-
-
-
-	public void setSelectionBiasRandomSequenceBiasRisk(String selectionBiasRandomSequenceBiasRisk) {
-		this.selectionBiasRandomSequenceBiasRisk = selectionBiasRandomSequenceBiasRisk;
-	}
-
-
-
-	public String getSelectionBiasAllocationConcealmentBiasRisk() {
-		return selectionBiasAllocationConcealmentBiasRisk;
-	}
-
-
-
-	public void setSelectionBiasAllocationConcealmentBiasRisk(String selectionBiasAllocationConcealmentBiasRisk) {
-		this.selectionBiasAllocationConcealmentBiasRisk = selectionBiasAllocationConcealmentBiasRisk;
-	}
-
-
-
-	public String getSelectionBiasAllocationConcealmentJudgement() {
-		return selectionBiasAllocationConcealmentJudgement;
-	}
-
-
-
-	public void setSelectionBiasAllocationConcealmentJudgement(String selectionBiasAllocationConcealmentJudgement) {
-		this.selectionBiasAllocationConcealmentJudgement = selectionBiasAllocationConcealmentJudgement;
-	}
-
-
-
-	public String getPerformanceBiasRisk() {
-		return performanceBiasRisk;
-	}
-
-
-
-	public void setPerformanceBiasRisk(String performanceBiasRisk) {
-		this.performanceBiasRisk = performanceBiasRisk;
-	}
-
-
-
-	public String getPerformanceBiasJudgement() {
-		return performanceBiasJudgement;
-	}
-
-
-
-	public void setPerformanceBiasJudgement(String performanceBiasJudgement) {
-		this.performanceBiasJudgement = performanceBiasJudgement;
-	}
-
-
-
-	public String getDetectionBiasRisk() {
-		return detectionBiasRisk;
-	}
-
-
-
-	public void setDetectionBiasRisk(String detectionBiasRisk) {
-		this.detectionBiasRisk = detectionBiasRisk;
-	}
-
-
-
-	public String getDetectionBiasJudgement() {
-		return detectionBiasJudgement;
-	}
-
-
-
-	public void setDetectionBiasJudgement(String detectionBiasJudgement) {
-		this.detectionBiasJudgement = detectionBiasJudgement;
-	}
-
-
-
-	public String getAttritionBiasRisk() {
-		return attritionBiasRisk;
-	}
-
-
-
-	public void setAttritionBiasRisk(String attritionBiasRisk) {
-		this.attritionBiasRisk = attritionBiasRisk;
-	}
-
-
-
-	public String getAttritionBiasJudgement() {
-		return attritionBiasJudgement;
-	}
-
-
-
-	public void setAttritionBiasJudgement(String attritionBiasJudgement) {
-		this.attritionBiasJudgement = attritionBiasJudgement;
-	}
-
-
-
-	public String getReportingBiasRisk() {
-		return reportingBiasRisk;
-	}
-
-
-
-	public void setReportingBiasRisk(String reportingBiasRisk) {
-		this.reportingBiasRisk = reportingBiasRisk;
-	}
-
-
-
-	public String getReportingBiasJudgement() {
-		return reportingBiasJudgement;
-	}
-
-
-
-	public void setReportingBiasJudgement(String reportingBiasJudgement) {
-		this.reportingBiasJudgement = reportingBiasJudgement;
-	}
-
-
-
-	public String getOtherBiasRisk() {
-		return otherBiasRisk;
-	}
-
-
-
-	public void setOtherBiasRisk(String otherBiasRisk) {
-		this.otherBiasRisk = otherBiasRisk;
-	}
-
-
-
-	public String getOtherBiasJudgement() {
-		return otherBiasJudgement;
-	}
-
-
-
-	public void setOtherBiasJudgement(String otherBiasJudgement) {
-		this.otherBiasJudgement = otherBiasJudgement;
-	}
-
-
-
-	
-
-
-
-	public String getMeerKatCountry() {
-		return meerKatCountry;
-	}
-
-
-
-	public void setMeerKatCountry(String meerKatCountry) {
-		this.meerKatCountry = meerKatCountry;
-	}
-
-
-	public void setOutcomeList(List<OutcomeObject> outcomeList) {
-		this.outcomeList = outcomeList;
-	}
-//////////////////////////////////////////////////////////////////attributes
+//////////////////////////////////////////////////////////////////attributes. the protected ones have getters and setters because they will end up in the finished XML
 	//protected static int counter = 1;
 	protected String mainAuthor; //check
 	protected int year;//check
 	protected String aauthorYearLetter = ""; //for comparison with MeerKatBE
 	
+	protected String reviewTitle = "";
+	
+
+	protected String doi = "";
+	
 	protected String revManID;//check
 	protected String[] references; //check
 
-	
-	protected String designProse;
-	protected String designAddedInfo;
-	protected String countries = "";
-	
-	protected SETTING trialSetting = SETTING.NOTAVAILABLE;	//will hold the final value for setting in which this trial was conducted
-	
-	public SETTING getSetting() {
-		return trialSetting;
-	}
-
-
-	public void setSetting(SETTING setting) {
-		this.trialSetting = setting;
-	}
-	private boolean outP = false;	//Setting info can appear in various fields and be easily falsified by the occurrence of simple words such as "hospital". These boolean turn true if a very clear indication of the setting appears. If the final setting variable later differs from these clear indications, the setting variable will be adjusted.
-	private boolean inP = false;
-	private boolean bothP = false;
-	private boolean emergencyR = false;
-	protected DESIGN trialDesign = DESIGN.NOTAVAILABLE;
-	
-	public DESIGN getTrialDesign() {
-		return trialDesign;
-	}
-
-
-	public void setTrialDesign(DESIGN trialDesign) {
-		this.trialDesign = trialDesign;
-	}
+	protected DESIGN trialDesign = DESIGN.NOTAVAILABLE;////variables to do with trial design info
 	private boolean crossoverTrial = false;
 	private boolean paralellTrial = false;
 	private boolean factorialTrial = false;
 	private boolean otherDesign = false;
+	protected String designProse = "";
+	protected String designAddedInfo = "";
 	
-	protected BLINDNESS blindingMethod = BLINDNESS.NOTAVAILABLE;
+	protected String countries = "";
+	protected String meerKatCountry = "";
+	protected String countryProse = ""; // this string is going to be big. but in case a country is not added in the list or a city is added instead of a country we need to screen these one by one
 	
-	public BLINDNESS getBlindingMethod() {
-		return blindingMethod;
-	}
+	
+	
 
+	protected SETTING trialSetting = SETTING.NOTAVAILABLE;	//will hold the final value for setting in which this trial was conducted
+	private boolean outP = false;	//Setting info can appear in various fields and be easily falsified by the occurrence of simple words such as "hospital". These boolean turn true if a very clear indication of the setting appears. If the final setting variable later differs from these clear indications, the setting variable will be adjusted.
+	private boolean inP = false;
+	private boolean bothP = false;
+	private boolean emergencyR = false;
+	private boolean psychiatricH = false;
+	private boolean hospitalSetting = true; 
+	
+	protected String settingProse = "";
+	
+	
+	
 
-	public void setBlindingMethod(BLINDNESS blindingMethod) {
-		this.blindingMethod = blindingMethod;
-	}
+	protected BLINDNESS blindingMethod = BLINDNESS.NOTAVAILABLE;//all about blinding
+	protected String blindingProse = "";
+	
+	
+	
+
 	protected String selectionBiasRandomSequenceJudgement;
 	protected String selectionBiasRandomSequenceBiasRisk;
 	protected String selectionBiasAllocationConcealmentBiasRisk;
@@ -392,58 +97,14 @@ public class TrialObject{
 	protected String otherBiasJudgement;
 	
 	
-	protected String meerKatCountry;
+	
 	protected DichotomousOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
 	protected ContinuousOutcomeObject cobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
 	protected ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. 
 	protected List<ReferenceObject> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects
 
 
-	public ReferenceObject getRefObject() {
-		return refObject;
-	}
-
-
-	public void setRefObject(ReferenceObject refObject) {
-		this.refObject = refObject;
-	}
-	
-	
-	public List<ReferenceObject> getReferenceList() {
-		return referenceList;
-	}
-
-
-	public void setReferenceList(List<ReferenceObject> referenceList) {
-		this.referenceList = referenceList;
-	}
-
-
-	public ContinuousOutcomeObject getCobj() {
-		return cobj;
-	}
-
-
-	public void setCobj(ContinuousOutcomeObject cobj) {
-		this.cobj = cobj;
-	}
-
-
-	public DichotomousOutcomeObject getDobj() {
-		return dobj;
-	}
-
-	public void setDobj(DichotomousOutcomeObject dobj) {
-		this.dobj = dobj;
-	}
-
-	protected List<OutcomeObject> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
-	
-	@XmlElement(name = "OUTCOME")
-	public List<OutcomeObject> getOutcomeList() {
-		return outcomeList;
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////private attributes that are only needed internally
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////all the patterns for cleaning and extraction
 	private int breakBiasVerification;
 	private Matcher m;
 	private Pattern design = Pattern.compile("([Dd]esign)+");
@@ -461,21 +122,25 @@ public class TrialObject{
 	private Pattern outPatient = Pattern.compile("([Oo]ut[-\\s]?\\s?((and\\s|or\\s|\\s?/\\s?)in)?patient(s)?)");
 	private Pattern emergencyRoom = Pattern.compile("([Ee]mergency\\s(rooms?|departments?))");
 	private Pattern community = Pattern.compile("([Cc]ommunity|[Cc]ommunities)");
-	private Pattern hospital = Pattern.compile("([Ii]n\\s)?([Hh]ospital(i[sz]ed)?)|([Mm]ental\\shealth\\scente?re?)|([Pp]sychiatr(y|ic)|([Ii]ntensive\\scare))");
+	private Pattern hospital = Pattern.compile("([Ii]n\\s)?([Hh]ospital(i[sz]ed)?)|([Mm]ental\\shealth\\scente?re?)|([Ii]ntensive\\scare)");
+	private Pattern psychiatricHospital = Pattern.compile("([Pp]sychiatr(y|ic))");
 	
 	private Pattern blindness = Pattern.compile("([Bb]linding)|([Bb]lindness)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind)");
 	private Pattern doubleBlind = Pattern.compile("[Dd]ouble");
 	private Pattern singleBlind = Pattern.compile("([Ss]ingle)");
 	private Pattern tripleBlind = Pattern.compile("[Tt]riple");
+	private Pattern quadrupleBlind = Pattern.compile("[Qq]uadruple");
 	private Pattern openLabel = Pattern.compile("([Oo]pen\\s?-?(([Tt]rial)|([Ll]abel)))|([Nn]on\\s?-?[Bb]lind)");
 	
-
+	private Pattern countryPattern = Pattern.compile("(Locations?:)|([Cc]ountr(y|ies):)|([Ss]etting:)");
 	
 	//patterns for beginning/end of strings
 	private Pattern beginningEndArray = Pattern.compile("^\\W+|[^\\w)]$"); //All special characters at beginning plus all special characters without closing brackets at end, because of factorial design
 	private Pattern beginningEnd = Pattern.compile("^\\W+|\\W+$");	//All special chars at beginning and end
 	private Pattern endPunctuationCleanerA = Pattern.compile("([^.!?\"']$)");	//matches when neither .!?"' at end of sentence. Needs 
 	private Pattern endPunctuationCleanerB = Pattern.compile("([^!?.][\"'])$");	//to be applied after other punctuation regex. matches when there is no !?. before "'
+	
+	/////////////////////////////////////////////////////////////xml related attributes that are used between different methods in the big constructor
 	private Element qualityItemsElement;
 	Element studyElement;
 	private NodeList qualityItemList;
@@ -490,9 +155,25 @@ public class TrialObject{
 						NodeList rootList = review.getElementsByTagName("COCHRANE_REVIEW");
 						Node rootNode = rootList.item(0);
 						rootElement = (Element) rootNode;
+						doi = rootElement.getAttribute("DOI");
+						
 					} catch (Exception e11) {
 						e11.printStackTrace();
 					}
+					
+					try {
+						NodeList coverSheetList = rootElement.getElementsByTagName("COVER_SHEET");
+						Element coverSheetElement = (Element) coverSheetList.item(0);
+						
+						NodeList titleList = coverSheetElement.getElementsByTagName("TITLE");
+						Element titleElement = (Element) titleList.item(0);
+						reviewTitle = titleElement.getTextContent().trim();
+					} catch (DOMException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					
 					
 					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Traverses the characteristics of included studies part of the revman file. This is where bias tables and prose information are located
@@ -592,8 +273,11 @@ public class TrialObject{
 						
 						cleanSetting(methodStringArray[k]);
 						cleanBlindness(methodStringArray[k]);
+						getCountryProse(methodStringArray[k]);
+						
 
 						}
+					
 					
 					
 					//Extracts prose from participant section and tries to match
@@ -609,8 +293,13 @@ public class TrialObject{
 						participantStringArray[i] = m.replaceAll("");
 						//System.out.println(participantStringArray[i] );
 						cleanSetting(participantStringArray[i]);
+						getCountryProse(participantStringArray[i]);
 					}
 					
+					if (countryProse != null)
+					countryProse = countryProse.trim(); //in case 2 prose strings are appended to each other there will be an unnecessary whitespace in the end. this one is trimmed away
+					if (settingProse != null)
+					settingProse = settingProse.trim();
 					
 					String[] extractedCountries;
 					
@@ -753,9 +442,9 @@ public class TrialObject{
 					//Extracts OutcomeObjects for this trial
 					
 						System.out.println("Main author of Study: " + mainAuthor);
-						System.out.println(trialSetting.getContent());
-						System.out.println(countries);
-						System.out.println(blindingMethod.getContent());
+						//System.out.println(trialSetting.getContent());
+						//System.out.println(countries);
+						//System.out.println(blindingMethod.getContent());
 						//System.out.println(countries);
 					
 					//treverses xml to find data section
@@ -881,6 +570,8 @@ public class TrialObject{
 //					System.out.println("Country or countries : " + countries);
 //					System.out.println(meerKatCountry);
 					aauthorYearLetter = mainAuthor+year+yearLetter;
+					System.out.println("Setting");
+					System.out.println(settingProse);
 					System.out.println();
 					
 					
@@ -892,19 +583,28 @@ public class TrialObject{
 		 
 		 if (prose.contains("Setting:")| prose.contains("Location:")| prose.contains("Design:")){
 			 
+			 settingProse = settingProse + prose + ". ";
+			 
 			 m = emergencyRoom.matcher(prose);//looks for emergency room
-			 if (m.find()){
+			 if (m.find() && outP == false && inP == false && bothP == false){//only allows to take the value emergency room setting if it was not previously specified that patients are in or outpatients
 				 trialSetting = SETTING.EMERGENCY;
 				 emergencyR = true;
 			 }
 			 
-			 m = hospital.matcher(prose);//looks for hospital setting
-			 if (m.find() && emergencyR  == false){	//to avoid emergency room information to be overwritten when hospital name appears - emergency rooms are naturally located in hospitals anyway
-				 trialSetting = SETTING.HOSPITAL;
+			 m = psychiatricHospital.matcher(prose); //looks for psychiatric hospital type of trial setting
+			 if (m.find() && outP == false && inP == false && bothP == false){
+				 trialSetting = SETTING.PSYCHIATRY;
+				 psychiatricH = true;
 			 }
 			 
-			 m = community.matcher(prose);//looks for community setting
-			 if (m.find()){
+			 m = hospital.matcher(prose);//looks for hospital setting. If conflicting info came up before (eg if it said inpatient setting before and this string just states hospital name) this pure hospital setting gets lower priority than eg. psychiatric hospital. Otherwise, the mention of "psychiatric hospital" would end up being classified as hospital only
+			 if (m.find() && emergencyR  == false && psychiatricH == false && outP == false && inP == false && bothP == false){	//to avoid emergency room information to be overwritten when hospital name appears - emergency rooms are naturally located in hospitals anyway
+				 trialSetting = SETTING.HOSPITAL;
+				 hospitalSetting = true;
+			 }
+			 
+			 m = community.matcher(prose);//looks for community setting. has lower priority that hospital because hospitals can be named as community hospitals. Community settting therefore applies only as long as hospital boolean is false
+			 if (m.find()&& hospitalSetting == false && outP == false && inP == false && bothP == false){
 				 trialSetting = SETTING.COMMUNITY;
 			 }
 			 
@@ -929,6 +629,15 @@ public class TrialObject{
 		 }
 	 }
 	
+	 
+	private void getCountryProse(String str){
+		m = countryPattern.matcher(str);
+		if (m.find()){
+			countryProse = countryProse + str + ". ";
+			
+		}
+	}
+	 
 	private void referenceExtracting(){
 		//This following for-loop runs through all references for the included study and saves relevant fields into an array that is created to hold information in the following positions:
 		//0th,  ..index -> Type of publication, eg. Journal ->"TYPE"
@@ -1275,7 +984,10 @@ public class TrialObject{
 		
 		m = blindness.matcher(str);//checks if this String is about blindness at all
 		
+		
+		
 		if (m.find()){//this big if-construct attempts to determine which kind of blindness is present
+			blindingProse = str;
 			m = doubleBlind.matcher(str);//looks for indication that the trial is double-blind
 			if (m.find()){
 				blindingMethod = BLINDNESS.DOUBLEBLIND;//the pattern matched so this trial is classified as double-blind
@@ -1291,6 +1003,13 @@ public class TrialObject{
 							m = tripleBlind.matcher(str);
 							if (m.find()){
 								blindingMethod = BLINDNESS.TRIPLEBLIND;
+							} else {
+								m = quadrupleBlind.matcher(str);
+								if (m.find()){
+									blindingMethod = BLINDNESS.QUADRUPLEBLIND;
+								} else {
+									blindingMethod = BLINDNESS.OTHER;
+								}
 							}
 						}
 					}
@@ -1306,6 +1025,7 @@ public class TrialObject{
 			paralellTrial = true;	//Boolean to store that this trial is parallel
 			trialDesign = DESIGN.PARALLEL;
 			designProse = str.trim();	//stores intact description of the trial
+			
 			m = parallelDesignCleaner.matcher(str);	//uses regex pattern for cleaning parellel trial
 			designAddedInfo = m.replaceAll("").trim();	//cleans additional info from prose
 			m = beginningEnd.matcher(designAddedInfo);	//regex pattern for cleaning beginning/end from non-word characters
@@ -1322,6 +1042,7 @@ public class TrialObject{
 				crossoverTrial = true;
 				trialDesign = DESIGN.CROSSOVER;
 				designProse = str.trim();
+				//System.out.println("DesignProse: " + designProse);
 				m = crossoverDesignCleaner.matcher(str);
 				designAddedInfo = m.replaceAll("").trim();
 				m = beginningEnd.matcher(designAddedInfo);
@@ -1337,6 +1058,7 @@ public class TrialObject{
 					factorialTrial = true;
 					trialDesign = DESIGN.FACTORIAL;
 					designProse = str.trim();
+					//System.out.println("DesignProse: " + designProse);
 					m = factorialDesignCleaner.matcher(str);
 					designAddedInfo = m.replaceAll("").trim();
 					m = beginningEnd.matcher(designAddedInfo);
@@ -1349,8 +1071,9 @@ public class TrialObject{
 	//			System.out.println("Design: factorial" + ". PROSE DESIGN: " + designProse);
 				} else {
 					otherDesign = true;
-					trialDesign = DESIGN.NOTAVAILABLE;
+					trialDesign = DESIGN.OTHER;
 					designProse = str.trim();
+					//System.out.println("DesignProse: " + designProse);
 					designAddedInfo = "";
 				}
 			}
@@ -1412,6 +1135,399 @@ public class TrialObject{
 		return forReturn;
 	}
 	
+	public String getMainAuthor() {
+		return mainAuthor;
+	}
 
 
+
+	public void setMainAuthor(String mainAuthor) {
+		this.mainAuthor = mainAuthor;
+	}
+
+
+
+	public int getYear() {
+		return year;
+	}
+
+
+
+	public void setYear(int year) {
+		this.year = year;
+	}
+
+
+
+	public String getAuthorYearLetter() {
+		return aauthorYearLetter;
+	}
+
+
+
+	public void setAuthorYearLetter(String authorYearLetter) {
+		this.aauthorYearLetter = authorYearLetter;
+	}
+
+
+
+	
+
+	public String getRevManID() {
+		return revManID;
+	}
+
+
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+
+
+@XmlElement
+	public String[] getReferences() {
+		return references;
+	}
+
+
+
+	public void setReferences(String[] references) {
+		this.references = references;
+	}
+
+
+
+	
+
+
+
+	public String getDesignProse() {
+		return designProse;
+	}
+
+
+
+	public void setDesignProse(String designProse) {
+		this.designProse = designProse;
+	}
+
+
+
+	public String getDesignAddedInfo() {
+		return designAddedInfo;
+	}
+
+
+
+	public void setDesignAddedInfo(String designAddedInfo) {
+		this.designAddedInfo = designAddedInfo;
+	}
+
+
+
+	public String getCountries() {
+		return countries;
+	}
+
+
+
+	public void setCountries(String countries) {
+		this.countries = countries;
+	}
+
+
+
+	public String getSelectionBiasRandomSequenceJudgement() {
+		return selectionBiasRandomSequenceJudgement;
+	}
+
+
+
+	public void setSelectionBiasRandomSequenceJudgement(String selectionBiasRandomSequenceJudgement) {
+		this.selectionBiasRandomSequenceJudgement = selectionBiasRandomSequenceJudgement;
+	}
+
+
+
+	public String getSelectionBiasRandomSequenceBiasRisk() {
+		return selectionBiasRandomSequenceBiasRisk;
+	}
+
+
+
+	public void setSelectionBiasRandomSequenceBiasRisk(String selectionBiasRandomSequenceBiasRisk) {
+		this.selectionBiasRandomSequenceBiasRisk = selectionBiasRandomSequenceBiasRisk;
+	}
+
+
+
+	public String getSelectionBiasAllocationConcealmentBiasRisk() {
+		return selectionBiasAllocationConcealmentBiasRisk;
+	}
+
+
+
+	public void setSelectionBiasAllocationConcealmentBiasRisk(String selectionBiasAllocationConcealmentBiasRisk) {
+		this.selectionBiasAllocationConcealmentBiasRisk = selectionBiasAllocationConcealmentBiasRisk;
+	}
+
+
+
+	public String getSelectionBiasAllocationConcealmentJudgement() {
+		return selectionBiasAllocationConcealmentJudgement;
+	}
+
+
+
+	public void setSelectionBiasAllocationConcealmentJudgement(String selectionBiasAllocationConcealmentJudgement) {
+		this.selectionBiasAllocationConcealmentJudgement = selectionBiasAllocationConcealmentJudgement;
+	}
+
+
+
+	public String getPerformanceBiasRisk() {
+		return performanceBiasRisk;
+	}
+
+
+
+	public void setPerformanceBiasRisk(String performanceBiasRisk) {
+		this.performanceBiasRisk = performanceBiasRisk;
+	}
+
+
+
+	public String getPerformanceBiasJudgement() {
+		return performanceBiasJudgement;
+	}
+
+
+
+	public void setPerformanceBiasJudgement(String performanceBiasJudgement) {
+		this.performanceBiasJudgement = performanceBiasJudgement;
+	}
+
+
+
+	public String getDetectionBiasRisk() {
+		return detectionBiasRisk;
+	}
+
+
+
+	public void setDetectionBiasRisk(String detectionBiasRisk) {
+		this.detectionBiasRisk = detectionBiasRisk;
+	}
+
+
+
+	public String getDetectionBiasJudgement() {
+		return detectionBiasJudgement;
+	}
+
+
+
+	public void setDetectionBiasJudgement(String detectionBiasJudgement) {
+		this.detectionBiasJudgement = detectionBiasJudgement;
+	}
+
+
+
+	public String getAttritionBiasRisk() {
+		return attritionBiasRisk;
+	}
+
+
+
+	public void setAttritionBiasRisk(String attritionBiasRisk) {
+		this.attritionBiasRisk = attritionBiasRisk;
+	}
+
+
+
+	public String getAttritionBiasJudgement() {
+		return attritionBiasJudgement;
+	}
+
+
+
+	public void setAttritionBiasJudgement(String attritionBiasJudgement) {
+		this.attritionBiasJudgement = attritionBiasJudgement;
+	}
+
+
+
+	public String getReportingBiasRisk() {
+		return reportingBiasRisk;
+	}
+
+
+
+	public void setReportingBiasRisk(String reportingBiasRisk) {
+		this.reportingBiasRisk = reportingBiasRisk;
+	}
+
+
+
+	public String getReportingBiasJudgement() {
+		return reportingBiasJudgement;
+	}
+
+
+
+	public void setReportingBiasJudgement(String reportingBiasJudgement) {
+		this.reportingBiasJudgement = reportingBiasJudgement;
+	}
+
+
+
+	public String getOtherBiasRisk() {
+		return otherBiasRisk;
+	}
+
+
+
+	public void setOtherBiasRisk(String otherBiasRisk) {
+		this.otherBiasRisk = otherBiasRisk;
+	}
+
+
+
+	public String getOtherBiasJudgement() {
+		return otherBiasJudgement;
+	}
+
+
+
+	public void setOtherBiasJudgement(String otherBiasJudgement) {
+		this.otherBiasJudgement = otherBiasJudgement;
+	}
+
+
+
+	
+
+
+
+	public String getMeerKatCountry() {
+		return meerKatCountry;
+	}
+
+
+
+	public void setMeerKatCountry(String meerKatCountry) {
+		this.meerKatCountry = meerKatCountry;
+	}
+
+
+	public void setOutcomeList(List<OutcomeObject> outcomeList) {
+		this.outcomeList = outcomeList;
+	}
+/////////////////////////////////complicated ones
+
+	public ReferenceObject getRefObject() {
+		return refObject;
+	}
+
+
+	public void setRefObject(ReferenceObject refObject) {
+		this.refObject = refObject;
+	}
+	
+	
+	public List<ReferenceObject> getReferenceList() {
+		return referenceList;
+	}
+
+
+	public void setReferenceList(List<ReferenceObject> referenceList) {
+		this.referenceList = referenceList;
+	}
+
+
+	public ContinuousOutcomeObject getCobj() {
+		return cobj;
+	}
+
+
+	public void setCobj(ContinuousOutcomeObject cobj) {
+		this.cobj = cobj;
+	}
+
+
+	public DichotomousOutcomeObject getDobj() {
+		return dobj;
+	}
+
+	public void setDobj(DichotomousOutcomeObject dobj) {
+		this.dobj = dobj;
+	}
+
+	protected List<OutcomeObject> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
+	
+	@XmlElement(name = "OUTCOME")
+	public List<OutcomeObject> getOutcomeList() {
+		return outcomeList;
+	}
+	public SETTING getSetting() {
+		return trialSetting;
+	}
+
+
+	public void setSetting(SETTING setting) {
+		this.trialSetting = setting;
+	}
+	public DESIGN getTrialDesign() {
+		return trialDesign;
+	}
+
+
+	public void setTrialDesign(DESIGN trialDesign) {
+		this.trialDesign = trialDesign;
+	}
+	public BLINDNESS getBlindingMethod() {
+		return blindingMethod;
+	}
+
+
+	public void setBlindingMethod(BLINDNESS blindingMethod) {
+		this.blindingMethod = blindingMethod;
+	}
+	public String getCountryProse() {
+		return countryProse;
+	}
+
+	public void setCountryProse(String countryProse) {
+		this.countryProse = countryProse;
+	}
+	
+	public String getSettingProse() {
+		return settingProse;
+	}
+
+	public void setSettingProse(String settingProse) {
+		this.settingProse = settingProse;
+	}
+	public String getBlindingProse() {
+		return blindingProse;
+	}
+
+	public void setBlindingProse(String blindingProse) {
+		this.blindingProse = blindingProse;
+	}
+	public String getReviewTitle() {
+		return reviewTitle;
+	}
+
+	public void setReviewTitle(String reviewTitle) {
+		this.reviewTitle = reviewTitle;
+	}
+
+	public String getDoi() {
+		return doi;
+	}
+
+	public void setDoi(String doi) {
+		this.doi = doi;
+	}
 }
