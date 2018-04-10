@@ -2,7 +2,7 @@ package trialAndOutcome;
 
 public enum SETTING {
 	
-	INPATIENT("inpatient setting"), OUTPATIENT("outpatient setting"), INANDOUT("inpatient and outpatient setting"), EMERGENCY("emergency room setting"), COMMUNITY("community setting"), HOSPITAL("hospital setting"), NOTAVAILABLE("setting not extracted");
+	INPATIENT("inpatient setting"), OUTPATIENT("outpatient setting"), INANDOUT("inpatient and outpatient setting"), EMERGENCY("emergency room setting"), COMMUNITY("community setting"), HOSPITAL("hospital setting"), PSYCHIATRY("Psychiatry setting"), OTHER("See prose for setting"), NOTAVAILABLE("setting not extracted");
 	
 	private final String description;
 

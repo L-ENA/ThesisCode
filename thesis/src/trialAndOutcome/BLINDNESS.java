@@ -2,7 +2,7 @@ package trialAndOutcome;
 
 public enum BLINDNESS {
 	
-	SINGLEBLIND("Single-blind"), DOUBLEBLIND("Double-blind"), TRIPLEBLIND("Triple-blind"), OPENTRIAL("Open trial"), NOTAVAILABLE("Information on blindness was not extracted");
+	SINGLEBLIND("Single"), DOUBLEBLIND("Double"), TRIPLEBLIND("Triple"),QUADRUPLEBLIND("Quadruple"), OPENTRIAL("Open trial"), OTHER("Please see prose for more info"), NOTAVAILABLE("Information on blindness was not extracted");
 	
 	private final String description;
 	
