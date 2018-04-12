@@ -51,7 +51,7 @@ public class Main {
 				);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		String path = "vitE.xml";
+		String path = "haloperidol.xml";
 		jaxbMarshaller.marshal(d, new File(path));	//puts database into a xml file that is saved according to path String
 		
 		
