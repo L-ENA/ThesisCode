@@ -980,33 +980,61 @@ public class TrialObject{
 		}
 	}
 	
-	private void cleanBlindness(String str){//looks which kind of blinding methods were extracted for this trial
+private void cleanBlindness(String str){//looks which kind of blinding methods were extracted for this trial
 		
 		m = blindness.matcher(str);//checks if this String is about blindness at all
-		
+		boolean doubt = false;
+		if (performanceBiasRisk.contains("High")) {//indicates, that authors had doubts about trial methodology
+			doubt = true;
+		}
 		
 		
 		if (m.find()){//this big if-construct attempts to determine which kind of blindness is present
 			blindingProse = str;
 			m = doubleBlind.matcher(str);//looks for indication that the trial is double-blind
 			if (m.find()){
-				blindingMethod = BLINDNESS.DOUBLEBLIND;//the pattern matched so this trial is classified as double-blind
+				if (doubt) {
+					blindingMethod = BLINDNESS.UNCLEARDOUBLE;//review authors had significant doubts about this trial, therefore the value becomes unclear
+				} else {
+					blindingMethod = BLINDNESS.DOUBLE;//the pattern matched so this trial is classified as double-blind
+				}
+				
 			} else {//the pattern did not match so other options are explored. Blindness options are checked in order of decreasing likelihood.
 				m = singleBlind.matcher(str);
 				if (m.find()){
-					blindingMethod = BLINDNESS.SINGLEBLIND;
+					if (doubt) {
+						blindingMethod = BLINDNESS.UNCLEARSINGLE;
+					} else {
+						blindingMethod = BLINDNESS.SINGLE;
+					}
+					
 					} else {
 						m = openLabel.matcher(str);
 						if (m.find()){
-							blindingMethod = BLINDNESS.OPENTRIAL;
+							if (doubt) {
+								blindingMethod = BLINDNESS.UNCLEAROPEN;
+							} else {
+								blindingMethod = BLINDNESS.OPENTRIAL;
+							}
+							
 						} else {
 							m = tripleBlind.matcher(str);
 							if (m.find()){
-								blindingMethod = BLINDNESS.TRIPLEBLIND;
+								if (doubt) {
+									blindingMethod = BLINDNESS.UNCLEARTRIPLE;
+								} else {
+									blindingMethod = BLINDNESS.TRIPLE;
+								}
+								
 							} else {
 								m = quadrupleBlind.matcher(str);
 								if (m.find()){
-									blindingMethod = BLINDNESS.QUADRUPLEBLIND;
+									if (doubt) {
+										blindingMethod = BLINDNESS.UNCLEARQUADRUPLE;
+									} else {
+										blindingMethod = BLINDNESS.QUADRUPLE;
+									}
+									
 								} else {
 									blindingMethod = BLINDNESS.OTHER;
 								}
@@ -1016,6 +1044,8 @@ public class TrialObject{
 				}
 			}
 		}
+		
+
 		
 	private void designVerifyer(String str){
 		
