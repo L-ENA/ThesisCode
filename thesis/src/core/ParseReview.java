@@ -64,5 +64,7 @@ JFileChooser chooser = new JFileChooser();
 		
 		return includedStudiesList.getLength();
 	}
+	
+	
 
 }
