@@ -49,7 +49,7 @@ public class Main {
 				
 				
 				
-				String path = "Z:\\git\\ThesisCode\\thesis\\XMLs\\" + d.reviewName + ".xml";
+				String path = "Z:\\git\\ThesisCode\\thesis\\" + d.reviewName + ".xml";
 				jaxbMarshaller.marshal(d, new File(path));	//puts database into a xml file that is saved according to path String
 				
 				
