@@ -15,29 +15,35 @@ import org.xml.sax.SAXException;
 
 public class ParseReview {
 	
-	protected Document chooseAndParse() throws ParserConfigurationException{
+	protected Document[] chooseAndParse() throws ParserConfigurationException{
 		
 JFileChooser chooser = new JFileChooser();
+chooser.setMultiSelectionEnabled(true);
 		
-		int returnCode = chooser.showOpenDialog(null);
-		if(returnCode == JFileChooser.CANCEL_OPTION){// things to do when cancel
-			return null;
-		} 
+File[] files = null;
 		chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		File review = chooser.getSelectedFile().getAbsoluteFile();
+		int returnValue = chooser.showOpenDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			 files = chooser.getSelectedFiles();
+		}
+		//File review = chooser.getSelectedFile().getAbsoluteFile();
 
-		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-		builderFactory.setIgnoringComments(true);
-		builderFactory.setIgnoringElementContentWhitespace(true);
-
-			Document rm5 = null;
-			try {
-				DocumentBuilder dBuilder = builderFactory.newDocumentBuilder();
-				rm5 = dBuilder.parse(review);
-				rm5.normalize();
-			} catch (ParserConfigurationException e) {
-			} catch (SAXException e) {
-			} catch (IOException e) {
+		Document[] rm5 = new Document[files.length];
+			for (int i = 0; i < files.length; i++) {
+				
+				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+				builderFactory.setIgnoringComments(true);
+				builderFactory.setIgnoringElementContentWhitespace(true);
+				
+				try {
+					DocumentBuilder dBuilder = builderFactory.newDocumentBuilder();
+					rm5[i] = dBuilder.parse(files[i]);
+					rm5[i].normalize();
+					System.out.println("parsed");
+				} catch (ParserConfigurationException e) {
+				} catch (SAXException e) {
+				} catch (IOException e) {
+				} 
 			}
 			return rm5;
 	}

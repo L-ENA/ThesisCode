@@ -9,8 +9,20 @@ public class BookReferenceObject extends ReferenceObject{
 	protected String edition = "";
 	protected String publisher = "";
 	protected String city = "";
+	protected boolean primaryReference = false;
 	
+	public boolean isPrimaryReference() {
+		return primaryReference;
+	}
+
+	public void setPrimaryReference(boolean primaryReference) {
+		this.primaryReference = primaryReference;
+	}
+
 	public BookReferenceObject(String[] referencesArray, int i){
+		if (referencesArray[i + 1].equals("YES")) {
+			primaryReference = true;
+		}
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray [i + 4];
 		date = referencesArray[i + 5];

@@ -14,8 +14,20 @@ public class BookSectionReferenceObject extends ReferenceObject{
 	protected String editor = "";
 	protected String publisher = "";
 	protected String city = "";
+	protected boolean primaryReference = false;
 	
+	public boolean isPrimaryReference() {
+		return primaryReference;
+	}
+
+	public void setPrimaryReference(boolean primaryReference) {
+		this.primaryReference = primaryReference;
+	}
+
 	public BookSectionReferenceObject(String[] referencesArray, int i){
+		if (referencesArray[i + 1].equals("YES")) {
+			primaryReference = true;
+		}
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray[i + 3];
 		bookName = referencesArray [i + 4];

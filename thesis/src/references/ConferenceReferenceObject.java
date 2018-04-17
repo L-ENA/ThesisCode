@@ -14,11 +14,29 @@ public class ConferenceReferenceObject extends ReferenceObject{
 	protected String editor = "";
 	protected String publisher = "";
 	protected String city = "";
+	protected boolean primaryReference = false;
 	
 	
 	
 	
+	public boolean isPrimaryReference() {
+		return primaryReference;
+	}
+
+
+
+
+	public void setPrimaryReference(boolean primaryReference) {
+		this.primaryReference = primaryReference;
+	}
+
+
+
+
 	public ConferenceReferenceObject(String[] referencesArray, int i){
+		if (referencesArray[i + 1].equals("YES")) {
+			primaryReference = true;
+		}
 		
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray[i + 3];

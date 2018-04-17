@@ -75,7 +75,10 @@ public class TrialObject{
 	
 	
 
-	protected BLINDNESS blindingMethod = BLINDNESS.NOTAVAILABLE;//all about blinding
+	private BLINDNESS blindingMethod = BLINDNESS.NOTAVAILABLE;//all about blinding
+	protected String blindnessCleaned = BLINDNESS.NOTAVAILABLE.getDescription();
+	
+
 	protected String blindingProse = "";
 	
 	
@@ -107,7 +110,7 @@ public class TrialObject{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////all the patterns for cleaning and extraction
 	private int breakBiasVerification;
 	private Matcher m;
-	private Pattern design = Pattern.compile("([Dd]esign)+");
+	private Pattern design = Pattern.compile("([Dd]esign:)+");
 	//parallel
 	private Pattern parallelDesign = Pattern.compile("([pP]arallel)+|([Bb]etween\\s[Pp]atient(s)?)+|([Nn]on(-|\\s)[Cc]ross(ed)?-?\\s?[Oo](ver))+");
 	private Pattern parallelDesignCleaner = Pattern.compile("([Dd]esign)+|([pP]arallel)+|([Gg]roup(s)?)+|([Ss]tud(y|ies))?+|[:(),.]+");
@@ -125,12 +128,14 @@ public class TrialObject{
 	private Pattern hospital = Pattern.compile("([Ii]n\\s)?([Hh]ospital(i[sz]ed)?)|([Mm]ental\\shealth\\scente?re?)|([Ii]ntensive\\scare)");
 	private Pattern psychiatricHospital = Pattern.compile("([Pp]sychiatr(y|ic))");
 	
-	private Pattern blindness = Pattern.compile("([Bb]linding)|([Bb]lindness)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind)");
+	private Pattern blindness = Pattern.compile("([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:)");
 	private Pattern doubleBlind = Pattern.compile("[Dd]ouble");
 	private Pattern singleBlind = Pattern.compile("([Ss]ingle)");
 	private Pattern tripleBlind = Pattern.compile("[Tt]riple");
 	private Pattern quadrupleBlind = Pattern.compile("[Qq]uadruple");
-	private Pattern openLabel = Pattern.compile("([Oo]pen\\s?-?(([Tt]rial)|([Ll]abel)))|([Nn]on\\s?-?[Bb]lind)");
+	private Pattern openLabel = Pattern.compile("([Oo]pen)|([Nn]ot\\sblind(ed)?)|([Nn]on\\s?-?[Bb]lind(ing)?)|(:\\s?(no|none)\\Z)");
+	private Pattern unclearBlinding = Pattern.compile("([Nn]ot\\sclear)|([Uu]nclear)");
+	private Pattern notReported = Pattern.compile("([Nn]ot?\\s(specified|stated|report|reported|indicated|indication|described|description|available|information))");
 	
 	private Pattern countryPattern = Pattern.compile("(Locations?:)|([Cc]ountr(y|ies):)|([Ss]etting:)");
 	
@@ -168,6 +173,7 @@ public class TrialObject{
 						NodeList titleList = coverSheetElement.getElementsByTagName("TITLE");
 						Element titleElement = (Element) titleList.item(0);
 						reviewTitle = titleElement.getTextContent().trim();
+						System.out.println(reviewTitle);
 					} catch (DOMException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -257,7 +263,11 @@ public class TrialObject{
 					Node charMethodsNode = charMethodsList.item(0);
 					Element charMethodsElement = (Element) charMethodsNode;
 					
-					String methodString = charMethodsElement.getTextContent();
+					String methodString = charMethodsElement.getTextContent().trim();
+					
+					System.out.println("BIG STRING: " + methodString);
+					
+					String[] newArray = splitMethods(methodString);
 					
 					String[] methodStringArray = methodString.split("(?=(\\.[A-Za-z*]))|\\.\\n"); // splits text at every full stop that is followed by a linebreak or directly by word character
 					
@@ -343,7 +353,7 @@ public class TrialObject{
 						}
 					}
 					
-
+					
 					
 					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Traverses the revman file's Studies and references section
@@ -370,17 +380,11 @@ public class TrialObject{
 						e9.printStackTrace();
 					}
 					
-					try {
-						cache = studyElement.getAttribute("YEAR");
-						year = Integer.parseInt(cache); //converts String to int
-					} catch (NumberFormatException e8) {
-						// if year can't be extracted as attribute it is tried via revman-ID. In case there is a hyphen or..., the characters resulting from this are eliminated and the String is restored to normal
-						cache = revManID.replaceAll("(_x002d_)", "-").replace("(_x0026_)", "&").replaceAll("[^\\d.]", "");
-						year = Integer.parseInt(cache); //Takes year of publication from ID
-					}
+					
 //test
 					
-					referenceExtracting(); //Extracts all information on references of this trial. See method referenceExtracting() below for more details. Puts info into array of strings that will be further analysed below
+					
+referenceExtracting(); //Extracts all information on references of this trial. See method referenceExtracting() below for more details. Puts info into array of strings that will be further analysed below
 					
 					for (int i = 0; i < references.length; i++){
 						if (references[i].equals("JOURNAL_ARTICLE")){
@@ -391,6 +395,7 @@ public class TrialObject{
 						} else if (references[i].equals("CONFERENCE_PROC")){
 							refObject = new ConferenceReferenceObject(references, i);
 							referenceList.add(refObject);
+							
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("UNPUBLISHED")){
@@ -436,7 +441,32 @@ public class TrialObject{
 						}
 					}
 					
-			
+					//tries to extract year when study was conducted
+					try {
+						cache = studyElement.getAttribute("YEAR");
+						year = Integer.parseInt(cache); //converts String to int
+					} catch (NumberFormatException e8) {
+						try {
+							// if year can't be extracted as attribute it is tried via revman-ID. In case there is a hyphen or..., the characters resulting from this are eliminated and the String is restored to normal
+							cache = revManID.replaceAll("(_x002d_)", "-").replace("(_x0026_)", "&").replaceAll("[^\\d.]", "");
+							year = Integer.parseInt(cache); //Takes year of publication from ID
+						} catch (NumberFormatException e) {
+							try {
+								//tries to take year of publication from additional references, e.g.intensive case management review, when there is absolutely no date entered because this trial is just the description of one centre in the study, or in in vocational training, where authors deleted the years from RevMan ID or possibly forgot to enter it
+								cache = refObject.getDate().replaceAll("[^\\d.]", "");
+								year = Integer.parseInt(cache);
+							} catch (NumberFormatException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+								// last resort
+								e.printStackTrace();
+								year = 0000;
+							}
+							
+							
+							
+						}
+					}
 					
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Extracts OutcomeObjects for this trial
@@ -569,14 +599,25 @@ public class TrialObject{
 					//				
 //					System.out.println("Country or countries : " + countries);
 //					System.out.println(meerKatCountry);
-					aauthorYearLetter = mainAuthor+year+yearLetter;
-					System.out.println("Setting");
-					System.out.println(settingProse);
+					//aauthorYearLetter = mainAuthor+year+yearLetter;
+					//System.out.println("Setting");
+					//System.out.println(settingProse);
 					System.out.println();
 					
 					
 					
 					
+	}
+	
+	private String[] splitMethods (String str) {
+		String[] forReturn = str.split("(?=([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:))|(?=(Duration:))|(?=(Design:))", 4);
+		
+		for (int i = 0; i<forReturn.length;i++) {
+			System.out.println(forReturn[i]);
+		}
+			
+		
+		return forReturn;
 	}
 	
 	 private void cleanSetting(String prose){
@@ -982,7 +1023,10 @@ public class TrialObject{
 	
 private void cleanBlindness(String str){//looks which kind of blinding methods were extracted for this trial
 		
+	
 		m = blindness.matcher(str);//checks if this String is about blindness at all
+		
+		
 		boolean doubt = false;
 		if (performanceBiasRisk.contains("High")) {//indicates, that authors had doubts about trial methodology
 			doubt = true;
@@ -991,52 +1035,81 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 		
 		if (m.find()){//this big if-construct attempts to determine which kind of blindness is present
 			blindingProse = str;
+			
+			
+			
+			
 			m = doubleBlind.matcher(str);//looks for indication that the trial is double-blind
 			if (m.find()){
 				if (doubt) {
-					blindingMethod = BLINDNESS.UNCLEARDOUBLE;//review authors had significant doubts about this trial, therefore the value becomes unclear
+					blindingMethod = BLINDNESS.BIASEDDOUBLE;//review authors had significant doubts about this trial, therefore the value becomes unclear
+					blindnessCleaned = blindingMethod.getDescription(); //this recurring line fills the cleaned String that is written into the database. Content of this String is defined in the BLINDNESS enum.
 				} else {
 					blindingMethod = BLINDNESS.DOUBLE;//the pattern matched so this trial is classified as double-blind
+					blindnessCleaned = blindingMethod.getDescription(); //this recurring line fills the cleaned String that is written into the database. Content of this String is defined in the BLINDNESS enum.
 				}
 				
 			} else {//the pattern did not match so other options are explored. Blindness options are checked in order of decreasing likelihood.
 				m = singleBlind.matcher(str);
 				if (m.find()){
 					if (doubt) {
-						blindingMethod = BLINDNESS.UNCLEARSINGLE;
+						blindingMethod = BLINDNESS.BIASEDSINGLE;
+						blindnessCleaned = blindingMethod.getDescription(); 
 					} else {
 						blindingMethod = BLINDNESS.SINGLE;
+						blindnessCleaned = blindingMethod.getDescription(); 
 					}
 					
 					} else {
 						m = openLabel.matcher(str);
 						if (m.find()){
 							if (doubt) {
-								blindingMethod = BLINDNESS.UNCLEAROPEN;
+								blindingMethod = BLINDNESS.BIASEDOPEN;
+								blindnessCleaned = blindingMethod.getDescription(); 
 							} else {
 								blindingMethod = BLINDNESS.OPENTRIAL;
+								blindnessCleaned = blindingMethod.getDescription(); 
 							}
 							
 						} else {
 							m = tripleBlind.matcher(str);
 							if (m.find()){
 								if (doubt) {
-									blindingMethod = BLINDNESS.UNCLEARTRIPLE;
+									blindingMethod = BLINDNESS.BIASEDTRIPLE;
+									blindnessCleaned = blindingMethod.getDescription(); 
 								} else {
 									blindingMethod = BLINDNESS.TRIPLE;
+									blindnessCleaned = blindingMethod.getDescription(); 
 								}
 								
 							} else {
 								m = quadrupleBlind.matcher(str);
 								if (m.find()){
 									if (doubt) {
-										blindingMethod = BLINDNESS.UNCLEARQUADRUPLE;
+										blindingMethod = BLINDNESS.BIASEDQUADRUPLE;
+										blindnessCleaned = blindingMethod.getDescription(); 
 									} else {
 										blindingMethod = BLINDNESS.QUADRUPLE;
+										blindnessCleaned = blindingMethod.getDescription(); 
 									}
 									
 								} else {
-									blindingMethod = BLINDNESS.OTHER;
+									m = notReported.matcher(str);
+									if (m.find()) {
+										blindingMethod = BLINDNESS.NOTREPORTED;
+										blindnessCleaned = blindingMethod.getDescription(); 
+									} else {
+										m = unclearBlinding.matcher(str);
+										if (m.find()) {
+											blindingMethod = BLINDNESS.UNCLEAR;
+											blindnessCleaned = blindingMethod.getDescription();
+										} else {
+											blindingMethod = BLINDNESS.OTHER;
+											blindnessCleaned = blindingMethod.getDescription(); 
+										}
+										
+									} 
+									
 								}
 							}
 						}
@@ -1559,5 +1632,12 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 
 	public void setDoi(String doi) {
 		this.doi = doi;
+	}
+	public String getBlindnessCleaned() {
+		return blindnessCleaned;
+	}
+
+	public void setBlindnessCleaned(String blindnessCleaned) {
+		this.blindnessCleaned = blindnessCleaned;
 	}
 }

@@ -30,20 +30,20 @@ public class Database {
 		
 		
 		ParseReview parser = new ParseReview();
-		Document review = parser.chooseAndParse(); //contains reviews specified by user via pop up browsing window
-		int numberOfStudies = parser.numberOfIncludedStudies(review);//looks at how many trials there are to extract
+		Document[] reviewArray = parser.chooseAndParse(); //contains reviews specified by user via pop up browsing window
 		
-		TrialObject a = new TrialObject(); //makes TrialObject with default empty constructor. If there are trials included in this review, the proper constructer is called in the for-loop.
-		
-	for (int i = 0; i < numberOfStudies; i++){
-			
-			a = new TrialObject(review, i);//extracts all data of the specified trial and dumps it into the trial list
-			trialList.add(a);
-			//System.out.println("Trial " + a.aauthorYearLetter + " added!");
-			
+		for (int i = 0; i < reviewArray.length; i++) {
+			int numberOfStudies = parser.numberOfIncludedStudies(reviewArray[i]);//looks at how many trials there are to extract
+			TrialObject a = new TrialObject(); //makes TrialObject with default empty constructor. If there are trials included in this review, the proper constructer is called in the for-loop.
+			for (int j = 0; j < numberOfStudies; j++) {
+
+				a = new TrialObject(reviewArray[i], j);//extracts all data of the specified trial and dumps it into the trial list
+				trialList.add(a);
+				//System.out.println("Trial " + a.aauthorYearLetter + " added!");
+
+			}
+			reviewName = a.getReviewTitle();
 		}
-	
-		reviewName = a.getReviewTitle();
 	}
 	
 

@@ -49,10 +49,10 @@ public class Main {
 				
 				
 				
-				String path = "C:\\Users\\msals12\\Desktop\\Thesis\\XMLs" + d.reviewName + ".xml";
+				String path = "C:\\Users\\msals12\\Desktop\\Thesis\\XMLs\\test.xml";
 				jaxbMarshaller.marshal(d, new File(path));	//puts database into a xml file that is saved according to path String
 				
-				
+				System.out.println("File created successfully");
 				
 				
 			} catch (JAXBException e) {

@@ -115,49 +115,60 @@ public class ContinuousOutcomeObject extends OutcomeObject{
 	
 	private void interventionCleaner(){
 		
-		splitComparison = splitPattern.split(comparisonName);	//splits comparison name so that its relevant part can be cleaned
-		interventionGroupName = splitComparison[0];	//first String in this array describes intervention
-		//group1Name= group1Name.substring(0, 1).toUpperCase() + group1Name.substring(1);//optional capitalisation of first character
-		interventionProse = interventionGroupName;	//in case the cleaning below produces sketchy output. This string is the prose
-		
-		m = addedInfoCombinationsIC.matcher(interventionGroupName); 	//if the intervention was labeled "combination" or similar . 
-		if (m.find()){
-			splitIC = addedInfoCombinationsIC.split(interventionGroupName);
-			interventionGroupName = splitIC[1].trim();	//irrelevant info according to the pattern is removed by taking the second String in this array
-			interventionGroupName = interventionGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto\\s))", "//");	//makes a standardised list with "//" separating interventions
-		} else {
-			m = addedInfoOtherAntipsyIC.matcher(interventionGroupName); // if some prose about "other antipsychotic" in various ways comes up it is cleaned away similar to above
+		try {
+			splitComparison = splitPattern.split(comparisonName);	//splits comparison name so that its relevant part can be cleaned
+			interventionGroupName = splitComparison[0];	//first String in this array describes intervention
+			//group1Name= group1Name.substring(0, 1).toUpperCase() + group1Name.substring(1);//optional capitalisation of first character
+			interventionProse = interventionGroupName;	//in case the cleaning below produces sketchy output. This string is the prose
+			
+			m = addedInfoCombinationsIC.matcher(interventionGroupName); 	//if the intervention was labeled "combination" or similar . 
 			if (m.find()){
-				splitIC = addedInfoOtherAntipsyIC.split(interventionGroupName);
-				interventionGroupName = splitIC[1].trim();
-				interventionGroupName = interventionGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto))", "//");
+				splitIC = addedInfoCombinationsIC.split(interventionGroupName);
+				interventionGroupName = splitIC[1].trim();	//irrelevant info according to the pattern is removed by taking the second String in this array
+				interventionGroupName = interventionGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto\\s))", "//");	//makes a standardised list with "//" separating interventions
+			} else {
+				m = addedInfoOtherAntipsyIC.matcher(interventionGroupName); // if some prose about "other antipsychotic" in various ways comes up it is cleaned away similar to above
+				if (m.find()){
+					splitIC = addedInfoOtherAntipsyIC.split(interventionGroupName);
+					interventionGroupName = splitIC[1].trim();
+					interventionGroupName = interventionGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto))", "//");
+				}
 			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			interventionGroupName = "experimental";
 		}
 		
 	}
 	private void controlCleaner(){	//cleans names of control strings of pattern above matched. Very similar to interventionCleaner
-		m = splitPattern.matcher(comparisonName);
-		splitComparison[0] = "";
-		splitComparison[1] = "";
-		splitComparison = splitPattern.split(comparisonName);
-		
-		controlGroupName = splitComparison[1];
-		controlGroupName = controlGroupName.toLowerCase();
-		//group2Name= group2Name.substring(0, 1).toUpperCase() + group2Name.substring(1);
-		controlProse= controlGroupName; // in case the String becomes sketchy during further cleaning this saves the prose
-		
-		m = addedInfoCombinationsIC.matcher(controlGroupName);
-		if (m.find()){
-			splitIC = addedInfoCombinationsIC.split(controlGroupName);
-			controlGroupName = splitIC[1].trim();
-			controlGroupName = controlGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto\\s))", "//");
-		} else {
-			m = addedInfoOtherAntipsyIC.matcher(controlGroupName);
+		try {
+			m = splitPattern.matcher(comparisonName);
+			splitComparison[0] = "";
+			splitComparison[1] = "";
+			splitComparison = splitPattern.split(comparisonName);
+			
+			controlGroupName = splitComparison[1];
+			controlGroupName = controlGroupName.toLowerCase();
+			//group2Name= group2Name.substring(0, 1).toUpperCase() + group2Name.substring(1);
+			controlProse= controlGroupName; // in case the String becomes sketchy during further cleaning this saves the prose
+			
+			m = addedInfoCombinationsIC.matcher(controlGroupName);
 			if (m.find()){
-				splitIC = addedInfoOtherAntipsyIC.split(controlGroupName);
+				splitIC = addedInfoCombinationsIC.split(controlGroupName);
 				controlGroupName = splitIC[1].trim();
-				controlGroupName = controlGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto))", "//");
+				controlGroupName = controlGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto\\s))", "//");
+			} else {
+				m = addedInfoOtherAntipsyIC.matcher(controlGroupName);
+				if (m.find()){
+					splitIC = addedInfoOtherAntipsyIC.split(controlGroupName);
+					controlGroupName = splitIC[1].trim();
+					controlGroupName = controlGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto))", "//");
+				}
 			}
+		} catch (Exception e) {
+			// this is needed with review about antipsychotic switching
+			e.printStackTrace();
+			controlGroupName = "control";
 		}
 		
 		

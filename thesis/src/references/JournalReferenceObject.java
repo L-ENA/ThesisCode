@@ -22,8 +22,20 @@ public class JournalReferenceObject extends ReferenceObject{
 	protected String issue = "";
 	protected String pages = "";
 	protected String originalTitle = "";
+	protected boolean primaryReference = false;
 	
+	public boolean isPrimaryReference() {
+		return primaryReference;
+	}
+
+	public void setPrimaryReference(boolean primaryReference) {
+		this.primaryReference = primaryReference;
+	}
+
 	public JournalReferenceObject(String[] referencesArray, int i){
+		if (referencesArray[i + 1].equals("YES")) {
+			primaryReference = true;
+		}
 		type = "Journal article";
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray[i + 3];
