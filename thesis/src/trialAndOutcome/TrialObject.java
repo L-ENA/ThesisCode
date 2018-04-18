@@ -70,9 +70,25 @@ public class TrialObject{
 	private boolean psychiatricH = false;
 	private boolean hospitalSetting = true; 
 	
-	protected String settingProse = "";
+	protected String settingProse = ""; //Is filled when a prose line contains the words "Setting:"
+	protected String settingCombined = "";//Is filled with all the prose lines that could possibly contain info on setting
 	
 	
+	protected String ratersProse = "";
+	
+	public String getSettingCombined() {
+		return settingCombined;
+	}
+
+	public void setSettingCombined(String settingCombined) {
+		this.settingCombined = settingCombined;
+	}
+
+	protected String allocationProse = "";
+	protected String durationProse = "";
+	protected String lostToFollowUpProse = "";
+	protected String consentProse = "";
+	protected String locationProse = "";
 	
 
 	private BLINDNESS blindingMethod = BLINDNESS.NOTAVAILABLE;//all about blinding
@@ -266,8 +282,9 @@ public class TrialObject{
 					String methodString = charMethodsElement.getTextContent().trim();
 					
 					System.out.println("BIG STRING: " + methodString);
+					methodString = methodString.replace("\\n", "");
 					
-					String[] newArray = splitMethods(methodString);
+					splitMethods(methodString);
 					
 					String[] methodStringArray = methodString.split("(?=(\\.[A-Za-z*]))|\\.\\n"); // splits text at every full stop that is followed by a linebreak or directly by word character
 					
@@ -281,13 +298,19 @@ public class TrialObject{
 							designVerifyer(methodStringArray[k]);	
 						}
 						
-						cleanSetting(methodStringArray[k]);
-						cleanBlindness(methodStringArray[k]);
+						
+						
 						getCountryProse(methodStringArray[k]);
 						
 
 						}
 					
+					cleanSetting(settingProse);//Setting can appear in the 3 following Strings. They are searched in the cleanSetting() method.
+					cleanSetting(locationProse);
+					cleanSetting(designProse);
+					settingCombined = settingProse + " " + locationProse + " " + designProse;
+					settingCombined = settingCombined.replaceAll(" +", " ").trim();
+					cleanBlindness(blindingProse);
 					
 					
 					//Extracts prose from participant section and tries to match
@@ -308,8 +331,7 @@ public class TrialObject{
 					
 					if (countryProse != null)
 					countryProse = countryProse.trim(); //in case 2 prose strings are appended to each other there will be an unnecessary whitespace in the end. this one is trimmed away
-					if (settingProse != null)
-					settingProse = settingProse.trim();
+					
 					
 					String[] extractedCountries;
 					
@@ -593,7 +615,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 //								System.out.println(year);
 //					
 //								System.out.println(revManID);
-//								authorYearLetter = mainAuthor + year + yearLetter;
+								aauthorYearLetter = mainAuthor + year + yearLetter;
 //								System.out.println(authorYearLetter);
 //					
 					//				
@@ -609,22 +631,73 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					
 	}
 	
-	private String[] splitMethods (String str) {
-		String[] forReturn = str.split("(?=([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:))|(?=(Duration:))|(?=(Design:))", 4);
+	private void splitMethods (String str) {//Uses positive lookahead regex to split method prose into Strings that are stored in Array and later identified ant written into their respective prose Strings																													//take care here
+		ArrayList<String> storage = new ArrayList();
+		String[] forReturn;
 		
-		for (int i = 0; i<forReturn.length;i++) {
-			System.out.println(forReturn[i]);
-		}
+		
+		if (str.contains("Lost\\sto\\s[Ff]ollow[\\s-]up:)")) {//necessary because there can be an appearance of only "Follow-up:", here we would loose the "Lost to" part of the String
+			forReturn = str.split("(?=(Raters?))|(?=(Allocation:))|(?=([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:))|(?=(Duration:))|(?=(Design:))|(?=((Loss:)|(Lost\\sto\\s[Ff]ollow[\\s-]up:)))|(?=(Consent:))|(?=(Locations?:))|(?=(Countr(y|ies):))|(?=(Setting:))");
 			
+			for (int j = 0; j < forReturn.length; j++) {
+				
+				if (forReturn[j].contains("(?<!Lost\\sto\\s)Follow[-\\s]up:")) {
+					String[] cache = forReturn[j].split(("(?=(Follow[\\s-]up:))"));
+					storage.add(cache[0].trim());
+					storage.add(cache[1].trim());
+				} else {
+					storage.add(forReturn[j].trim());
+				}
+			}
+			
+		} else  {//since the first option did not come true, the String is checked for "Follow-up:" only
+			forReturn = str.split("(?=(Raters?))|(?=([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:))|(?=(Duration:))|(?=(Design:))|(?=(Follow[\\s-]up:))|(?=(Loss:))|(?=(Consent:))|(?=(Locations?:))|(?=(Countr(y|ies):))|(?=(Setting:))");
+			
+			for (int j = 0; j < forReturn.length; j++) {
+				storage.add(forReturn[j].trim());
+			}
 		
-		return forReturn;
+		}
+		
+		
+		
+		for (String output: storage) {
+			
+			if (output.matches("(Allocation:).*")) {
+				allocationProse = output;
+				//System.out.println("1. Allocation -- " + allocationProse);
+			} else if (output.matches("([Bb]linding:).*|([Bb]lindness:).*|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:).*|([Bb]lind:).*")) {
+				blindingProse = output;
+				//System.out.println("2. Blinding -- " + blindingProse);
+			} else if (output.matches("Duration:.*")) {
+				durationProse = output;
+				//System.out.println("3. Duration -- " + durationProse);
+			} else if (output.matches("Design:.*")) {
+				designProse = output;
+
+				//System.out.println("4. Design -- " + designProse);
+			} else if (output.matches("(Loss:).*|(Lost\\sto\\follow[-\\s]up:).*")) {//to add the lost to follow up one
+				lostToFollowUpProse = output;
+				//System.out.println("5. Loss Follow-up -- " + lostToFollowUpProse);
+			} else if (output.matches("Consent:.*")) {
+				consentProse = output;
+				//System.out.println("6. Consent -- " + consentProse);
+			} else if (output.matches("Setting:.*")) {
+				settingProse = output;
+				System.out.println("7. Setting -- " + settingProse);
+			} else if (output.matches("Locations?:.*")) {
+				locationProse = output;
+				//System.out.println("8. Location -- " + locationProse);
+			} else if (output.matches("Raters?:.*")) {
+				ratersProse = output;
+			}
+		}
+		
 	}
 	
 	 private void cleanSetting(String prose){
 		 
-		 if (prose.contains("Setting:")| prose.contains("Location:")| prose.contains("Design:")){
-			 
-			 settingProse = settingProse + prose + ". ";
+		 
 			 
 			 m = emergencyRoom.matcher(prose);//looks for emergency room
 			 if (m.find() && outP == false && inP == false && bothP == false){//only allows to take the value emergency room setting if it was not previously specified that patients are in or outpatients
@@ -667,7 +740,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			 }
 			 
 			 
-		 }
+		 
 	 }
 	
 	 
@@ -1033,8 +1106,7 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 		}
 		
 		
-		if (m.find()){//this big if-construct attempts to determine which kind of blindness is present
-			blindingProse = str;
+		
 			
 			
 			
@@ -1115,7 +1187,7 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 						}
 					}
 				}
-			}
+			
 		}
 		
 
