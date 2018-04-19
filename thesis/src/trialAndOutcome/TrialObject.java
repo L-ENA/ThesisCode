@@ -612,7 +612,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 //						System.out.println(references[j]);
 //					}
 					
-//								System.out.println(year);
+								System.out.println(year);
 //					
 //								System.out.println(revManID);
 								aauthorYearLetter = mainAuthor + year + yearLetter;
