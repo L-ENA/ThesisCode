@@ -35,8 +35,8 @@ public class TrialObject{
 
 //////////////////////////////////////////////////////////////////attributes. the protected ones have getters and setters because they will end up in the finished XML
 	//protected static int counter = 1;
-	protected String mainAuthor; //check
-	protected int year;//check
+	protected String mainAuthor = ""; //check
+	protected int year;//will contain year of publication
 	protected String aauthorYearLetter = ""; //for comparison with MeerKatBE
 	
 	protected String reviewTitle = "";
@@ -45,7 +45,12 @@ public class TrialObject{
 	protected String doi = "";
 	
 	protected String revManID;//check
-	protected String[] references; //check
+	protected String[] references; //to contain all references to this trial
+	
+	protected String methodString = "";//holds whole methods paragraph in prose
+	protected String participantString = "";//holds whole participants paragraph in prose
+
+	
 
 	protected DESIGN trialDesign = DESIGN.NOTAVAILABLE;////variables to do with trial design info
 	private boolean crossoverTrial = false;
@@ -55,13 +60,17 @@ public class TrialObject{
 	protected String designProse = "";
 	protected String designAddedInfo = "";
 	
-	protected String countries = "";
-	protected String meerKatCountry = "";
-	protected String countryProse = ""; // this string is going to be big. but in case a country is not added in the list or a city is added instead of a country we need to screen these one by one
-	
-	
+	protected String fundingProse = "";
 	
 
+	protected String otherMethodProse = "";
+	protected String otherParticipantProse = "";
+	
+	protected String countries = "";//////////////to contain country or countries, in alphabetical order. Beware that it will not contain city names!!
+	protected String meerKatCountry = "";//alphabetical, syntax: Either just "country" or ""Multi-Center//country//country//.."
+	protected String countryCombined = ""; // this string is going to be big. but in case a country is not added in the list or a city is added instead of a country we need to screen these one by one
+	protected String countryProse = "";
+	
 	protected SETTING trialSetting = SETTING.NOTAVAILABLE;	//will hold the final value for setting in which this trial was conducted
 	private boolean outP = false;	//Setting info can appear in various fields and be easily falsified by the occurrence of simple words such as "hospital". These boolean turn true if a very clear indication of the setting appears. If the final setting variable later differs from these clear indications, the setting variable will be adjusted.
 	private boolean inP = false;
@@ -76,26 +85,38 @@ public class TrialObject{
 	
 	protected String ratersProse = "";
 	
-	public String getSettingCombined() {
-		return settingCombined;
-	}
-
-	public void setSettingCombined(String settingCombined) {
-		this.settingCombined = settingCombined;
-	}
+	
 
 	protected String allocationProse = "";
 	protected String durationProse = "";
 	protected String lostToFollowUpProse = "";
 	protected String consentProse = "";
 	protected String locationProse = "";
-	
+	protected String followUpProse = "";
+
+
+	public String getFollowUpProse() {
+		return followUpProse;
+	}
+
+	public void setFollowUpProse(String followUpProse) {
+		this.followUpProse = followUpProse;
+	}
 
 	private BLINDNESS blindingMethod = BLINDNESS.NOTAVAILABLE;//all about blinding
 	protected String blindnessCleaned = BLINDNESS.NOTAVAILABLE.getDescription();
-	
-
 	protected String blindingProse = "";
+	
+	////////////Strings that are extracted from Participants field of characteristics of included studies table
+	protected String diagnosisProse = "";
+	protected String historyProse = "";
+	protected String ageProse= "";
+	protected String genderProse = "";
+	protected String excludedProse = "";
+	protected String includedProse = "";
+	protected String nProse = "";
+	protected String durationIllProse= "";
+	protected String ethnicityProse= "";
 	
 	
 	
@@ -126,7 +147,7 @@ public class TrialObject{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////all the patterns for cleaning and extraction
 	private int breakBiasVerification;
 	private Matcher m;
-	private Pattern design = Pattern.compile("([Dd]esign:)+");
+	
 	//parallel
 	private Pattern parallelDesign = Pattern.compile("([pP]arallel)+|([Bb]etween\\s[Pp]atient(s)?)+|([Nn]on(-|\\s)[Cc]ross(ed)?-?\\s?[Oo](ver))+");
 	private Pattern parallelDesignCleaner = Pattern.compile("([Dd]esign)+|([pP]arallel)+|([Gg]roup(s)?)+|([Ss]tud(y|ies))?+|[:(),.]+");
@@ -279,38 +300,20 @@ public class TrialObject{
 					Node charMethodsNode = charMethodsList.item(0);
 					Element charMethodsElement = (Element) charMethodsNode;
 					
-					String methodString = charMethodsElement.getTextContent().trim();
+					methodString = charMethodsElement.getTextContent().trim();
 					
 					System.out.println("BIG STRING: " + methodString);
-					methodString = methodString.replace("\\n", "");
+					//methodString = methodString.replace("\\n", "");
 					
 					splitMethods(methodString);
 					
-					String[] methodStringArray = methodString.split("(?=(\\.[A-Za-z*]))|\\.\\n"); // splits text at every full stop that is followed by a linebreak or directly by word character
 					
-					for (int k = 0; k<methodStringArray.length; k++){
-						m = beginningEndArray.matcher(methodStringArray[k]);	//To make Strings neat. Sometimes they start with special chars, e.g. "."
-						methodStringArray[k] = m.replaceAll("");
-						//System.out.println(methodStringArray[k] );
+					designVerifyer(designProse);	
 						
-						m = design.matcher(methodStringArray[k]);	//trial design is extracted in the following lines
-						if (m.find()){	//Uses regex pattern to identify if this line is about design of trial
-							designVerifyer(methodStringArray[k]);	
-						}
-						
-						
-						
-						getCountryProse(methodStringArray[k]);
-						
-
-						}
 					
-					cleanSetting(settingProse);//Setting can appear in the 3 following Strings. They are searched in the cleanSetting() method.
-					cleanSetting(locationProse);
-					cleanSetting(designProse);
-					settingCombined = settingProse + " " + locationProse + " " + designProse;
-					settingCombined = settingCombined.replaceAll(" +", " ").trim();
+					
 					cleanBlindness(blindingProse);
+					
 					
 					
 					//Extracts prose from participant section and tries to match
@@ -318,62 +321,26 @@ public class TrialObject{
 					Node charParticipantsNode = charParticipantsList.item(0);
 					Element charParticipantsElement = (Element) charParticipantsNode; 
 					
-					String participantString = charParticipantsElement.getTextContent();
-					String[] participantStringArray = participantString.split("(?=(\\.[A-Za-z]))|\\.\\n");// splits text at every full stop that is followed by a linebreak or directly by word character
-					
-					for (int i = 0; i < participantStringArray.length; i++){
-						m = beginningEndArray.matcher(participantStringArray[i]);	//To make Strings neat. Sometimes they start with special chars, e.g. "."
-						participantStringArray[i] = m.replaceAll("");
-						//System.out.println(participantStringArray[i] );
-						cleanSetting(participantStringArray[i]);
-						getCountryProse(participantStringArray[i]);
-					}
-					
-					if (countryProse != null)
-					countryProse = countryProse.trim(); //in case 2 prose strings are appended to each other there will be an unnecessary whitespace in the end. this one is trimmed away
+					participantString = charParticipantsElement.getTextContent();
+					splitParticipants(participantString);
 					
 					
-					String[] extractedCountries;
+					cleanSetting(settingProse);//Setting can appear in the 3 following Strings. They are searched for relevant information in the cleanSetting() method.
+					cleanSetting(locationProse);
+					cleanSetting(designProse);
 					
-					//Searches the big method String for country names. Writes them to String in alphabetical order and 
-					//also creates output in MeerKatBE syntax
-					String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cambodia","Cameroon","Canada","Cabo Verde","China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","countries","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia", "Europe", "Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","Norway","Oman","other countries","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru", "Puerto Rico","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","UK", "Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","United States","Uruguay","USA","USSR","Uzbekistan","Vanuatu","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
+					settingCombined = settingProse + " " + locationProse + " " + designProse; // setting in this context can have the values of the SETTING enum. Since this info is found in 3 different tyypes of prose Strings, these are combined here for double checking purposes
+					settingCombined = settingCombined.replaceAll(" +", " ").trim();
 					
-					for (int i = 0; i < countryList.length; i++){
-							if (methodString.contains(countryList[i])){
-								countries = countries + countryList[i] + ", ";
-							}
-						}
-					countries = countries.trim().replaceAll(",$", "");
-					extractedCountries = countries.split("(,\\s)");
-					if (extractedCountries.length > 1){
-						meerKatCountry = "Multi-Center";
-						for (int i = 0; i < extractedCountries.length; i++){
-							meerKatCountry = meerKatCountry + "//" + extractedCountries[i];
-						}
-					} else {
-						meerKatCountry = countries;
-					}
-					//Extracts countries from "Participants" section of table. This info should be in Methods section above but we never know :) Sometimes it pops up here	
+					getCountry();	
 					
-					if(countries.equals("")){
-						
-						for (int i = 0; i < countryList.length; i++){
-							if (participantString.contains(countryList[i])){
-								countries = countries + countryList[i] + ", ";
-							}
-						}
-						countries = countries.trim().replaceAll(",$", "");
-						extractedCountries = countries.split(",\\s");
-						if (extractedCountries.length > 1){
-							meerKatCountry = meerKatCountry + "Multi-Center";
-							for (int i = 0; i < extractedCountries.length; i++){
-								meerKatCountry = meerKatCountry + "//" + extractedCountries[i];
-							}
-						} else {
-							meerKatCountry = countries;
-						}
-					}
+					
+					//getCountry(participantStringArray[i]);
+					if (countryCombined != null)
+					countryCombined = countryCombined.trim(); //in case 2 prose strings are appended to each other there will be an unnecessary whitespace in the end. this one is trimmed away
+					
+					
+					
 					
 					
 					
@@ -612,7 +579,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 //						System.out.println(references[j]);
 //					}
 					
-								System.out.println(year);
+//								System.out.println(year);
 //					
 //								System.out.println(revManID);
 								aauthorYearLetter = mainAuthor + year + yearLetter;
@@ -631,39 +598,112 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					
 	}
 	
+	private void splitParticipants (String str) {
+		ArrayList<String> storage = new ArrayList<String>();
+		String[] splitParticipantParts;
+		//location country setting
+		splitParticipantParts = str.split("(?=([lL]ocations?\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\s?[:=]))|(?=([sS]etting\\d?\\s?[:=]))|(?=([Dd]iagnosis\\d?\\s?[:=]))|(?=(N\\s?\\d?=?\\s?[:=]?))|(?=([Aa]ge\\d?\\s?[:=]))|(?=((([Ss]ex)|([Gg]ender))\\d?\\s?[:=]))|(?=([Hh]istory\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]xclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=([Dd]uration\\s[Ii]ll\\d?\\s?[:=]))|(?=(([Ee]thnicity\\d?\\s?[:=])|([Rr]ace\\d?\\s?[:=])))|(?=([cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)Follow[-\\s]up\\d?\\s?[:=]))");
+		
+		for (int j = 0; j < splitParticipantParts.length; j++) {
+			storage.add(splitParticipantParts[j].trim());
+		}
+		
+		
+		for (String output: storage) {
+			if (output.matches("[Dd]iagnosis\\d?\\s?[:=].*")) {//since the whole String needs to match, the .* is used as wildcard for the rest of the String
+				diagnosisProse = output;
+			} else if (output.matches("[Hh]istory\\d?\\s?[:=].*")) {
+				historyProse = output;
+			} else if (output.matches("[Aa]ge\\d?\\s?[:=].*")) {
+				ageProse = output;
+			} else if (output.matches("(([Ss]ex)|([Gg]ender))\\d?\\s?[:=].*")) {
+				genderProse = output;
+			} else if (output.matches("(([Ee]xcluded)|([Ee]xclusions?(\\scriteria)?))\\d?\\s?[:=].*")) {
+				excludedProse = output;
+			} else if (output.matches("(([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=].*")) {
+				includedProse = output;
+			} else if (output.matches("N\\s?\\d?=?\\s?[:=]?.*")) {
+				nProse = output;
+			} else if (output.matches("[lL]ocations?\\d?\\s?[:=].*")) {//next 3(location, country, setting) have special treatment because they can appear in methods section also. Sometimes they appear double, so Strings have to be appended to each other
+				if (locationProse.equals("")) {//if it is empty, there is no double occurrence, so it can be filled as usual
+					locationProse = output;
+				} else {//it was not empty, so the new found String is appended to old content
+					locationProse = locationProse + " " + output;
+				}
+			} else if (output.matches("[cC]ountr(y|ies)\\d?\\s?[:=].*")) {
+				if (countryProse.equals("")) {
+					countryProse = output;
+				} else {
+					countryProse = countryProse + " " + output;
+				}
+			} else if (output.matches("[sS]etting\\d?\\s?[:=].*")) {
+				if (settingProse.equals("")) {
+					settingProse = output;
+				} else {
+					settingProse = settingProse + " " + output;
+				}
+				
+				
+				
+			} else if (output.matches("(?<!Lost\\sto\\s)Follow[-\\s]up\\d?\\s?[:=].*")) {
+				
+				if (followUpProse.equals("")) {
+					followUpProse = output;
+				} else {
+					
+					followUpProse = followUpProse + " " + output;
+				}
+				
+			} 
+			
+			else if (output.matches("[cC]onsent(given)?\\d?\\s?[:=].*")) {
+				consentProse = output;
+			} else if (output.matches("[Dd]uration\\s[Ii]ll\\d?\\s?[:=].*")) {
+				durationIllProse = output;
+			} else if (output.matches("([Ee]thnicity)|([Rr]ace)\\d?\\s?[:=].*")) {
+				ethnicityProse = output;
+			} else {
+				otherParticipantProse = output;
+				System.out.println("OTHER: " + otherParticipantProse);
+			}
+		}
+		
+	}
+	
 	private void splitMethods (String str) {//Uses positive lookahead regex to split method prose into Strings that are stored in Array and later identified ant written into their respective prose Strings																													//take care here
-		ArrayList<String> storage = new ArrayList();
-		String[] forReturn;
+		ArrayList<String> storage = new ArrayList<String>();//this is used because lists are easier to have variables added to them
+		String[] splitMethodParts;//to store all parts of the big methods string that gets broken by the regex
 		
 		
 		if (str.contains("Lost\\sto\\s[Ff]ollow[\\s-]up:)")) {//necessary because there can be an appearance of only "Follow-up:", here we would loose the "Lost to" part of the String
-			forReturn = str.split("(?=(Raters?))|(?=(Allocation:))|(?=([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:))|(?=(Duration:))|(?=(Design:))|(?=((Loss:)|(Lost\\sto\\s[Ff]ollow[\\s-]up:)))|(?=(Consent:))|(?=(Locations?:))|(?=(Countr(y|ies):))|(?=(Setting:))");
+			//splits the string at the occurrence of all the words that folllow in the regex. by including the ":", the splitting is safer because the words themselves can appear throughout the table randomly.
+			splitMethodParts = str.split("(?=(([Ff]unding:)|([Ff]unded\\sby)))|(?=([rR]aters?))|(?=([aA]llocation:))|(?=([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:))|(?=([dD]uration:))|(?=([dD]esign:))|(?=(([lL]oss:)|([lL]ost\\sto\\s[Ff]ollow[\\s-]up:)))|(?=([cC]onsent(given)?:))|(?=(Locations?:))|(?=([cC]ountr(y|ies):))|(?=([sS]etting:))");
 			
-			for (int j = 0; j < forReturn.length; j++) {
+			for (int j = 0; j < splitMethodParts.length; j++) {
 				
-				if (forReturn[j].contains("(?<!Lost\\sto\\s)Follow[-\\s]up:")) {
-					String[] cache = forReturn[j].split(("(?=(Follow[\\s-]up:))"));
+				if (splitMethodParts[j].contains("(?<!Lost\\sto\\s)Follow[-\\s]up:")) {//this negative lookbehind regex identifies a "Follow-up" that is not preceded by a "Lost to". therefore, this String has to be treated differently to prevent confusion and wrong classification, becauase it is possible to have both a "Lost to follow up:" and a "Follow up:" in the same methods paragraph
+					String[] cache = splitMethodParts[j].split(("(?=(Follow[\\s-]up:))"));// before, only the "Lost to follow up" was split from the rest. now, the line above identified an additional "Follow up:" String, this one has to be split from the rest as well.
 					storage.add(cache[0].trim());
 					storage.add(cache[1].trim());
 				} else {
-					storage.add(forReturn[j].trim());
+					storage.add(splitMethodParts[j].trim());
 				}
 			}
 			
 		} else  {//since the first option did not come true, the String is checked for "Follow-up:" only
-			forReturn = str.split("(?=(Raters?))|(?=([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:))|(?=(Duration:))|(?=(Design:))|(?=(Follow[\\s-]up:))|(?=(Loss:))|(?=(Consent:))|(?=(Locations?:))|(?=(Countr(y|ies):))|(?=(Setting:))");
 			
-			for (int j = 0; j < forReturn.length; j++) {
-				storage.add(forReturn[j].trim());
+			splitMethodParts = str.split("(?=(([Ff]unding:)|([Ff]unded\\sby)))|(?=([rR]aters?))|(?=([aA]llocation:))|(?=([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:))|(?=([Dd]uration:))|(?=([dD]esign:))|(?=([fF]ollow[\\s-]up:))|(?=([lL]oss:))|(?=([cC]onsent:))|(?=(Locations?:))|(?=([cC]ountr(y|ies):))|(?=([sS]etting:))");
+			
+			for (int j = 0; j < splitMethodParts.length; j++) {
+				storage.add(splitMethodParts[j].trim());
+				System.out.println(splitMethodParts[j]);
 			}
 		
 		}
 		
-		
-		
 		for (String output: storage) {
 			
-			if (output.matches("(Allocation:).*")) {
+			if (output.matches("(Allocation:).*")) {//the wildcard asterisk is making sure that the whole string matches
 				allocationProse = output;
 				//System.out.println("1. Allocation -- " + allocationProse);
 			} else if (output.matches("([Bb]linding:).*|([Bb]lindness:).*|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:).*|([Bb]lind:).*")) {
@@ -674,28 +714,36 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				//System.out.println("3. Duration -- " + durationProse);
 			} else if (output.matches("Design:.*")) {
 				designProse = output;
-
 				//System.out.println("4. Design -- " + designProse);
 			} else if (output.matches("(Loss:).*|(Lost\\sto\\follow[-\\s]up:).*")) {//to add the lost to follow up one
 				lostToFollowUpProse = output;
 				//System.out.println("5. Loss Follow-up -- " + lostToFollowUpProse);
+			} else if (output.matches("(?<!Lost\\sto\\s)Follow[-\\s]up:.*")) {
+				followUpProse = output;
 			} else if (output.matches("Consent:.*")) {
 				consentProse = output;
 				//System.out.println("6. Consent -- " + consentProse);
 			} else if (output.matches("Setting:.*")) {
 				settingProse = output;
-				System.out.println("7. Setting -- " + settingProse);
+				//System.out.println("7. Setting -- " + settingProse);
 			} else if (output.matches("Locations?:.*")) {
 				locationProse = output;
 				//System.out.println("8. Location -- " + locationProse);
 			} else if (output.matches("Raters?:.*")) {
 				ratersProse = output;
+			} else if (output.matches("(Countr(y|ies):*)")) {
+				countryProse = output;
+			} else if (output.matches("(?=(([Ff]unding:)|([Ff]unded\\sby)))|")) {
+				fundingProse = output;
+			} else {
+				otherMethodProse = output;
+				System.out.println("OTHER: " + otherMethodProse);
 			}
 		}
 		
 	}
 	
-	 private void cleanSetting(String prose){
+	private void cleanSetting(String prose){
 		 
 		 
 			 
@@ -744,12 +792,67 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 	 }
 	
 	 
-	private void getCountryProse(String str){
-		m = countryPattern.matcher(str);
-		if (m.find()){
-			countryProse = countryProse + str + ". ";
+	private void getCountry(){
+		
+		
+		
+		String[] extractedCountries;
+		String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cambodia","Cameroon","Canada","Cabo Verde","China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia", "Europe", "Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","international","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","multinational", "Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","Norway","Oman","other countries","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru", "Puerto Rico","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","UK", "Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","United States","Uruguay","USA","USSR","Uzbekistan","Vanuatu","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
+		
+		
+		for (int i = 0; i < countryList.length; i++){//country info pops up in these strings, therefore they are checked for ocurrence of any country in the world, and for countries that existed after ww2
 			
+			if (locationProse.contains(countryList[i])){
+				countries = countries + countryList[i] + ", ";
+				
+			} else if (countryProse.contains(countryList[i])){
+				countries = countries + countryList[i] + ", ";
+				
+			} else if (settingProse.contains(countryList[i])) {
+				countries = countries + countryList[i] + ", ";
+				
+			} else if (designProse.contains(countryList[i])) {
+				countries = countries + countryList[i] + ", ";
+			}
 		}
+		
+		Pattern pattern = Pattern.compile("(((\\d+)|(one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine)|(ten))\\scountries)");//it can possibly alse say "x countries" instead of actual country names, so this is covered below. If the original says "4 countries", this will appear in cleaned version as well
+		
+		m = pattern.matcher(locationProse);
+		if (m.find()) {
+			countries = countries + m.group(1) + ", ";
+		} else {
+			m = pattern.matcher(countryProse);
+			if (m.find()) {
+				countries = countries + m.group(1) + ", ";
+			} else {
+				m = pattern.matcher(settingProse);
+				if (m.find()) {
+					countries = countries + m.group(1) + ", ";
+				} else {
+					m = pattern.matcher(designProse);
+					if (m.find()) {
+						countries = countries + m.group(1) + ", ";
+					}
+				}
+			}
+		}
+		
+		
+		
+		
+	countries = countries.trim().replaceAll(",$", "");
+	extractedCountries = countries.split("(,\\s)");
+	if (extractedCountries.length > 1){
+		meerKatCountry = "Multi-Center";
+		for (int i = 0; i < extractedCountries.length; i++){
+			meerKatCountry = meerKatCountry + "//" + extractedCountries[i];
+		}
+	} else {
+		meerKatCountry = countries;
+	}
+		
+	
 	}
 	 
 	private void referenceExtracting(){
@@ -1094,7 +1197,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		}
 	}
 	
-private void cleanBlindness(String str){//looks which kind of blinding methods were extracted for this trial
+	private void cleanBlindness(String str){//looks which kind of blinding methods were extracted for this trial
 		
 	
 		m = blindness.matcher(str);//checks if this String is about blindness at all
@@ -1669,11 +1772,11 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 		this.blindingMethod = blindingMethod;
 	}
 	public String getCountryProse() {
-		return countryProse;
+		return countryCombined;
 	}
 
 	public void setCountryProse(String countryProse) {
-		this.countryProse = countryProse;
+		this.countryCombined = countryProse;
 	}
 	
 	public String getSettingProse() {
@@ -1711,5 +1814,99 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 
 	public void setBlindnessCleaned(String blindnessCleaned) {
 		this.blindnessCleaned = blindnessCleaned;
+	}
+
+	public String getRatersProse() {
+		return ratersProse;
+	}
+
+	public void setRatersProse(String ratersProse) {
+		this.ratersProse = ratersProse;
+	}
+
+	public String getAllocationProse() {
+		return allocationProse;
+	}
+
+	public void setAllocationProse(String allocationProse) {
+		this.allocationProse = allocationProse;
+	}
+
+	public String getDurationProse() {
+		return durationProse;
+	}
+
+	public void setDurationProse(String durationProse) {
+		this.durationProse = durationProse;
+	}
+
+	public String getLostToFollowUpProse() {
+		return lostToFollowUpProse;
+	}
+
+	public void setLostToFollowUpProse(String lostToFollowUpProse) {
+		this.lostToFollowUpProse = lostToFollowUpProse;
+	}
+
+	public String getConsentProse() {
+		return consentProse;
+	}
+
+	public void setConsentProse(String consentProse) {
+		this.consentProse = consentProse;
+	}
+
+	public String getLocationProse() {
+		return locationProse;
+	}
+
+	public void setLocationProse(String locationProse) {
+		this.locationProse = locationProse;
+	}
+	public String getSettingCombined() {
+		return settingCombined;
+	}
+
+	public void setSettingCombined(String settingCombined) {
+		this.settingCombined = settingCombined;
+	}
+	public String getParticipantString() {
+		return participantString;
+	}
+
+	public void setParticipantString(String participantString) {
+		this.participantString = participantString;
+	}
+
+	public String getMethodString() {
+		return methodString;
+	}
+
+	public void setMethodString(String methodString) {
+		this.methodString = methodString;
+	}
+	
+	public String getFundingProse() {
+		return fundingProse;
+	}
+
+	public void setFundingProse(String fundingProse) {
+		this.fundingProse = fundingProse;
+	}
+
+	public String getOtherMethodProse() {
+		return otherMethodProse;
+	}
+
+	public void setOtherMethodProse(String otherMethodProse) {
+		this.otherMethodProse = otherMethodProse;
+	}
+
+	public String getOtherParticipantProse() {
+		return otherParticipantProse;
+	}
+
+	public void setOtherParticipantProse(String otherParticipantProse) {
+		this.otherParticipantProse = otherParticipantProse;
 	}
 }
