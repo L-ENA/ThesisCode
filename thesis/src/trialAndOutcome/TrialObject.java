@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JOptionPane;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -602,19 +603,18 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		ArrayList<String> storage = new ArrayList<String>();
 		String[] splitParticipantParts;
 		//location country setting
-		splitParticipantParts = str.split("(?=(Locations?\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\s?[:=]))|(?=([sS]etting\\d?\\s?[:=]))|(?=([Dd]iagnosis\\d?\\s?[:=]))|(?=(N\\s?\\d?[:=]))|(?=([Aa]ge\\d?\\s?[:=]))|(?=((([Ss]ex)|([Gg]ender))\\d?\\s?[:=]))|(?=([Hh]istory\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]xclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=([Dd]uration\\s[Ii]ll\\d?\\s?[:=]))|(?=(([Ee]thnicity\\d?\\s?[:=])|([Rr]ace\\d?\\s?[:=])))|(?=([cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)Follow[-\\s]up\\d?\\s?[:=]))");
+		splitParticipantParts = str.split("(?=(Locations?\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\s?[:=]))|(?=([sS]etting\\d?\\s?[:=]))|(?=([Dd]iagnosis\\d?\\s?[:=]))|(?=(Types?\\d?\\s?:))|(?=([^(]\\s?\\b[Nn]\\b\\s?\\d?[:=]))|(?=(\\b[Aa]ge\\d?\\s?[:=]))|(?=((([Ss]ex)|([Gg]ender))\\d?\\s?[:=]))|(?=([Hh]istory\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=([Dd]uration\\s[Ii]ll\\d?\\s?[:=]))|(?=(([Ee]thnicity\\d?\\s?[:=])|([Rr]ace\\d?\\s?[:=])))|(?=([cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)Follow[-\\s]up\\d?\\s?[:=]))");
 		
 		for (int j = 0; j < splitParticipantParts.length; j++) {
 			storage.add(splitParticipantParts[j].trim());
-			if (splitParticipantParts[j].matches("(([Ee]xcluded)|([Ee]xclusions?(\\scriteria)?))\\d?\\s?[:=].*\"")) {
-				System.out.println("I contain it");
-			}
+			System.out.println(splitParticipantParts[j]);
+			
 		}
 		
 		
 		for (String output: storage) {
-			if (output.matches("[Dd]iagnosis\\d?\\s?[:=].*")) {//since the whole String needs to match, the .* is used as wildcard for the rest of the String
-				diagnosisProse = output;
+			if (output.matches("[Dd]iagnosis\\d?\\s?[:=].*") || output.matches("Types?\\d?\\s?:.*")) {//since the whole String needs to match, the .* is used as wildcard for the rest of the String
+				diagnosisProse = diagnosisProse + output;
 			} else if (output.matches("[Hh]istory\\d?\\s?[:=].*")) {
 				historyProse = output;
 			} else if (output.matches("[Aa]ge\\d?\\s?[:=].*")) {
@@ -626,7 +626,10 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				excludedProse = output;
 			} else if (output.matches("(([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=].*")) {
 				includedProse = output;
-			} else if (output.matches("N\\s?\\d?=?\\s?[:=]?.*")) {
+			} else if (output.matches("[^(]\\s?\\b[Nn]\\b\\s?\\d?=?\\s?[:=]?.*")) {
+				if (nProse != "") {
+					JOptionPane.showMessageDialog(null, "Eggs are not supposed to be green. " + revManID + ", " + reviewTitle);
+				}
 				nProse = output;
 			} else if (output.matches("[lL]ocations?\\d?\\s?[:=].*")) {//next 3(location, country, setting) have special treatment because they can appear in methods section also. Sometimes they appear double, so Strings have to be appended to each other
 				if (locationProse.equals("")) {//if it is empty, there is no double occurrence, so it can be filled as usual
@@ -673,6 +676,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					otherParticipantProse = "";
 				}
 				System.out.println("OTHER: " + otherParticipantProse);
+				
 			}
 		}
 		
