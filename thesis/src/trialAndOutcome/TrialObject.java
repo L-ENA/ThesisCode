@@ -110,6 +110,7 @@ public class TrialObject{
 	
 	////////////Strings that are extracted from Participants field of characteristics of included studies table
 	protected String diagnosisProse = "";
+	
 	protected String historyProse = "";
 	protected String ageProse= "";
 	protected String genderProse = "";
@@ -602,48 +603,69 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 	private void splitParticipants (String str) {
 		ArrayList<String> storage = new ArrayList<String>();
 		String[] splitParticipantParts;
-		//location country setting
-		splitParticipantParts = str.split("(?=(Locations?\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\s?[:=]))|(?=([sS]etting\\d?\\s?[:=]))|(?=([Dd]iagnosis\\d?\\s?[:=]))|(?=(Types?\\d?\\s?:))|(?=([^(]\\s?\\b[Nn]\\b\\s?\\d?[:=]))|(?=(\\b[Aa]ge\\d?\\s?[:=]))|(?=((([Ss]ex)|([Gg]ender))\\d?\\s?[:=]))|(?=([Hh]istory\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=([Dd]uration\\s[Ii]ll\\d?\\s?[:=]))|(?=(([Ee]thnicity\\d?\\s?[:=])|([Rr]ace\\d?\\s?[:=])))|(?=([cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)Follow[-\\s]up\\d?\\s?[:=]))");
+		//location country setting: b is word boundary, d is any digit, s is space char
+		splitParticipantParts = str.split("(?=(\\b[Cc]ompleted?\\sstudy\\b:?\\s[Nn]))|(?=(((\\b[Ff]unding\\b)|(\\b[Ff]unded\\sby\\b))\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))|(?=(\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=]))|(?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\bDiagnosis\\b\\d?\\s?[:=]))|(?=(\\bTypes?\\b\\d?\\s?:))|(?=([.]\\s?[^(]?\\b[Nn]\\b\\s?\\d?[:=]))|(?=(\\b[Aa]ge\\b\\d?\\s?[:=]))|(?=(((\\b[Ss]ex\\b)|(\\b[Gg]ender\\b))\\d?\\s?[:=]))|(?=(\\b[Hh]istory\\b\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=]))|(?=(Average\\slength\\sof\\sillness\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\b\\s\\b[Ii]ll\\b\\d?\\s?[:=]))|(?=((\\b[Ee]thnicit(y|ies)\\b\\d?\\s?[:=])|(\\b[Rr]ace\\b\\d?\\s?[:=])))|(?=(\\b[cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)//b[Ff]ollow[-\\s]up\\b\\d?\\s?[:=]))");
 		
 		for (int j = 0; j < splitParticipantParts.length; j++) {
+			
+			if (splitParticipantParts[j].startsWith(".")) {//when splitting the big string for number of participants, it happens that a full stop is misplaced.
+				splitParticipantParts[j] = splitParticipantParts[j].substring(1);//full stop is deleted from the String by cropping away first character in String
+				storage.set(j-1, storage.get(j-1) + ".");//full stop is appended to the right string, which is always the string that was added to storage just before
+			}
+			
 			storage.add(splitParticipantParts[j].trim());
 			System.out.println(splitParticipantParts[j]);
 			
 		}
 		
+		String output = "";//to hold current String that is stored in storage Array
+		String test = "";//filled with the string before, to test correct splitting, e.g. for n.
 		
-		for (String output: storage) {
-			if (output.matches("[Dd]iagnosis\\d?\\s?[:=].*") || output.matches("Types?\\d?\\s?:.*")) {//since the whole String needs to match, the .* is used as wildcard for the rest of the String
+		for (int i = 0; i < storage.size(); i++) {//iterates through storage to attempt to match Strings
+			output = storage.get(i);
+			
+			if (i >= 1) {// test String can only exist for Strings that do not stand at the beginning of the array, otherwise there would be an out of bounds exception
+				test = storage.get(i - 1);
+			}
+			
+			if (output.matches("\\bDiagnosis\\b\\d?\\s?[:=].*") || output.matches("\\bTypes?\\b\\d?\\s?:.*")) {//since the whole String needs to match, the .* is used as wildcard for the rest of the String
 				diagnosisProse = diagnosisProse + output;
-			} else if (output.matches("[Hh]istory\\d?\\s?[:=].*")) {
+				System.out.println(diagnosisProse);
+			} else if (output.matches("\\b[Hh]istory\\b\\d?\\s?[:=].*")) {
 				historyProse = output;
-			} else if (output.matches("[Aa]ge\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b[Aa]ge\\b\\d?\\s?[:=].*")) {
 				ageProse = output;
-			} else if (output.matches("(([Ss]ex)|([Gg]ender))\\d?\\s?[:=].*")) {
+			} else if (output.matches("(\\b[Gg]ender)\\b\\d?\\s?[:=].*") || output.matches("(\\b[Ss]ex\\b)\\d?\\s?[:=].*")) {
 				genderProse = output;
-			} else if (output.matches("(([Ee]xcluded)|([Ee]xclusions?\\s?(criteria)?))\\d?\\s?([:=]).*")) {
-				
+			} else if (output.matches("(\\b[Ee]xcluded\\b)\\d?\\s?[:=].*") || output.matches("\\b[Ee]xclusion\\scriteria?\\d?\\s?[:=].*") || output.matches("\\b[Ee]xclusions?\\b\\d\\s?[:=].*")) {
 				excludedProse = output;
-			} else if (output.matches("(([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=].*")) {
+			} else if (output.matches("(\\b[Ii]ncluded\\b)\\d?\\s?[:=].*") || output.matches("\\b[Ii]nclusion\\scriteria\\d?\\s?[:=].*") || output.matches("\\b[Ii]nclusions?\\b\\d\\s?[:=].*")) {
 				includedProse = output;
-			} else if (output.matches("[^(]\\s?\\b[Nn]\\b\\s?\\d?=?\\s?[:=]?.*")) {
+			} else if (output.matches("\\b[Nn]\\b\\s?\\d?\\s?[:=].*") || output.matches("\\b[Cc]ompleted?\\s(study\\b)?:?\\s[Nn].*")) {
 				if (nProse != "") {
-					JOptionPane.showMessageDialog(null, "Eggs are not supposed to be green. " + revManID + ", " + reviewTitle);
+					
+					if (output.matches(".*\\b[Nn]\\b\\s?[:=].*")) {
+					nProse = nProse +" " + output;
+					otherParticipantProse = otherParticipantProse.replace(output, "");
+					System.out.println(nProse);
+					System.out.println("OTHER: " + otherParticipantProse);
+					JOptionPane.showMessageDialog(null, "Beware n " + revManID + ", " + reviewTitle);
+					}
 				}
 				nProse = output;
-			} else if (output.matches("[lL]ocations?\\d?\\s?[:=].*")) {//next 3(location, country, setting) have special treatment because they can appear in methods section also. Sometimes they appear double, so Strings have to be appended to each other
+			} else if (output.matches("\\b[lL]ocations?\\b\\d?\\s?[:=].*")) {//next 3(location, country, setting) have special treatment because they can appear in methods section also. Sometimes they appear double, so Strings have to be appended to each other
 				if (locationProse.equals("")) {//if it is empty, there is no double occurrence, so it can be filled as usual
 					locationProse = output;
 				} else {//it was not empty, so the new found String is appended to old content
 					locationProse = locationProse + " " + output;
 				}
-			} else if (output.matches("[cC]ountr(y|ies)\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=].*")) {
 				if (countryProse.equals("")) {
 					countryProse = output;
 				} else {
 					countryProse = countryProse + " " + output;
 				}
-			} else if (output.matches("[sS]etting\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b[sS]etting\\b\\d?\\s?[:=].*")) {
 				if (settingProse.equals("")) {
 					settingProse = output;
 				} else {
@@ -652,7 +674,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				
 				
 				
-			} else if (output.matches("(?<!Lost\\sto\\s)Follow[-\\s]up\\d?\\s?[:=].*")) {
+			} else if (output.matches("(?<!Lost\\sto\\s)\\b[Ff]ollow[-\\s]up\\d?\\s?[:=].*")) {
 				
 				if (followUpProse.equals("")) {
 					followUpProse = output;
@@ -663,12 +685,14 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				
 			} 
 			
-			else if (output.matches("[cC]onsent(given)?\\d?\\s?[:=].*")) {
+			else if (output.matches("\\b[cC]onsent(given)?\\d?\\s?[:=].*")) {
 				consentProse = output;
-			} else if (output.matches("[Dd]uration\\s[Ii]ll\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b[Dd]uration\\s[Ii]ll\\d?\\s?[:=].*") || output.matches("\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=].*") || output.matches("Average\\slength\\sof\\sillness\\d?\\s?[:=].*")) {
 				durationIllProse = output;
-			} else if (output.matches("([Ee]thnicity)|([Rr]ace)\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b([Rr]ace)\\b\\d?\\s?[:=].*") || output.matches("\\b([Ee]thnicit(y|ies))\\b\\d?\\s?[:=].*")) {
 				ethnicityProse = output;
+			} else if (output.matches("\\b[Ff]unding\\b\\d?\\s?[:=].*") || output.matches("(\\b[Ff]unded\\sby\\b)\\d?\\s?[:=].*")) {
+				fundingProse = output;
 			} else {
 				otherParticipantProse = output.trim();
 				if (otherParticipantProse.contains("Exclusion criteria")) {
@@ -709,7 +733,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
-				System.out.println(splitMethodParts[j]);
+				//System.out.println(splitMethodParts[j]);
 			}
 		
 		}
@@ -718,27 +742,27 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			
 			if (output.matches("(Allocation:).*")) {//the wildcard asterisk is making sure that the whole string matches
 				allocationProse = output;
-				System.out.println("1. Allocation -- " + allocationProse);
+				//System.out.println("1. Allocation -- " + allocationProse);
 			} else if (output.matches("([Bb]linding:).*|([Bb]lindness:).*|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:).*|([Bb]lind:).*")) {
 				blindingProse = output;
-				System.out.println("2. Blinding -- " + blindingProse);
+				//System.out.println("2. Blinding -- " + blindingProse);
 			} else if (output.matches("Duration:.*")) {
 				durationProse = output;
-				System.out.println("3. Duration -- " + durationProse);
+				//System.out.println("3. Duration -- " + durationProse);
 			} else if (output.matches("Design:.*")) {
 				designProse = output;
-				System.out.println("4. Design -- " + designProse);
+				//System.out.println("4. Design -- " + designProse);
 			} else if (output.matches("(Loss:).*|(Lost\\sto\\follow[-\\s]up:).*")) {//to add the lost to follow up one
 				lostToFollowUpProse = output;
-				System.out.println("5. Loss Follow-up -- " + lostToFollowUpProse);
+				//System.out.println("5. Loss Follow-up -- " + lostToFollowUpProse);
 			} else if (output.matches("(?<!Lost\\sto\\s)Follow[-\\s]up:.*")) {
 				followUpProse = output;
 			} else if (output.matches("Consent:.*")) {
 				consentProse = output;
-				System.out.println("6. Consent -- " + consentProse);
+				//System.out.println("6. Consent -- " + consentProse);
 			} else if (output.matches("Setting:.*")) {
 				settingProse = output;
-				System.out.println("7. Setting -- " + settingProse);
+				//System.out.println("7. Setting -- " + settingProse);
 			} else if (output.matches("Locations?:.*")) {
 				locationProse = output;
 				System.out.println("8. Location -- " + locationProse);
@@ -750,7 +774,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				fundingProse = output;
 			} else {
 				otherMethodProse = output;
-				System.out.println("OTHER: " + otherMethodProse);
+				//System.out.println("OTHER: " + otherMethodProse);
 			}
 		}
 		
@@ -1921,5 +1945,76 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 
 	public void setOtherParticipantProse(String otherParticipantProse) {
 		this.otherParticipantProse = otherParticipantProse;
+	}
+	public String getDiagnosisProse() {
+		return diagnosisProse;
+	}
+
+	public void setDiagnosisProse(String diagnosisProse) {
+		this.diagnosisProse = diagnosisProse;
+	}
+
+	public String getHistoryProse() {
+		return historyProse;
+	}
+
+	public void setHistoryProse(String historyProse) {
+		this.historyProse = historyProse;
+	}
+
+	public String getAgeProse() {
+		return ageProse;
+	}
+
+	public void setAgeProse(String ageProse) {
+		this.ageProse = ageProse;
+	}
+
+	public String getGenderProse() {
+		return genderProse;
+	}
+
+	public void setGenderProse(String genderProse) {
+		this.genderProse = genderProse;
+	}
+
+	public String getExcludedProse() {
+		return excludedProse;
+	}
+
+	public void setExcludedProse(String excludedProse) {
+		this.excludedProse = excludedProse;
+	}
+
+	public String getIncludedProse() {
+		return includedProse;
+	}
+
+	public void setIncludedProse(String includedProse) {
+		this.includedProse = includedProse;
+	}
+
+	public String getDurationIllProse() {
+		return durationIllProse;
+	}
+
+	public void setDurationIllProse(String durationIllProse) {
+		this.durationIllProse = durationIllProse;
+	}
+
+	public String getEthnicityProse() {
+		return ethnicityProse;
+	}
+
+	public void setEthnicityProse(String ethnicityProse) {
+		this.ethnicityProse = ethnicityProse;
+	}
+
+	public String getnProse() {
+		return nProse;
+	}
+
+	public void setnProse(String nProse) {
+		this.nProse = nProse;
 	}
 }
