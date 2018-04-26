@@ -33,7 +33,7 @@ public class TrialObject{
 	public TrialObject() {
 		super();
 	}
-
+//comment
 //////////////////////////////////////////////////////////////////attributes. the protected ones have getters and setters because they will end up in the finished XML
 	//protected static int counter = 1;
 	protected String mainAuthor = ""; //check
