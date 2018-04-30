@@ -648,7 +648,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					nProse = nProse +" " + output;
 					otherParticipantProse = otherParticipantProse.replace(output, "");
 					System.out.println(nProse);
-					System.out.println("OTHER: " + otherParticipantProse);
+					//System.out.println("OTHER: " + otherParticipantProse);
 					JOptionPane.showMessageDialog(null, "Beware n " + revManID + ", " + reviewTitle);
 					}
 				}
