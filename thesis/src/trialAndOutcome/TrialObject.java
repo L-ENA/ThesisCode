@@ -119,10 +119,12 @@ public class TrialObject{
 	protected String nProse = "";
 	protected String durationIllProse= "";
 	protected String ethnicityProse= "";
+	protected String phaseProse = "";
 	
 	
 	
 
+	
 	protected String selectionBiasRandomSequenceJudgement;
 	protected String selectionBiasRandomSequenceBiasRisk;
 	protected String selectionBiasAllocationConcealmentBiasRisk;
@@ -212,7 +214,7 @@ public class TrialObject{
 						NodeList titleList = coverSheetElement.getElementsByTagName("TITLE");
 						Element titleElement = (Element) titleList.item(0);
 						reviewTitle = titleElement.getTextContent().trim();
-						System.out.println(reviewTitle);
+						//System.out.println(reviewTitle);
 					} catch (DOMException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -304,7 +306,7 @@ public class TrialObject{
 					
 					methodString = charMethodsElement.getTextContent().trim();
 					
-					System.out.println("BIG STRING: " + methodString);
+					//System.out.println("BIG STRING: " + methodString);
 					//methodString = methodString.replace("\\n", "");
 					
 					splitMethods(methodString);
@@ -604,7 +606,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		ArrayList<String> storage = new ArrayList<String>();
 		String[] splitParticipantParts;
 		//location country setting: b is word boundary, d is any digit, s is space char
-		splitParticipantParts = str.split("(?=(\\b[Cc]ompleted?\\sstudy\\b:?\\s[Nn]))|(?=(((\\b[Ff]unding\\b)|(\\b[Ff]unded\\sby\\b))\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))|(?=(\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=]))|(?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\bDiagnosis\\b\\d?\\s?[:=]))|(?=(\\bTypes?\\b\\d?\\s?:))|(?=([.]\\s?[^(]?\\b[Nn]\\b\\s?\\d?[:=]))|(?=(\\b[Aa]ge\\b\\d?\\s?[:=]))|(?=(((\\b[Ss]ex\\b)|(\\b[Gg]ender\\b))\\d?\\s?[:=]))|(?=(\\b[Hh]istory\\b\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=]))|(?=(Average\\slength\\sof\\sillness\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\b\\s\\b[Ii]ll\\b\\d?\\s?[:=]))|(?=((\\b[Ee]thnicit(y|ies)\\b\\d?\\s?[:=])|(\\b[Rr]ace\\b\\d?\\s?[:=])))|(?=(\\b[cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)//b[Ff]ollow[-\\s]up\\b\\d?\\s?[:=]))");
+		splitParticipantParts = str.split("(?=(\\bPhase\\b\\d?\\s?[:=]))|(?=(Consent\\sand\\sethics\\d?\\s?[:=]))|(?=(\\b[Cc]ompleted?\\sstudy\\b:?\\s[Nn]))|(?=(((\\b[Ff]unding\\b)|(\\b[Ff]unded\\sby\\b))\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))|(?=(\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=]))|(?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\bDiagnosis\\b\\d?\\s?[:=]))|(?=(\\bTypes?\\b\\d?\\s?:))|(?=([.]\\s?[^(]?([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?[:=]))|(?=(([Mm]ean\\s)?\\b[Aa]ge\\b\\d?\\s?[:=]))|(?=(((\\b[Ss]ex\\b)|(\\b[Gg]ender\\b))\\d?\\s?[:=]))|(?=(([Mm]edication\\s[Hh]istory\\b\\d?\\s?[:=])))|(?=((?![Mm]edication\\s)\\bHistory\\b\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=]))|(?=(Average\\slength\\sof\\sillness\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\b\\s\\b[Ii]ll\\b\\d?\\s?[:=]))|(?=(Length\\sof\\sillness\\d?\\s?[:=]))|(?=((\\b[Ee]thnicit(y|ies)\\b\\d?\\s?[:=])|(\\b[Rr]ace\\b\\d?\\s?[:=])))|(?=(\\b[cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)//b[Ff]ollow[-\\s]up\\b\\d?\\s?[:=]))");
 		
 		for (int j = 0; j < splitParticipantParts.length; j++) {
 			
@@ -614,7 +616,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			}
 			
 			storage.add(splitParticipantParts[j].trim());
-			System.out.println(splitParticipantParts[j]);
+			//System.out.println(splitParticipantParts[j]);
 			
 		}
 		
@@ -629,48 +631,100 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			}
 			
 			if (output.matches("\\bDiagnosis\\b\\d?\\s?[:=].*") || output.matches("\\bTypes?\\b\\d?\\s?:.*")) {//since the whole String needs to match, the .* is used as wildcard for the rest of the String
-				diagnosisProse = diagnosisProse + output;
-				System.out.println(diagnosisProse);
-			} else if (output.matches("\\b[Hh]istory\\b\\d?\\s?[:=].*")) {
-				historyProse = output;
-			} else if (output.matches("\\b[Aa]ge\\b\\d?\\s?[:=].*")) {
-				ageProse = output;
+				
+				if (diagnosisProse != "") {
+					
+					diagnosisProse = diagnosisProse + " " + output;//this happens in Becker 1983 and others in the review Antidepressants for people with both schizophrenia and depression, because a field called "Medication history:" comes up. it is added to the standard participant history prose.
+				System.out.println("Diagnosis stuff-- " + diagnosisProse);
+				} else {
+					diagnosisProse = output;
+				}
+				
+				
+				//System.out.println(diagnosisProse);
+			} else if (output.matches("\\b[Hh]istory\\b\\d?\\s?[:=].*") || output.matches("[Mm]edication\\s[Hh]istory\\b\\d?\\s?[:=].*")) {
+				if (historyProse != "") {
+					
+					historyProse = historyProse + " " + output;//this happens in Becker 1983 and others in the review Antidepressants for people with both schizophrenia and depression, because a field called "Medication history:" comes up. it is added to the standard participant history prose.
+					System.out.println("history stuff-- " + historyProse);
+				} else {
+					historyProse = output;
+					System.out.println(historyProse);
+				}
+				
+			} else if (output.matches("([Mm]ean\\s)?\\b[Aa]ge\\b\\d?\\s?[:=].*")) {
+				if (ageProse != "") {
+					
+					ageProse = ageProse + " " + output; // antipsychotics childhood schizophrenia, xiaong study has "Age:" and "Mean age:", ocurrences like this are combined here.
+					System.out.println("age stuff-- " + ageProse);
+				} else {
+					ageProse = output;
+				}
+				
 			} else if (output.matches("(\\b[Gg]ender)\\b\\d?\\s?[:=].*") || output.matches("(\\b[Ss]ex\\b)\\d?\\s?[:=].*")) {
-				genderProse = output;
+				if (genderProse != "") {
+					genderProse = genderProse + " " + output;
+					System.out.println("gender stuff-- " + genderProse);
+				} else {
+					genderProse = output;
+				}
+				
 			} else if (output.matches("(\\b[Ee]xcluded\\b)\\d?\\s?[:=].*") || output.matches("\\b[Ee]xclusion\\scriteria?\\d?\\s?[:=].*") || output.matches("\\b[Ee]xclusions?\\b\\d\\s?[:=].*")) {
-				excludedProse = output;
+				if (excludedProse != "") {
+					excludedProse = excludedProse + " " + output;
+					System.out.println("excluded stuff-- " + excludedProse);
+				} else {
+					excludedProse = output;
+				}
+				
 			} else if (output.matches("(\\b[Ii]ncluded\\b)\\d?\\s?[:=].*") || output.matches("\\b[Ii]nclusion\\scriteria\\d?\\s?[:=].*") || output.matches("\\b[Ii]nclusions?\\b\\d\\s?[:=].*")) {
-				includedProse = output;
-			} else if (output.matches("\\b[Nn]\\b\\s?\\d?\\s?[:=].*") || output.matches("\\b[Cc]ompleted?\\s(study\\b)?:?\\s[Nn].*")) {
+				if (includedProse != "") {
+					includedProse = includedProse + " " + output;
+					System.out.println("included stuff-- " + includedProse);
+				} else {
+					includedProse = output;
+				}
+				
+			} else if (output.matches("([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?\\s?[:=].*") || output.matches("\\b[Cc]ompleted?\\s(study\\b)?:?\\s[Nn].*")) {
 				if (nProse != "") {
 					
-					if (output.matches(".*\\b[Nn]\\b\\s?[:=].*")) {
+					if (output.matches(".*([Tt]otal\\s)?\\b[Nn]\\b\\s?[:=].*")) {
 					nProse = nProse +" " + output;
 					otherParticipantProse = otherParticipantProse.replace(output, "");
-					System.out.println(nProse);
-					//System.out.println("OTHER: " + otherParticipantProse);
+					System.out.println("nprose stuff--" + nProse);
+					System.out.println("OTHER: " + otherParticipantProse);
 					JOptionPane.showMessageDialog(null, "Beware n " + revManID + ", " + reviewTitle);
 					}
+				} else {
+					nProse = output;
 				}
-				nProse = output;
+				
 			} else if (output.matches("\\b[lL]ocations?\\b\\d?\\s?[:=].*")) {//next 3(location, country, setting) have special treatment because they can appear in methods section also. Sometimes they appear double, so Strings have to be appended to each other
 				if (locationProse.equals("")) {//if it is empty, there is no double occurrence, so it can be filled as usual
 					locationProse = output;
+					
 				} else {//it was not empty, so the new found String is appended to old content
 					locationProse = locationProse + " " + output;
+					System.out.println("Location stuff-- " + locationProse);
 				}
 			} else if (output.matches("\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=].*")) {
 				if (countryProse.equals("")) {
 					countryProse = output;
+					
 				} else {
 					countryProse = countryProse + " " + output;
+					System.out.println("country stuff-- " + countryProse);
 				}
 			} else if (output.matches("\\b[sS]etting\\b\\d?\\s?[:=].*")) {
-				if (settingProse.equals("")) {
-					settingProse = output;
+				if (settingProse != "") {
+					
+					settingProse = settingProse + " " + output; //Xu 2007, Yan 2008a, Yang 2006.. in aripiprazole vs other atypials has setting twice, here the Strings are appended.
+					System.out.println("setting stuff-- " + settingProse);
 				} else {
-					settingProse = settingProse + " " + output;
+					settingProse = output;
 				}
+					
+				
 				
 				
 				
@@ -681,25 +735,63 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				} else {
 					
 					followUpProse = followUpProse + " " + output;
+					System.out.println("followUp stuff-- " + followUpProse);
 				}
 				
 			} 
 			
-			else if (output.matches("\\b[cC]onsent(given)?\\d?\\s?[:=].*")) {
-				consentProse = output;
-			} else if (output.matches("\\b[Dd]uration\\s[Ii]ll\\d?\\s?[:=].*") || output.matches("\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=].*") || output.matches("Average\\slength\\sof\\sillness\\d?\\s?[:=].*")) {
-				durationIllProse = output;
+			else if (output.matches("\\b[cC]onsent(given)?\\d?\\s?[:=].*") || output.matches("Consent\\sand\\sethics\\d?\\s?[:=].*")) {
+				if (consentProse != "") {
+					consentProse = consentProse + " " + output;
+					System.out.println("consent stuff-- " + consentProse);
+				} else {
+					consentProse = output;
+				}
+				
+			} else if (output.matches("\\b[Dd]uration\\s[Ii]ll\\d?\\s?[:=].*") || output.matches("\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=].*") || output.matches("Average\\slength\\sof\\sillness\\d?\\s?[:=].*") || output.matches("Length\\sof\\sillness\\d?\\s?[:=].*")) {
+				if (durationIllProse != "") {
+					durationIllProse = durationIllProse + " " + output;
+					System.out.println("durationIll stuff-- " + durationIllProse);
+				} else {
+					durationIllProse = output;
+				}
+				
 			} else if (output.matches("\\b([Rr]ace)\\b\\d?\\s?[:=].*") || output.matches("\\b([Ee]thnicit(y|ies))\\b\\d?\\s?[:=].*")) {
-				ethnicityProse = output;
+				if (ethnicityProse != "") {
+					ethnicityProse = ethnicityProse + " " + output;
+					System.out.println("ethnicity stuff-- " + ethnicityProse);
+				} else {
+					ethnicityProse = output;
+				}
+				
 			} else if (output.matches("\\b[Ff]unding\\b\\d?\\s?[:=].*") || output.matches("(\\b[Ff]unded\\sby\\b)\\d?\\s?[:=].*")) {
-				fundingProse = output;
+				if (fundingProse != "") {
+					fundingProse = fundingProse + " " + output;
+					System.out.println("funding stuff-- " + fundingProse);
+				} else {
+					fundingProse = output;
+				}
+				
+			} else if (output.matches("\\bPhase\\b\\d?\\s?[:=].*")){ 
+				if (phaseProse != "") {
+					phaseProse = phaseProse + " " + output;
+					System.out.println("phase stuff-- " + phaseProse);
+				} else {
+					phaseProse = output;
+				}
 			} else {
 				otherParticipantProse = output.trim();
-				if (otherParticipantProse.contains("Exclusion criteria")) {
-					excludedProse = output.trim();
-					otherParticipantProse = "";
+				if (otherParticipantProse.contains("Exclusion criteria:") || otherParticipantProse.contains("Exclusion:") || otherParticipantProse.contains("Excluded:") || otherParticipantProse.contains("Exclusions:")) {
+					excludedProse = excludedProse + " " + output.trim();
+					
+				} else if (otherParticipantProse.contains("Inclusion criteria:") || otherParticipantProse.contains("Inclusion:")|| otherParticipantProse.contains("Included:") || otherParticipantProse.contains("Inclusions:")) {
+					includedProse = includedProse + " " + output.trim();
+					
+				} else {
+					if (otherParticipantProse.matches(".*\\w.*"))
+					System.out.println("OTHER: " + otherParticipantProse);
 				}
-				System.out.println("OTHER: " + otherParticipantProse);
+				
 				
 			}
 		}
@@ -765,7 +857,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				//System.out.println("7. Setting -- " + settingProse);
 			} else if (output.matches("Locations?:.*")) {
 				locationProse = output;
-				System.out.println("8. Location -- " + locationProse);
+				//System.out.println("8. Location -- " + locationProse);
 			} else if (output.matches("Raters?:.*")) {
 				ratersProse = output;
 			} else if (output.matches("(Countr(y|ies):.*)")) {
@@ -2016,5 +2108,12 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 
 	public void setnProse(String nProse) {
 		this.nProse = nProse;
+	}
+	public String getPhaseProse() {
+		return phaseProse;
+	}
+
+	public void setPhaseProse(String phaseProse) {
+		this.phaseProse = phaseProse;
 	}
 }
