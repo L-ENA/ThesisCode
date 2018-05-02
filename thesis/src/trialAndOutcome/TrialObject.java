@@ -35,9 +35,9 @@ public class TrialObject{
 	}
 //comment
 //////////////////////////////////////////////////////////////////attributes. the protected ones have getters and setters because they will end up in the finished XML
-	//protected static int counter = 1;
+	public static int counter = 0;
 	protected String mainAuthor = ""; //check
-	protected int year;//will contain year of publication
+	protected String year;//will contain year of publication
 	protected String aauthorYearLetter = ""; //for comparison with MeerKatBE
 	
 	protected String reviewTitle = "";
@@ -144,6 +144,12 @@ public class TrialObject{
 	
 	protected DichotomousOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
 	protected ContinuousOutcomeObject cobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
+	protected OEandVarianceOutcomeObject oeobj;//same description as above
+	protected GenericInverseOutcomeObject givobj;
+	protected OtherOutcomeObject oobj;
+	
+	
+	
 	protected ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. 
 	protected List<ReferenceObject> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects
 
@@ -436,24 +442,25 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					
 					//tries to extract year when study was conducted
 					try {
-						cache = studyElement.getAttribute("YEAR");
-						year = Integer.parseInt(cache); //converts String to int
+						year = studyElement.getAttribute("YEAR");
+						
 					} catch (NumberFormatException e8) {
 						try {
 							// if year can't be extracted as attribute it is tried via revman-ID. In case there is a hyphen or..., the characters resulting from this are eliminated and the String is restored to normal
-							cache = revManID.replaceAll("(_x002d_)", "-").replace("(_x0026_)", "&").replaceAll("[^\\d.]", "");
-							year = Integer.parseInt(cache); //Takes year of publication from ID
+							year = revManID.replaceAll("(_x002d_)", "-").replace("(_x0026_)", "&").replaceAll("[^\\d.]", "");
+							
+						
 						} catch (NumberFormatException e) {
 							try {
 								//tries to take year of publication from additional references, e.g.intensive case management review, when there is absolutely no date entered because this trial is just the description of one centre in the study, or in in vocational training, where authors deleted the years from RevMan ID or possibly forgot to enter it
-								cache = refObject.getDate().replaceAll("[^\\d.]", "");
-								year = Integer.parseInt(cache);
+								year = refObject.getDate().replaceAll("[^\\d.]", "");
+								
 							} catch (NumberFormatException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 								// last resort
 								e.printStackTrace();
-								year = 0000;
+								year = "";
 							}
 							
 							
@@ -464,7 +471,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Extracts OutcomeObjects for this trial
 					
-						System.out.println("Main author of Study: " + mainAuthor);
+						//System.out.println("Main author of Study: " + mainAuthor);
 						//System.out.println(trialSetting.getContent());
 						//System.out.println(countries);
 						//System.out.println(blindingMethod.getContent());
@@ -485,7 +492,8 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 						Element comparisonNameElement = (Element) comparisonNameNode; //takeOver for comparisonname and groupnames
 						
 						
-						try {////////////looks for dichotomous outcomes by their tag name. Elements are created and used as parameters for object creation. All
+						try {////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+							//looks for dichotomous outcomes by their tag name. Elements are created and used as parameters for object creation. All
 							//dichotomous outcome objects are traversed and it is checked if their ID equals the revman ID of the trial which outcomes 
 							//are supposed to extracted in this call. All outcomes are added to the object list
 							NodeList dichOutcomeList = comparisonElement.getElementsByTagName("DICH_OUTCOME");
@@ -499,11 +507,12 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 								
 								
 								NodeList dichSubgroupList = dichOutcomeElement.getElementsByTagName("DICH_SUBGROUP");
-								for (int j = 0; j <dichSubgroupList.getLength(); j++){
-									Node dichSubgroupNode = dichSubgroupList.item(j);
-									Element dichSubgroupElement = (Element) dichSubgroupNode;
+								
+								if (dichSubgroupList.getLength() == 0) {//there are no subgroups, so the data have to be taken from outcome node directly
 									
-									NodeList dichDataList = dichSubgroupElement.getElementsByTagName("DICH_DATA");
+									Element dichSubgroupElement = null; //has to be given to constructor
+									
+									NodeList dichDataList = dichOutcomeElement.getElementsByTagName("DICH_DATA");
 									for (int k = 0; k < dichDataList.getLength(); k++){
 										Node dichDataNode = dichDataList.item(k);
 										Element dichDataElement = (Element) dichDataNode;
@@ -515,13 +524,34 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 											//System.out.println("Outcome added to list");
 										}
 									}
+								} else {
+									for (int j = 0; j <dichSubgroupList.getLength(); j++){
+										Node dichSubgroupNode = dichSubgroupList.item(j);
+										Element dichSubgroupElement = (Element) dichSubgroupNode;
+										
+										NodeList dichDataList = dichSubgroupElement.getElementsByTagName("DICH_DATA");
+										for (int k = 0; k < dichDataList.getLength(); k++){
+											Node dichDataNode = dichDataList.item(k);
+											Element dichDataElement = (Element) dichDataNode;
+											
+											if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
+												
+												dobj = new DichotomousOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement);
+												outcomeList.add(dobj);
+												//System.out.println("Outcome added to list");
+											}
+										}
+									}
 								}
+								
+								
 							}
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						
+						//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+						//////continuous outcome objects
 						try {
 							NodeList contOutcomeList = comparisonElement.getElementsByTagName("CONT_OUTCOME");
 							for (int l = 0; l < contOutcomeList.getLength(); l++){
@@ -534,11 +564,12 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 								
 								
 								NodeList contSubgroupList = contOutcomeElement.getElementsByTagName("CONT_SUBGROUP");
-								for (int j = 0; j <contSubgroupList.getLength(); j++){
-									Node contSubgroupNode = contSubgroupList.item(j);
-									Element contSubgroupElement = (Element) contSubgroupNode;
+								
+								if (contSubgroupList.getLength() == 0) {//there are no subgroups, so the data have to be taken from outcome node directly
 									
-									NodeList contDataList = contSubgroupElement.getElementsByTagName("CONT_DATA");
+									Element contSubgroupElement = null;//it does not exist, but is given to the constructor anyway
+									
+									NodeList contDataList = contOutcomeElement.getElementsByTagName("CONT_DATA");
 									for (int k = 0; k < contDataList.getLength(); k++){
 										Node contDataNode = contDataList.item(k);
 										Element contDataElement = (Element) contDataNode;
@@ -550,12 +581,228 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 											//System.out.println("Outcome added to list");
 										}
 									}
+								} else {
+									for (int j = 0; j <contSubgroupList.getLength(); j++){
+										Node contSubgroupNode = contSubgroupList.item(j);
+										Element contSubgroupElement = (Element) contSubgroupNode;
+										
+										NodeList contDataList = contSubgroupElement.getElementsByTagName("CONT_DATA");
+										for (int k = 0; k < contDataList.getLength(); k++){
+											Node contDataNode = contDataList.item(k);
+											Element contDataElement = (Element) contDataNode;
+											
+											if (contDataElement.getAttribute("STUDY_ID").equals(revManID)){
+												
+												cobj = new ContinuousOutcomeObject(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement);
+												outcomeList.add(cobj);
+												//System.out.println("Outcome added to list");
+											}
+										}
+									}
 								}
+								
+								
 							}
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+						////other outcome object
+						
+						try {
+							NodeList oOutcomeList = comparisonElement.getElementsByTagName("OTHER_OUTCOME");
+							for (int l = 0; l < oOutcomeList.getLength(); l++){
+								Node oOutcomeNode = oOutcomeList.item(l);
+								Element oOutcomeElement = (Element) oOutcomeNode;
+								
+								NodeList oOutcomeNameList = oOutcomeElement.getElementsByTagName("NAME");
+								Node oOutcomeNameNode = oOutcomeNameList.item(0);
+								Element oOutcomeNameElement = (Element) oOutcomeNameNode;
+								
+								// data do not always appear in subgroups
+								
+									NodeList oSubgroupList = oOutcomeElement.getElementsByTagName("OTHER_SUBGROUP");
+									
+									
+									if (oSubgroupList.getLength() == 0) {//there are no subgroups
+										
+										NodeList oDataList = oOutcomeElement.getElementsByTagName("OTHER_DATA");
+										for (int k = 0; k < oDataList.getLength(); k++){
+											Node oDataNode = oDataList.item(k);
+											Element oDataElement = (Element) oDataNode;
+											
+											if (oDataElement.getAttribute("STUDY_ID").equals(revManID)){
+												
+												Element oSubgroupElement = null;
+												
+												oobj = new OtherOutcomeObject(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement);
+												outcomeList.add(oobj);
+												counter++;
+												
+											}
+										}
+										
+									} else {//there are subgroups
+										for (int j = 0; j <oSubgroupList.getLength(); j++){
+											Node oSubgroupNode = oSubgroupList.item(j);
+											Element oSubgroupElement = (Element) oSubgroupNode;
+											
+											NodeList oDataList = oSubgroupElement.getElementsByTagName("IV_DATA");
+											for (int k = 0; k < oDataList.getLength(); k++){
+												Node oDataNode = oDataList.item(k);
+												Element oDataElement = (Element) oDataNode;
+												
+												if (oDataElement.getAttribute("STUDY_ID").equals(revManID)){
+													
+													oobj = new OtherOutcomeObject(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement);
+													outcomeList.add(oobj);
+													counter++;
+													
+												}
+											}
+										}
+									}
+										
+									
+								
+								
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+						//generic inverse outcome object
+						
+						try {
+							NodeList ivOutcomeList = comparisonElement.getElementsByTagName("IV_OUTCOME");
+							for (int l = 0; l < ivOutcomeList.getLength(); l++){
+								Node ivOutcomeNode = ivOutcomeList.item(l);
+								Element ivOutcomeElement = (Element) ivOutcomeNode;
+								
+								NodeList ivOutcomeNameList = ivOutcomeElement.getElementsByTagName("NAME");
+								Node ivOutcomeNameNode = ivOutcomeNameList.item(0);
+								Element ivOutcomeNameElement = (Element) ivOutcomeNameNode;
+								
+								// data do not always appear in subgroups
+								
+									NodeList ivSubgroupList = ivOutcomeElement.getElementsByTagName("IV_SUBGROUP");
+									
+									
+									if (ivSubgroupList.getLength() == 0) {//there are no subgroups
+										
+										NodeList ivDataList = ivOutcomeElement.getElementsByTagName("IV_DATA");
+										for (int k = 0; k < ivDataList.getLength(); k++){
+											Node ivDataNode = ivDataList.item(k);
+											Element ivDataElement = (Element) ivDataNode;
+											
+											if (ivDataElement.getAttribute("STUDY_ID").equals(revManID)){
+												
+												Element ivSubgroupElement = null;
+												
+												givobj = new GenericInverseOutcomeObject(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement);
+												outcomeList.add(givobj);
+												
+												
+											}
+										}
+										
+									} else {//there are subgroups
+										for (int j = 0; j <ivSubgroupList.getLength(); j++){
+											Node ivSubgroupNode = ivSubgroupList.item(j);
+											Element ivSubgroupElement = (Element) ivSubgroupNode;
+											
+											NodeList ivDataList = ivSubgroupElement.getElementsByTagName("IV_DATA");
+											for (int k = 0; k < ivDataList.getLength(); k++){
+												Node ivDataNode = ivDataList.item(k);
+												Element ivDataElement = (Element) ivDataNode;
+												
+												if (ivDataElement.getAttribute("STUDY_ID").equals(revManID)){
+													
+													givobj = new GenericInverseOutcomeObject(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement);
+													outcomeList.add(givobj);
+													
+													
+												}
+											}
+										}
+									}
+										
+									
+								
+								
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+						///O-E and variance outcome
+						try {
+							NodeList oeOutcomeList = comparisonElement.getElementsByTagName("IPD_OUTCOME");
+							for (int l = 0; l < oeOutcomeList.getLength(); l++){
+								Node oeOutcomeNode = oeOutcomeList.item(l);
+								Element oeOutcomeElement = (Element) oeOutcomeNode;
+								
+								NodeList oeOutcomeNameList = oeOutcomeElement.getElementsByTagName("NAME");
+								Node oeOutcomeNameNode = oeOutcomeNameList.item(0);
+								Element oeOutcomeNameElement = (Element) oeOutcomeNameNode;
+								
+								// data do not always appear in subgroups
+								
+									NodeList oeSubgroupList = oeOutcomeElement.getElementsByTagName("IPD_SUBGROUP");
+									
+									
+									if (oeSubgroupList.getLength() == 0) {//there are no subgroups
+										
+										NodeList oeDataList = oeOutcomeElement.getElementsByTagName("IPD_DATA");
+										for (int k = 0; k < oeDataList.getLength(); k++){
+											Node oeDataNode = oeDataList.item(k);
+											Element oeDataElement = (Element) oeDataNode;
+											
+											if (oeDataElement.getAttribute("STUDY_ID").equals(revManID)){
+												
+												Element oeSubgroupElement = null;
+												
+												oeobj = new OEandVarianceOutcomeObject(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement);
+												outcomeList.add(oeobj);
+												
+												
+											}
+										}
+										
+									} else {//there are subgroups
+										for (int j = 0; j <oeSubgroupList.getLength(); j++){
+											Node oeSubgroupNode = oeSubgroupList.item(j);
+											Element oeSubgroupElement = (Element) oeSubgroupNode;
+											
+											NodeList oeDataList = oeSubgroupElement.getElementsByTagName("IPD_DATA");
+											for (int k = 0; k < oeDataList.getLength(); k++){
+												Node oeDataNode = oeDataList.item(k);
+												Element oeDataElement = (Element) oeDataNode;
+												
+												if (oeDataElement.getAttribute("STUDY_ID").equals(revManID)){
+													
+													oeobj = new OEandVarianceOutcomeObject(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement);
+													outcomeList.add(oeobj);
+													
+												}
+											}
+										}
+									}
+										
+									
+								
+								
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						
 						
 						
 //						NodeList comparisonNameList = comparisonElement.getElementsByTagName("NAME");
@@ -564,7 +811,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 //						
 //						comparisonName = comparisonNameElement.getTextContent();
 //						System.out.println(comparisonName);
-					}
+					}//closes the for loop that starts with the comparison elements
 					
 					
 //					System.out.println(mainAuthor);
@@ -595,7 +842,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					//aauthorYearLetter = mainAuthor+year+yearLetter;
 					//System.out.println("Setting");
 					//System.out.println(settingProse);
-					System.out.println();
+					//System.out.println();
 					
 					
 					
@@ -605,7 +852,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 	private void splitParticipants (String str) {
 		ArrayList<String> storage = new ArrayList<String>();
 		String[] splitParticipantParts;
-		//location country setting: b is word boundary, d is any digit, s is space char
+		//location country setting: b is word boundary, d is any digit, s is space char//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////(?(?=Location\\sand\\s[Ss]etting)(?=(Setting\\sand\\s[Ll]ocation\\d?\\s?[:=])|((?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))))
 		splitParticipantParts = str.split("(?=(\\bPhase\\b\\d?\\s?[:=]))|(?=(Consent\\sand\\sethics\\d?\\s?[:=]))|(?=(\\b[Cc]ompleted?\\sstudy\\b:?\\s[Nn]))|(?=(((\\b[Ff]unding\\b)|(\\b[Ff]unded\\sby\\b))\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))|(?=(\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=]))|(?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\bDiagnosis\\b\\d?\\s?[:=]))|(?=(\\bTypes?\\b\\d?\\s?:))|(?=([.]\\s?[^(]?([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?[:=]))|(?=(([Mm]ean\\s)?\\b[Aa]ge\\b\\d?\\s?[:=]))|(?=(((\\b[Ss]ex\\b)|(\\b[Gg]ender\\b))\\d?\\s?[:=]))|(?=(([Mm]edication\\s[Hh]istory\\b\\d?\\s?[:=])))|(?=((?![Mm]edication\\s)\\bHistory\\b\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=]))|(?=(Average\\slength\\sof\\sillness\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\b\\s\\b[Ii]ll\\b\\d?\\s?[:=]))|(?=(Length\\sof\\sillness\\d?\\s?[:=]))|(?=((\\b[Ee]thnicit(y|ies)\\b\\d?\\s?[:=])|(\\b[Rr]ace\\b\\d?\\s?[:=])))|(?=(\\b[cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)//b[Ff]ollow[-\\s]up\\b\\d?\\s?[:=]))");
 		
 		for (int j = 0; j < splitParticipantParts.length; j++) {
@@ -635,7 +882,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				if (diagnosisProse != "") {
 					
 					diagnosisProse = diagnosisProse + " " + output;//this happens in Becker 1983 and others in the review Antidepressants for people with both schizophrenia and depression, because a field called "Medication history:" comes up. it is added to the standard participant history prose.
-				System.out.println("Diagnosis stuff-- " + diagnosisProse);
+				//System.out.println("Diagnosis stuff-- " + diagnosisProse);
 				} else {
 					diagnosisProse = output;
 				}
@@ -646,17 +893,17 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				if (historyProse != "") {
 					
 					historyProse = historyProse + " " + output;//this happens in Becker 1983 and others in the review Antidepressants for people with both schizophrenia and depression, because a field called "Medication history:" comes up. it is added to the standard participant history prose.
-					System.out.println("history stuff-- " + historyProse);
+					//System.out.println("history stuff-- " + historyProse);
 				} else {
 					historyProse = output;
-					System.out.println(historyProse);
+					
 				}
 				
 			} else if (output.matches("([Mm]ean\\s)?\\b[Aa]ge\\b\\d?\\s?[:=].*")) {
 				if (ageProse != "") {
 					
 					ageProse = ageProse + " " + output; // antipsychotics childhood schizophrenia, xiaong study has "Age:" and "Mean age:", ocurrences like this are combined here.
-					System.out.println("age stuff-- " + ageProse);
+					//System.out.println("age stuff-- " + ageProse);
 				} else {
 					ageProse = output;
 				}
@@ -664,7 +911,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			} else if (output.matches("(\\b[Gg]ender)\\b\\d?\\s?[:=].*") || output.matches("(\\b[Ss]ex\\b)\\d?\\s?[:=].*")) {
 				if (genderProse != "") {
 					genderProse = genderProse + " " + output;
-					System.out.println("gender stuff-- " + genderProse);
+					//System.out.println("gender stuff-- " + genderProse);
 				} else {
 					genderProse = output;
 				}
@@ -672,7 +919,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			} else if (output.matches("(\\b[Ee]xcluded\\b)\\d?\\s?[:=].*") || output.matches("\\b[Ee]xclusion\\scriteria?\\d?\\s?[:=].*") || output.matches("\\b[Ee]xclusions?\\b\\d\\s?[:=].*")) {
 				if (excludedProse != "") {
 					excludedProse = excludedProse + " " + output;
-					System.out.println("excluded stuff-- " + excludedProse);
+					//System.out.println("excluded stuff-- " + excludedProse);
 				} else {
 					excludedProse = output;
 				}
@@ -680,7 +927,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			} else if (output.matches("(\\b[Ii]ncluded\\b)\\d?\\s?[:=].*") || output.matches("\\b[Ii]nclusion\\scriteria\\d?\\s?[:=].*") || output.matches("\\b[Ii]nclusions?\\b\\d\\s?[:=].*")) {
 				if (includedProse != "") {
 					includedProse = includedProse + " " + output;
-					System.out.println("included stuff-- " + includedProse);
+					//System.out.println("included stuff-- " + includedProse);
 				} else {
 					includedProse = output;
 				}
@@ -691,9 +938,9 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					if (output.matches(".*([Tt]otal\\s)?\\b[Nn]\\b\\s?[:=].*")) {
 					nProse = nProse +" " + output;
 					otherParticipantProse = otherParticipantProse.replace(output, "");
-					System.out.println("nprose stuff--" + nProse);
-					System.out.println("OTHER: " + otherParticipantProse);
-					JOptionPane.showMessageDialog(null, "Beware n " + revManID + ", " + reviewTitle);
+					//System.out.println("nprose stuff--" + nProse);
+					//System.out.println("OTHER: " + otherParticipantProse);
+					//JOptionPane.showMessageDialog(null, "Beware n " + revManID + ", " + reviewTitle);
 					}
 				} else {
 					nProse = output;
@@ -705,7 +952,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					
 				} else {//it was not empty, so the new found String is appended to old content
 					locationProse = locationProse + " " + output;
-					System.out.println("Location stuff-- " + locationProse);
+					//System.out.println("Location stuff-- " + locationProse);
 				}
 			} else if (output.matches("\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=].*")) {
 				if (countryProse.equals("")) {
@@ -713,13 +960,13 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					
 				} else {
 					countryProse = countryProse + " " + output;
-					System.out.println("country stuff-- " + countryProse);
+					//System.out.println("country stuff-- " + countryProse);
 				}
 			} else if (output.matches("\\b[sS]etting\\b\\d?\\s?[:=].*")) {
 				if (settingProse != "") {
 					
 					settingProse = settingProse + " " + output; //Xu 2007, Yan 2008a, Yang 2006.. in aripiprazole vs other atypials has setting twice, here the Strings are appended.
-					System.out.println("setting stuff-- " + settingProse);
+					//System.out.println("setting stuff-- " + settingProse);
 				} else {
 					settingProse = output;
 				}
@@ -735,7 +982,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				} else {
 					
 					followUpProse = followUpProse + " " + output;
-					System.out.println("followUp stuff-- " + followUpProse);
+					//System.out.println("followUp stuff-- " + followUpProse);
 				}
 				
 			} 
@@ -743,7 +990,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			else if (output.matches("\\b[cC]onsent(given)?\\d?\\s?[:=].*") || output.matches("Consent\\sand\\sethics\\d?\\s?[:=].*")) {
 				if (consentProse != "") {
 					consentProse = consentProse + " " + output;
-					System.out.println("consent stuff-- " + consentProse);
+					//System.out.println("consent stuff-- " + consentProse);
 				} else {
 					consentProse = output;
 				}
@@ -751,7 +998,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			} else if (output.matches("\\b[Dd]uration\\s[Ii]ll\\d?\\s?[:=].*") || output.matches("\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=].*") || output.matches("Average\\slength\\sof\\sillness\\d?\\s?[:=].*") || output.matches("Length\\sof\\sillness\\d?\\s?[:=].*")) {
 				if (durationIllProse != "") {
 					durationIllProse = durationIllProse + " " + output;
-					System.out.println("durationIll stuff-- " + durationIllProse);
+					//System.out.println("durationIll stuff-- " + durationIllProse);
 				} else {
 					durationIllProse = output;
 				}
@@ -759,7 +1006,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			} else if (output.matches("\\b([Rr]ace)\\b\\d?\\s?[:=].*") || output.matches("\\b([Ee]thnicit(y|ies))\\b\\d?\\s?[:=].*")) {
 				if (ethnicityProse != "") {
 					ethnicityProse = ethnicityProse + " " + output;
-					System.out.println("ethnicity stuff-- " + ethnicityProse);
+					//System.out.println("ethnicity stuff-- " + ethnicityProse);
 				} else {
 					ethnicityProse = output;
 				}
@@ -767,7 +1014,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			} else if (output.matches("\\b[Ff]unding\\b\\d?\\s?[:=].*") || output.matches("(\\b[Ff]unded\\sby\\b)\\d?\\s?[:=].*")) {
 				if (fundingProse != "") {
 					fundingProse = fundingProse + " " + output;
-					System.out.println("funding stuff-- " + fundingProse);
+					//System.out.println("funding stuff-- " + fundingProse);
 				} else {
 					fundingProse = output;
 				}
@@ -775,7 +1022,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			} else if (output.matches("\\bPhase\\b\\d?\\s?[:=].*")){ 
 				if (phaseProse != "") {
 					phaseProse = phaseProse + " " + output;
-					System.out.println("phase stuff-- " + phaseProse);
+					//System.out.println("phase stuff-- " + phaseProse);
 				} else {
 					phaseProse = output;
 				}
@@ -788,8 +1035,8 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					includedProse = includedProse + " " + output.trim();
 					
 				} else {
-					if (otherParticipantProse.matches(".*\\w.*"))
-					System.out.println("OTHER: " + otherParticipantProse);
+					//if (otherParticipantProse.matches(".*\\w.*"))
+					//System.out.println("OTHER participant: " + otherParticipantProse);
 				}
 				
 				
@@ -806,7 +1053,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		
 		if (str.contains("Lost\\sto\\s[Ff]ollow[\\s-]up:)")) {//necessary because there can be an appearance of only "Follow-up:", here we would loose the "Lost to" part of the String
 			//splits the string at the occurrence of all the words that folllow in the regex. by including the ":", the splitting is safer because the words themselves can appear throughout the table randomly.
-			splitMethodParts = str.split("(?=(([Ff]unding:)|([Ff]unded\\sby)))|(?=([rR]aters?))|(?=([aA]llocation:))|(?=([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:))|(?=([dD]uration:))|(?=([dD]esign:))|(?=(([lL]oss:)|([lL]ost\\sto\\s[Ff]ollow[\\s-]up:)))|(?=([cC]onsent(given)?:))|(?=(Locations?:))|(?=([cC]ountr(y|ies):))|(?=([sS]etting:))");
+			splitMethodParts = str.split("(?=(([Ff]unding[:=])|([Ff]unded\\sby)))|(?=([rR]aters?[:=]))|(?=([aA]llocation[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)[:=]))|(?=([Bb]linding[:=])|([Bb]lindness[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind[:=])|([Bb]lind[:=]))|(?=([dD]uration[:=]))|(?=([dD]esign[:=]))|(?=(([lL]oss[:=])|([lL]ost\\sto\\s[Ff]ollow[\\s-]up[:=])))|(?=([cC]onsent(given)?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)[:=]))|(?=(Setting[:=]))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				
@@ -821,7 +1068,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			
 		} else  {//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=(([Ff]unding:)|([Ff]unded\\sby)))|(?=([rR]aters?))|(?=([aA]llocation:))|(?=([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:))|(?=([Dd]uration:))|(?=([dD]esign:))|(?=([fF]ollow[\\s-]up:))|(?=([lL]oss:))|(?=([cC]onsent:))|(?=(Locations?:))|(?=([cC]ountr(y|ies):))|(?=([sS]etting:))");
+			splitMethodParts = str.split("(?=(([Ff]unding[:=])|([Ff]unded\\sby)))|(?=([rR]aters?[:=]))|(?=([aA]llocation[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)[:=]))|(?=([Bb]linding[:=])|([Bb]lindness[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind[:=])|(Blind[:=]))|(?=([Dd]uration[:=]))|(?=([dD]esign[:=]))|(?=([fF]ollow[\\s-]up[:=]))|(?=([lL]oss[:=]))|(?=([cC]onsent[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)[:=]))|(?=(Setting[:=]))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
@@ -832,41 +1079,47 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		
 		for (String output: storage) {
 			
-			if (output.matches("(Allocation:).*")) {//the wildcard asterisk is making sure that the whole string matches
+			if (output.matches("(Allocation[:=]).*") || output.matches("([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)[:=].*")) {//the wildcard asterisk is making sure that the whole string matches
 				allocationProse = output;
 				//System.out.println("1. Allocation -- " + allocationProse);
-			} else if (output.matches("([Bb]linding:).*|([Bb]lindness:).*|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:).*|([Bb]lind:).*")) {
+			} else if (output.matches("([Bb]linding[:=]).*|([Bb]lindness[:=]).*|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind[:=]).*|(Blind[:=]).*")) {
 				blindingProse = output;
 				//System.out.println("2. Blinding -- " + blindingProse);
-			} else if (output.matches("Duration:.*")) {
+			} else if (output.matches("Duration[:=].*")) {
 				durationProse = output;
 				//System.out.println("3. Duration -- " + durationProse);
-			} else if (output.matches("Design:.*")) {
+			} else if (output.matches("Design[:=].*")) {
 				designProse = output;
 				//System.out.println("4. Design -- " + designProse);
-			} else if (output.matches("(Loss:).*|(Lost\\sto\\follow[-\\s]up:).*")) {//to add the lost to follow up one
+			} else if (output.matches("(Loss[:=]).*|(Lost\\sto\\follow[-\\s]up[:=]).*")) {//to add the lost to follow up one
 				lostToFollowUpProse = output;
 				//System.out.println("5. Loss Follow-up -- " + lostToFollowUpProse);
-			} else if (output.matches("(?<!Lost\\sto\\s)Follow[-\\s]up:.*")) {
+			} else if (output.matches("(?<!Lost\\sto\\s)Follow[-\\s]up[:=].*")) {
 				followUpProse = output;
-			} else if (output.matches("Consent:.*")) {
+			} else if (output.matches("Consent[:=].*")) {
 				consentProse = output;
 				//System.out.println("6. Consent -- " + consentProse);
-			} else if (output.matches("Setting:.*")) {
+			} else if (output.matches("Setting[:=].*")) {
 				settingProse = output;
 				//System.out.println("7. Setting -- " + settingProse);
-			} else if (output.matches("Locations?:.*")) {
+			} else if (output.matches("Locations?[:=].*") || output.matches("Locations?\\sand\\ssetting:.*")) {
 				locationProse = output;
+				if (output.matches("Locations?\\sand\\ssetting[:=].*")) {//because this contains info on setting as well if it comes true
+					settingProse = output;
+				}
 				//System.out.println("8. Location -- " + locationProse);
-			} else if (output.matches("Raters?:.*")) {
+			} else if (output.matches("Raters?[:=].*")) {
 				ratersProse = output;
-			} else if (output.matches("(Countr(y|ies):.*)")) {
+				//System.out.println("9. Raters -- " + ratersProse);
+			} else if (output.matches("(Countr(y|ies)[:=].*)")) {
 				countryProse = output;
-			} else if (output.matches("(?=(([Ff]unding:.*)|([Ff]unded\\sby:.*)))|")) {
+				//System.out.println("10. Countries -- " + countryProse);
+			} else if (output.matches("(?=(([Ff]unding[:=].*)|([Ff]unded\\sby:.*)))|")) {
 				fundingProse = output;
+				//System.out.println("11. Funding -- " + fundingProse);
 			} else {
 				otherMethodProse = output;
-				//System.out.println("OTHER: " + otherMethodProse);
+				//System.out.println("OTHER methods: " + otherMethodProse);
 			}
 		}
 		
@@ -1554,13 +1807,13 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 
 
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 
 
 
-	public void setYear(int year) {
+	public void setYear(String year) {
 		this.year = year;
 	}
 
@@ -2115,5 +2368,26 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 
 	public void setPhaseProse(String phaseProse) {
 		this.phaseProse = phaseProse;
+	}
+	public OEandVarianceOutcomeObject getOeobj() {
+		return oeobj;
+	}
+
+	public void setOeobj(OEandVarianceOutcomeObject oeobj) {
+		this.oeobj = oeobj;
+	}
+	public GenericInverseOutcomeObject getGivobj() {
+		return givobj;
+	}
+
+	public void setGivobj(GenericInverseOutcomeObject givobj) {
+		this.givobj = givobj;
+	}
+	public OtherOutcomeObject getOobj() {
+		return oobj;
+	}
+
+	public void setOobj(OtherOutcomeObject oobj) {
+		this.oobj = oobj;
 	}
 }
