@@ -43,7 +43,9 @@ public class Database {
 
 			}
 			reviewName = a.getReviewTitle();
+			//System.out.println(reviewName);
 		}
+		
 	}
 	
 

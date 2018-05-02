@@ -6,6 +6,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import trialAndOutcome.TrialObject;
+
 
 //test123
 
@@ -53,6 +55,7 @@ public class Main {
 				jaxbMarshaller.marshal(d, new File(path));	//puts database into a xml file that is saved according to path String
 				
 				System.out.println("File created successfully");
+				System.out.println(TrialObject.counter);
 				
 				
 			} catch (JAXBException e) {
