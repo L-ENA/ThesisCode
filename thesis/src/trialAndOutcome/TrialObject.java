@@ -119,10 +119,14 @@ public class TrialObject{
 	protected String durationIllProse= "";
 	protected String ethnicityProse= "";
 	protected String phaseProse = "";
+	protected String assessmentPointProse = "";
+	protected String multicentreProse = "";
 	
 	
 	
 
+	
+	
 	
 	protected String selectionBiasRandomSequenceJudgement;
 	protected String selectionBiasRandomSequenceBiasRisk;
@@ -1052,7 +1056,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		
 		//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\s?[:=]))|(?=(([Ff]unding\\d?\\s?[:=])|(Funded\\sby\\d?\\s?[:=]?)))|(?=([rR]aters?[:=]))|(?=([aA]llocation[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)[:=]))|(?=([Bb]linding[:=])|([Bb]lind(ed)?ness[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind[:=])|(Blind[:=]))|(?=([Dd]uration[:=]))|(?=([dD]esign[:=]))|(?=(Follow[\\s-]up[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up[:=]))|(?=([lL]oss[:=]))|(?=([cC]onsent[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)[:=]))|(?=(Settings?[:=]))");
+			splitMethodParts = str.split("(?=(Sites?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\s?[:=]))|(?=(Cente?re?\\d?\\s?[:=]))|(?=(Loss\\d?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\s?[:=]))|(?=(([Ff]unding\\d?\\s?[:=])|(Funded\\sby\\d?\\s?[:=]?)))|(?=([rR]aters?[:=]))|(?=([aA]llocations?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)[:=]))|(?=([Bb]linding[:=])|([Bb]lind(ed)?ness[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind[:=])|(Blind[:=]))|(?=([Dd]uration[:=]))|(?=([dD]esign[:=]))|(?=(Follow[\\s-]up[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up[:=]))|(?=([lL]oss[:=]))|(?=([cC]onsent[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)[:=]))|(?=(Settings?[:=]))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
@@ -1061,9 +1065,10 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		
 		
 		
+			
 		for (String output: storage) {
 			
-			if (output.matches("(Allocation[:=]).*") || output.matches("([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)[:=].*")) {//the wildcard asterisk is making sure that the whole string matches
+			if (output.matches("(Allocations?[:=]).*") || output.matches("([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)[:=].*")) {//the wildcard asterisk is making sure that the whole string matches
 				allocationProse = output;
 				//System.out.println("1. Allocation -- " + allocationProse);
 			} else if (output.matches("([Bb]linding[:=]).*|([Bb]lind(ed)?ness[:=]).*|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind[:=]).*|(Blind[:=]).*")) {
@@ -1075,7 +1080,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			} else if (output.matches("[dD]esign[:=].*")) {
 				designProse = output;
 				//System.out.println("4. Design -- " + designProse);
-			} else if (output.matches("Lost\\sto\\sfollow[\\s-]up[:=].*") || output.matches("Follow[\\s-]up[:=].*")) {
+			} else if (output.matches("Lost\\sto\\sfollow[\\s-]up[:=].*") || output.matches("Follow[\\s-]up[:=].*") || output.matches("Loss\\d?\\s?[:=].*")) {
 				if (followUpProse != "") {
 					followUpProse = followUpProse + " " + output;
 				} else {
@@ -1101,14 +1106,25 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					ratersProse = output;
 				}
 				
-				System.out.println("9. Raters -- " + ratersProse);
+				//System.out.println("9. Raters -- " + ratersProse);
 			} else if (output.matches("(Countr(y|ies)[:=].*)")) {
 				countryProse = output;
 				//System.out.println("10. Countries -- " + countryProse);
 			} else if (output.matches("[Ff]unding\\d?\\s?[:=].*") || output.matches("Funded\\sby\\d?\\s?[:=]?.*")) {
 				fundingProse = output;
 				//System.out.println("11. Funding -- " + fundingProse);
-			}  else {
+			} else if (output.matches("Assessment\\spoints\\d?\\s?[=:].*")) {
+				assessmentPointProse = output;
+				//System.out.println("12. Assessment -- " + assessmentPointProse);
+			} else if (output.matches("Methods?\\d?\\s?[:=].*") || output.matches("Cente?re?\\d?\\s?[:=].*") || output.matches("Sites?\\s[A-Za-z0-9]\\d?[=:-].*")) {
+				if (multicentreProse != "") {
+					multicentreProse = multicentreProse + " " + output;
+				} else {
+					multicentreProse = output;
+				}
+				System.out.println("13. multicentre -- " + multicentreProse);
+			}
+			else {
 				otherMethodProse = output;
 				//System.out.println("OTHER methods: " + otherMethodProse);
 			}
@@ -1611,6 +1627,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					} else {
 						m = openLabel.matcher(str);
 						if (m.find()){
+							
 							if (doubt) {
 								blindingMethod = BLINDNESS.BIASEDOPEN;
 								blindnessCleaned = blindingMethod.getDescription(); 
@@ -1633,6 +1650,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 							} else {
 								m = quadrupleBlind.matcher(str);
 								if (m.find()){
+									
 									if (doubt) {
 										blindingMethod = BLINDNESS.BIASEDQUADRUPLE;
 										blindnessCleaned = blindingMethod.getDescription(); 
@@ -2380,5 +2398,19 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 
 	public void setOobj(OtherOutcomeObject oobj) {
 		this.oobj = oobj;
+	}
+	public String getAssessmentPointProse() {
+		return assessmentPointProse;
+	}
+
+	public void setAssessmentPointProse(String assessmentPointProse) {
+		this.assessmentPointProse = assessmentPointProse;
+	}
+	public String getMulticentreProse() {
+		return multicentreProse;
+	}
+
+	public void setMulticentreProse(String multicentreProse) {
+		this.multicentreProse = multicentreProse;
 	}
 }
