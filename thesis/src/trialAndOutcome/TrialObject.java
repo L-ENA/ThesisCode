@@ -871,14 +871,10 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		}
 		
 		String output = "";//to hold current String that is stored in storage Array
-		String test = "";//filled with the string before, to test correct splitting, e.g. for n.
 		
 		for (int i = 0; i < storage.size(); i++) {//iterates through storage to attempt to match Strings
 			output = storage.get(i);
 			
-			if (i >= 1) {// test String can only exist for Strings that do not stand at the beginning of the array, otherwise there would be an out of bounds exception
-				test = storage.get(i - 1);
-			}
 			
 			if (output.matches("\\bDiagnosis\\b\\d?\\s?[:=].*") || output.matches("\\bTypes?\\b\\d?\\s?:.*")) {//since the whole String needs to match, the .* is used as wildcard for the rest of the String
 				
@@ -1056,11 +1052,11 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		
 		//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=(Sites?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\s?[:=]))|(?=(Cente?re?\\d?\\s?[:=]))|(?=(Loss\\d?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\s?[:=]))|(?=(([Ff]unding\\d?\\s?[:=])|(Funded\\sby\\d?\\s?[:=]?)))|(?=([rR]aters?[:=]))|(?=([aA]llocations?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)[:=]))|(?=([Bb]linding[:=])|([Bb]lind(ed)?ness[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind[:=])|(Blind[:=]))|(?=([Dd]uration[:=]))|(?=([dD]esign[:=]))|(?=(Follow[\\s-]up[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up[:=]))|(?=([lL]oss[:=]))|(?=([cC]onsent[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)[:=]))|(?=(Settings?[:=]))");
+			splitMethodParts = str.split("(?=(Sites?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\s?[:=]))|(?=(Cente?re?\\d?\\s?[:=]))|(?=(Loss\\d?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\s?[:=]))|(?=(([Ff]unding\\d?\\s?[:=])|(Funded\\sby\\d?\\s?[:=]?)))|(?=([rR]aters?\\d?\\s?[:=]))|(?=([aA]llocations?\\d?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\s?[:=]))|(?=([Bb]linding\\d?\\s?[:=])|([Bb]lind(ed)?n?ess\\d?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind[:=])|(Blind\\d?\\s?[:=]))|(?=([Dd]uration\\d?\\s?[:=]))|(?=([dD]esign\\d?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\s?[:=]))|(?=([lL]oss\\d?\\s?[:=]))|(?=([cC]onsent\\d?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\s?[:=]))|(?=(Settings?\\d?\\s?[:=]))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
-				//System.out.println(splitMethodParts[j]);
+				System.out.println(splitMethodParts[j]);
 			}
 		
 		
@@ -1068,68 +1064,69 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			
 		for (String output: storage) {
 			
-			if (output.matches("(Allocations?[:=]).*") || output.matches("([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)[:=].*")) {//the wildcard asterisk is making sure that the whole string matches
-				allocationProse = output;
-				//System.out.println("1. Allocation -- " + allocationProse);
-			} else if (output.matches("([Bb]linding[:=]).*|([Bb]lind(ed)?ness[:=]).*|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind[:=]).*|(Blind[:=]).*")) {
-				blindingProse = output;
-				//System.out.println("2. Blinding -- " + blindingProse);
-			} else if (output.matches("[dD]uration[:=].*")) {
-				durationProse = output;
-				//System.out.println("3. Duration -- " + durationProse);
-			} else if (output.matches("[dD]esign[:=].*")) {
-				designProse = output;
-				//System.out.println("4. Design -- " + designProse);
-			} else if (output.matches("Lost\\sto\\sfollow[\\s-]up[:=].*") || output.matches("Follow[\\s-]up[:=].*") || output.matches("Loss\\d?\\s?[:=].*")) {
-				if (followUpProse != "") {
-					followUpProse = followUpProse + " " + output;
-				} else {
-					followUpProse = output;
-				}
-				//System.out.println("Follow up ----- " + followUpProse);
-			} else if (output.matches("Consent[:=].*")) {
-				consentProse = output;
-				//System.out.println("6. Consent -- " + consentProse);
-			} else if (output.matches("Settings?[:=].*")) {
-				settingProse = output;
-				//System.out.println("7. Setting -- " + settingProse);
-			} else if (output.matches("Locations?[:=].*") || output.matches("Locations?\\sand\\ssetting:.*")) {
-				locationProse = output;
-				if (output.matches("Locations?\\sand\\ssetting[:=].*")) {//because this contains info on setting as well if it comes true
-					settingProse = output;
-				}
-				//System.out.println("8. Location -- " + locationProse);
-			} else if (output.matches("Raters?[:=].*") || output.matches("Objectivity\\sof\\sratings?\\sof\\soutcomes?\\d?\\s?[:=].*")) {
-				if (ratersProse != "") {
-					ratersProse = ratersProse + " " + output;
-				} else {
-					ratersProse = output;
-				}
+			if (output.matches("(Allocations?\\d?\\s?[:=]).*") || output.matches("([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\s?[:=].*")) {//the wildcard asterisk is making sure that the whole string matches
+			
+				allocationProse = addProse(output, allocationProse);//this method reacts to String content status and adds prose;
+				System.out.println("1. Allocation -- " + allocationProse);
 				
-				//System.out.println("9. Raters -- " + ratersProse);
-			} else if (output.matches("(Countr(y|ies)[:=].*)")) {
-				countryProse = output;
-				//System.out.println("10. Countries -- " + countryProse);
-			} else if (output.matches("[Ff]unding\\d?\\s?[:=].*") || output.matches("Funded\\sby\\d?\\s?[:=]?.*")) {
-				fundingProse = output;
-				//System.out.println("11. Funding -- " + fundingProse);
-			} else if (output.matches("Assessment\\spoints\\d?\\s?[=:].*")) {
-				assessmentPointProse = output;
-				//System.out.println("12. Assessment -- " + assessmentPointProse);
-			} else if (output.matches("Methods?\\d?\\s?[:=].*") || output.matches("Cente?re?\\d?\\s?[:=].*") || output.matches("Sites?\\s[A-Za-z0-9]\\d?[=:-].*")) {
-				if (multicentreProse != "") {
-					multicentreProse = multicentreProse + " " + output;
-				} else {
-					multicentreProse = output;
+			} else if (output.matches("([Bb]linding[:=]).*")|| output.matches("[Bb]lind(ed)?n?ess[:=].*") ||output.matches("(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind[:=]).*") || output.matches("Blind[:=].*")) {
+				
+				blindingProse = addProse(output, blindingProse);
+				System.out.println("2. Blinding -- " + blindingProse);
+				
+			} else if (output.matches("[dD]uration[:=].*")) {
+				durationProse = addProse(output, durationProse);
+				System.out.println("3. Duration -- " + durationProse);
+			} else if (output.matches("[dD]esign[:=].*")) {
+				designProse = addProse(output, designProse);
+				System.out.println("4. Design -- " + designProse);
+			} else if (output.matches("Lost\\sto\\sfollow[\\s-]up[:=].*") || output.matches("Follow[\\s-]up[:=].*") || output.matches("Loss\\d?\\s?[:=].*")) {
+				followUpProse = addProse(output, followUpProse);
+				System.out.println("Follow up ----- " + followUpProse);
+			} else if (output.matches("Consent[:=].*")) {
+				consentProse = addProse(output, consentProse);
+				System.out.println("6. Consent -- " + consentProse);
+			} else if (output.matches("Settings?[:=].*")) {
+				settingProse = addProse(output, settingProse);
+				System.out.println("7. Setting -- " + settingProse);
+			} else if (output.matches("Locations?[:=].*") || output.matches("Locations?\\sand\\ssetting:.*")) {
+				locationProse = addProse(output, locationProse);
+				if (output.matches("Locations?\\sand\\ssetting[:=].*")) {//because this contains info on setting as well if it comes true
+					settingProse = addProse(output, settingProse);
 				}
+				System.out.println("8. Location -- " + locationProse);
+			} else if (output.matches("Raters?[:=].*") || output.matches("Objectivity\\sof\\sratings?\\sof\\soutcomes?\\d?\\s?[:=].*")) {
+				ratersProse = addProse(output, ratersProse);
+				
+				System.out.println("9. Raters -- " + ratersProse);
+			} else if (output.matches("(Countr(y|ies)[:=].*)")) {
+				countryProse = addProse(output, countryProse);
+				System.out.println("10. Countries -- " + countryProse);
+			} else if (output.matches("[Ff]unding\\d?\\s?[:=].*") || output.matches("Funded\\sby\\d?\\s?[:=]?.*")) {
+				fundingProse = addProse(output, fundingProse);
+				System.out.println("11. Funding -- " + fundingProse);
+			} else if (output.matches("Assessment\\spoints\\d?\\s?[=:].*")) {
+				assessmentPointProse = addProse(output, assessmentPointProse);
+				System.out.println("12. Assessment -- " + assessmentPointProse);
+			} else if (output.matches("Methods?\\d?\\s?[:=].*") || output.matches("Cente?re?\\d?\\s?[:=].*") || output.matches("Sites?\\s[A-Za-z0-9]\\d?[=:-].*")) {
+				multicentreProse = addProse(output, multicentreProse);
 				System.out.println("13. multicentre -- " + multicentreProse);
 			}
 			else {
-				otherMethodProse = output;
-				//System.out.println("OTHER methods: " + otherMethodProse);
+				otherMethodProse = addProse(output, otherMethodProse);
+				System.out.println("OTHER methods: " + otherMethodProse);
 			}
 		}
 		
+	}
+	private String addProse(String output, String toAddto){
+		
+		if (toAddto != "") {
+			toAddto = toAddto + " " + output;
+			return toAddto;
+		} else {
+			return output;
+		}
 	}
 	
 	private void cleanSetting(String prose){
