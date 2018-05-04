@@ -856,7 +856,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		ArrayList<String> storage = new ArrayList<String>();
 		String[] splitParticipantParts;
 		//location country setting: b is word boundary, d is any digit, s is space char//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////(?(?=Location\\sand\\s[Ss]etting)(?=(Setting\\sand\\s[Ll]ocation\\d?\\s?[:=])|((?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))))
-		splitParticipantParts = str.split("(?=(\\bPhase\\b\\d?\\s?[:=]))|(?=(Consent\\sand\\sethics\\d?\\s?[:=]))|(?=(\\b[Cc]ompleted?\\sstudy\\b:?\\s[Nn]))|(?=(((\\b[Ff]unding\\b)|(\\b[Ff]unded\\sby\\b))\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))|(?=(\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=]))|(?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\bDiagnosis\\b\\d?\\s?[:=]))|(?=(\\bTypes?\\b\\d?\\s?:))|(?=([.]\\s?[^(]?([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?[:=]))|(?=(([Mm]ean\\s)?\\b[Aa]ge\\b\\d?\\s?[:=]))|(?=(((\\b[Ss]ex\\b)|(\\b[Gg]ender\\b))\\d?\\s?[:=]))|(?=(([Mm]edication\\s[Hh]istory\\b\\d?\\s?[:=])))|(?=((?![Mm]edication\\s)\\bHistory\\b\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=]))|(?=(Average\\slength\\sof\\sillness\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\b\\s\\b[Ii]ll\\b\\d?\\s?[:=]))|(?=(Length\\sof\\sillness\\d?\\s?[:=]))|(?=((\\b[Ee]thnicit(y|ies)\\b\\d?\\s?[:=])|(\\b[Rr]ace\\b\\d?\\s?[:=])))|(?=(\\b[cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)//b[Ff]ollow[-\\s]up\\b\\d?\\s?[:=]))");
+		splitParticipantParts = str.split("(?=(\\bPhase\\b\\d?\\s?[:=]))|(?=(Consent\\sand\\sethics\\d?\\s?[:=]))|(?=(\\b[Cc]ompleted?\\sstudy\\b:?\\s[Nn]))|(?=(((\\b[Ff]unding\\b)|(\\b[Ff]unded\\sby\\b))\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))|(?=(\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=]))|(?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\bDiagnosis\\b\\d?\\s?[:=]))|(?=(\\bTypes?\\b\\d?\\s?:))|(?=([.]\\s?[^(]?([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?[:=]))|(?=(([Mm]ean\\s)?[Aa]ge((\\srange)|(,\\syears))?[*\\d]?\\s?[:=]))|(?=((([Ss]ex)|(\\b[Gg]ender))[*\\d]?\\s?[:=]))|(?=(([Mm]edication\\s[Hh]istory\\b\\d?\\s?[:=])))|(?=((?![Mm]edication\\s)\\bHistory\\b\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=]))|(?=(Average\\slength\\sof\\sillness\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\b\\s\\b[Ii]ll\\b\\d?\\s?[:=]))|(?=(Length\\sof\\sillness\\d?\\s?[:=]))|(?=((\\b[Ee]thnicit(y|ies)\\b\\d?\\s?[:=])|(\\b[Rr]ace\\b\\d?\\s?[:=])))|(?=(\\b[cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)//b[Ff]ollow[-\\s]up\\b\\d?\\s?[:=]))");
 		
 		for (int j = 0; j < splitParticipantParts.length; j++) {
 			
@@ -898,7 +898,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					
 				}
 				
-			} else if (output.matches("([Mm]ean\\s)?\\b[Aa]ge\\b\\d?\\s?[:=].*")) {
+			} else if (output.matches("([Mm]ean\\s)?[Aa]ge((\\srange)|(,\\syears))?[*\\d]?\\s?[:=].*")) {//the word boundaries before age and sex are deleted because of the possible missing . character after "n"
 				if (ageProse != "") {
 					
 					ageProse = ageProse + " " + output; // antipsychotics childhood schizophrenia, xiaong study has "Age:" and "Mean age:", ocurrences like this are combined here.
@@ -907,7 +907,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					ageProse = output;
 				}
 				
-			} else if (output.matches("(\\b[Gg]ender)\\b\\d?\\s?[:=].*") || output.matches("(\\b[Ss]ex\\b)\\d?\\s?[:=].*")) {
+			} else if (output.matches("(\\b[Gg]ender)[*\\d]?\\s?[:=].*") || output.matches("([Ss]ex)[*\\d]?\\s?[:=].*")) {
 				if (genderProse != "") {
 					genderProse = genderProse + " " + output;
 					//System.out.println("gender stuff-- " + genderProse);
@@ -1052,7 +1052,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		
 		//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=(Sites?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\s?[:=]))|(?=(Cente?re?\\d?\\s?[:=]))|(?=(Loss\\d?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\s?[:=]))|(?=(([Ff]unding\\d?\\s?[:=])|(Funded\\sby\\d?\\s?[:=]?)))|(?=([rR]aters?\\d?\\s?[:=]))|(?=([aA]llocations?\\d?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\s?[:=]))|(?=([Bb]linding\\d?\\s?[:=])|([Bb]lind(ed)?n?ess\\d?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind[:=])|(Blind\\d?\\s?[:=]))|(?=([Dd]uration\\d?\\s?[:=]))|(?=([dD]esign\\d?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\s?[:=]))|(?=([lL]oss\\d?\\s?[:=]))|(?=([cC]onsent\\d?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\s?[:=]))|(?=(Settings?\\d?\\s?[:=]))");
+			splitMethodParts = str.split("(?=(Sites?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\s?[:=]))|(?=(Cente?re?\\d?\\s?[:=]))|(?=(Loss\\d?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\s?[:=]))|(?=(([Ff]unding\\d?\\s?[:=])|(Funded\\sby\\d?\\s?[:=]?)))|(?=([rR]aters?\\d?\\s?[:=]))|(?=([aA]llocations?\\d?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\s?[:=]))|(?=([Bb]linding\\d?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind[:=])|(Blind\\d?\\s?[:=]))|(?=([Dd]uration\\d?\\s?[:=]))|(?=([dD]esign\\d?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\s?[:=]))|(?=([lL]oss\\d?\\s?[:=]))|(?=([cC]onsent\\d?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\s?[:=]))|(?=(Settings?\\d?\\s?[:=]))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
@@ -1069,7 +1069,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 				allocationProse = addProse(output, allocationProse);//this method reacts to String content status and adds prose;
 				System.out.println("1. Allocation -- " + allocationProse);
 				
-			} else if (output.matches("([Bb]linding[:=]).*")|| output.matches("[Bb]lind(ed)?n?ess[:=].*") ||output.matches("(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind[:=]).*") || output.matches("Blind[:=].*")) {
+			} else if (output.matches("([Bb]linding[:=]).*")|| output.matches("[Bb]linde?(ed)?n?ess[:=].*") ||output.matches("(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind[:=]).*") || output.matches("Blind[:=].*")) {
 				
 				blindingProse = addProse(output, blindingProse);
 				System.out.println("2. Blinding -- " + blindingProse);
