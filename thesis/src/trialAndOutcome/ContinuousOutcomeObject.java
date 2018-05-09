@@ -314,6 +314,7 @@ public class ContinuousOutcomeObject extends OutcomeObject{
 	public String getOutcomeType() {
 		return outcomeType;
 	}
+	
 
 
 }
