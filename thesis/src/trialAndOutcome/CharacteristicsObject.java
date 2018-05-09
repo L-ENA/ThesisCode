@@ -44,8 +44,9 @@ public class CharacteristicsObject {
 	protected String designAddedInfo = "";
 	
 	protected String fundingProse = "";
-	
+	protected String powerCalculationProse = "";
 
+	
 	protected String otherMethodProse = "";
 	protected String otherParticipantProse = "";
 	
@@ -95,19 +96,15 @@ public class CharacteristicsObject {
 	protected String lostToFollowUpProse = "";
 	protected String consentProse = "";
 	protected String locationProse = "";
-	protected String followUpProse = "";
+	protected String followUpOrAnalysisProse = "";
 	
-	public String getFollowUpProse() {
-		return followUpProse;
-	}
-
-	public void setFollowUpProse(String followUpProse) {
-		this.followUpProse = followUpProse;
-	}
+	
 
 	private BLINDNESS blindingMethod = BLINDNESS.NOTAVAILABLE;//all about blinding
 	protected String blindnessCleaned = BLINDNESS.NOTAVAILABLE.getDescription();
 	protected String blindingProse = "";
+	
+	
 	
 	////////////Strings that are extracted from Participants field of characteristics of included studies table
 	protected String diagnosisProse = "";
@@ -177,6 +174,7 @@ protected CharacteristicsObject() {
 	protected CharacteristicsObject(Element studyToExtractElement, NodeList qualityItemList, String revManID,String reviewTitle) {
 		this.qualityItemList = qualityItemList;
 		this.revManID = revManID;
+		this.reviewTitle = reviewTitle;
 		breakBiasVerification = qualityItemList.getLength();
 		
 		///////extracts all info on biases that the review author added. The Risk is a three field option (High, low or unclear Risk), judgement of bias includes : justification or quotes from the trials
@@ -256,7 +254,8 @@ protected CharacteristicsObject() {
 		if (countryCombined != null)
 		countryCombined = countryCombined.trim(); //in case 2 prose strings are appended to each other there will be an unnecessary whitespace in the end. this one is trimmed away
 		
-		
+		revManID = revManID.replaceAll("_x00df_", "ß").replaceAll("(_x002d_)", "-").replaceAll("(_x0026_)", "&").replaceAll("_x00e8_", "è").replaceAll("_x00f6_", "ö").replaceAll("_x00fc_", "ü").replaceAll("_x002b_", "+").replaceAll("_x002f_", "/").replaceAll("_x00a0_", " ").replaceAll("_x002c_", ",").replaceAll("_x0028_", "(").replaceAll("_x0029_", ")").replaceAll("_x00e7_", "ç").replaceAll("_x0027_", "'").replaceAll("_x002a_", "*").replaceAll("_x00e9_", "é").replaceAll("_x00e4_", "ä").replaceAll("_x00b4_", "´");
+	
 	}
 	
 private void allocationCleaner() {
@@ -409,11 +408,11 @@ private void allocationCleaner() {
 				
 			} else if (output.matches("(?<!Lost\\sto\\s)\\b[Ff]ollow[-\\s]up\\d?\\s?[:=].*")) {
 				
-				if (followUpProse.equals("")) {
-					followUpProse = output;
+				if (followUpOrAnalysisProse.equals("")) {
+					followUpOrAnalysisProse = output;
 				} else {
 					
-					followUpProse = followUpProse + " " + output;
+					followUpOrAnalysisProse = followUpOrAnalysisProse + " " + output;
 					//System.out.println("followUp stuff-- " + followUpProse);
 				}
 				
@@ -485,7 +484,7 @@ private void allocationCleaner() {
 		
 		//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))");
+			splitMethodParts = str.split("(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]lace\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
@@ -513,16 +512,16 @@ private void allocationCleaner() {
 			} else if (output.matches("[dD]esign\\d?\\*?\\s?[:=].*")) {
 				designProse = addProse(output, designProse);
 				System.out.println("4. Design -- " + designProse);
-			} else if (output.matches("Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=].*") || output.matches("Follow[\\s-]up\\d?\\*?\\s?[:=].*") || output.matches("Loss\\d?\\*?\\s?[:=].*")) {
-				followUpProse = addProse(output, followUpProse);
-				System.out.println("Follow up ----- " + followUpProse);
+			} else if (output.matches("Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=].*") || output.matches("Follow[\\s-]up\\d?\\*?\\s?[:=].*") || output.matches("Loss\\d?\\*?\\s?[:=].*") || output.matches("(Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=].*")) {
+				followUpOrAnalysisProse = addProse(output, followUpOrAnalysisProse);
+				System.out.println("Follow up ----- " + followUpOrAnalysisProse);
 			} else if (output.matches("Consent\\d?\\*?\\s?[:=].*")) {
 				consentProse = addProse(output, consentProse);
 				System.out.println("6. Consent -- " + consentProse);
 			} else if (output.matches("Settings?\\d?\\*?\\s?[:=].*")) {
 				settingProse = addProse(output, settingProse);
 				System.out.println("7. Setting -- " + settingProse);
-			} else if (output.matches("Locations?\\d?\\*?\\s?[:=].*") || output.matches("Locations?\\sand\\ssetting\\d?\\*?\\s?:.*")) {
+			} else if (output.matches("Locations?\\d?\\*?\\s?[:=].*") || output.matches("Locations?\\sand\\ssetting\\d?\\*?\\s?:.*") || output.matches("[Pp]lace\\d?\\*?\\s?[:=]")) {
 				locationProse = addProse(output, locationProse);
 				if (output.matches("Locations?\\sand\\ssetting\\d?\\*?\\s?[:=].*")) {//because this contains info on setting as well if it comes true
 					settingProse = addProse(output, settingProse);
@@ -543,11 +542,14 @@ private void allocationCleaner() {
 				System.out.println("12. Assessment -- " + assessmentPointProse);
 			} else if (output.matches("Methods?\\d?\\*?\\s?[:=].*") || output.matches("Cente?re?\\d?\\*?\\s?[:=].*") || output.matches("Sites?\\s[A-Za-z0-9]\\d?\\*?\\s?[=:-].*")) {
 				multicentreProse = addProse(output, multicentreProse);
-				System.out.println("13. multicentre -- " + multicentreProse);
+				//System.out.println("13. multicentre -- " + multicentreProse);
+			} else if (output.matches("[pP]ower\\scalculation\\d?\\*?\\s?[:=]")) {
+				powerCalculationProse = addProse(output, powerCalculationProse);
+				//System.out.println("14. power calc -- " + powerCalculationProse);
 			}
 			else {
 				otherMethodProse = addProse(output, otherMethodProse);
-				System.out.println("OTHER methods: " + otherMethodProse);
+				//System.out.println("OTHER methods: " + otherMethodProse);
 			}
 		}
 		
@@ -1404,6 +1406,24 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 
 	public void setDesignCleaned(String designCleaned) {
 		this.designCleaned = designCleaned;
+	}
+	
+	
+	
+	public String getFollowUpProse() {
+		return followUpOrAnalysisProse;
+	}
+
+	public void setFollowUpProse(String followUpProse) {
+		this.followUpOrAnalysisProse = followUpProse;
+	}
+	
+	public String getPowerCalculationProse() {
+		return powerCalculationProse;
+	}
+
+	public void setPowerCalculationProse(String powerCalculationProse) {
+		this.powerCalculationProse = powerCalculationProse;
 	}
 
 }

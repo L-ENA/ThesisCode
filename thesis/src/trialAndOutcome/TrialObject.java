@@ -40,6 +40,7 @@ public class TrialObject{
 	protected String year;//will contain year of publication
 	protected String aauthorYearLetter = ""; //for comparison with MeerKatBE
 	
+	
 	protected String reviewTitle = "";
 	
 
@@ -122,6 +123,7 @@ public class TrialObject{
 					//Extracts information into variables
 					//Gets revman ID for study
 					revManID = studyToExtractElement.getAttribute("STUDY_ID"); 
+					
 					String cache = revManID.replaceAll("STD-", "").replaceAll("(_x002d_)", "-").replaceAll("(_x0026_)", "&");// replaces space with hyphen and at first puts & back 
 					String[] cacheArray = cache.split("-\\d+");	//Splits at "-"+ digit
 					mainAuthor = cacheArray[0]; //Take name of author from ID
@@ -261,6 +263,7 @@ public class TrialObject{
 							
 						}
 					}
+					
 					
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Extracts OutcomeObjects for this trial
@@ -628,6 +631,7 @@ public class TrialObject{
 //					
 //								System.out.println(revManID);
 								aauthorYearLetter = mainAuthor + year + yearLetter;
+								revManID = revManID.replaceAll("_x00df_", "ß").replaceAll("(_x002d_)", "-").replaceAll("(_x0026_)", "&").replaceAll("_x00e8_", "è").replaceAll("_x00f6_", "ö").replaceAll("_x00fc_", "ü").replaceAll("_x002b_", "+").replaceAll("_x002f_", "/").replaceAll("_x00a0_", " ").replaceAll("_x002c_", ",").replaceAll("_x0028_", "(").replaceAll("_x0029_", ")").replaceAll("_x00e7_", "ç").replaceAll("_x0027_", "'").replaceAll("_x002a_", "*").replaceAll("_x00e9_", "é").replaceAll("_x00e4_", "ä").replaceAll("_x00b4_", "´");
 //								System.out.println(authorYearLetter);
 //					
 					//				
