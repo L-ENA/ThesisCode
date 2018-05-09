@@ -89,6 +89,26 @@ public class TrialObject{
 	
 
 	protected String allocationProse = "";
+	private ALLOCATION allocation = ALLOCATION.UNCLEAR;
+	protected String allocationCleaned = ALLOCATION.UNCLEAR.getContent();
+	public String getAllocationCleaned() {
+		return allocationCleaned;
+	}
+
+	public void setAllocationCleaned(String allocationCleaned) {
+		this.allocationCleaned = allocationCleaned;
+	}
+	protected String additionalAllocationInfo = "";
+	
+	public String getAdditionalAllocationInfo() {
+		return additionalAllocationInfo;
+	}
+
+	public void setAdditionalAllocationInfo(String additionalAllocationInfo) {
+		this.additionalAllocationInfo = additionalAllocationInfo;
+	}
+
+	
 	protected String durationProse = "";
 	protected String lostToFollowUpProse = "";
 	protected String consentProse = "";
@@ -178,11 +198,10 @@ public class TrialObject{
 	private Pattern hospital = Pattern.compile("([Ii]n\\s)?([Hh]ospital(i[sz]ed)?)|([Mm]ental\\shealth\\scente?re?)|([Ii]ntensive\\scare)");
 	private Pattern psychiatricHospital = Pattern.compile("([Pp]sychiatr(y|ic))");
 	
-	private Pattern blindness = Pattern.compile("([Bb]linding:)|([Bb]lindness:)|(([Dd]ouble|[Ss]ingle|[Tt]riple)\\s[Bb]lind:)|([Bb]lind:)");
-	private Pattern doubleBlind = Pattern.compile("[Dd]ouble");
-	private Pattern singleBlind = Pattern.compile("([Ss]ingle)");
-	private Pattern tripleBlind = Pattern.compile("[Tt]riple");
-	private Pattern quadrupleBlind = Pattern.compile("[Qq]uadruple");
+	private Pattern doubleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Dd]ouble)");
+	private Pattern singleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Ss]ingle)");
+	private Pattern tripleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Tt]riple)");
+	private Pattern quadrupleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Qq]adruple)");
 	private Pattern openLabel = Pattern.compile("([Oo]pen)|([Nn]ot\\sblind(ed)?)|([Nn]on\\s?-?[Bb]lind(ing)?)|(:\\s?(no|none)\\Z)");
 	private Pattern unclearBlinding = Pattern.compile("([Nn]ot\\sclear)|([Uu]nclear)");
 	private Pattern notReported = Pattern.compile("([Nn]ot?\\s(specified|stated|report|reported|indicated|indication|described|description|available|information))");
@@ -195,6 +214,8 @@ public class TrialObject{
 	private Pattern endPunctuationCleanerA = Pattern.compile("([^.!?\"']$)");	//matches when neither .!?"' at end of sentence. Needs 
 	private Pattern endPunctuationCleanerB = Pattern.compile("([^!?.][\"'])$");	//to be applied after other punctuation regex. matches when there is no !?. before "'
 	
+	private Pattern randomisationPattern = Pattern.compile("(?<!(([Nn]on|[Nn]ot|[Nn]o|[Uu]nclear)(\\sdetails?|\\sclear|\\sstate(d|ment)|\\sdescri(bed|ption)|\\sreport(ed)?)?(\\sif|\\swhether|\\sof)?)).([Rr]andom(.+?)?\\b|[Bb]y\\schance|([Tt]oss|[Ss]pin)\\sof(\\sa)?\\scoin)");//recognises if a trial was randomised
+	private Pattern quasiPattern = Pattern.compile("\\b[Qq]uasi[\\s-]");
 	/////////////////////////////////////////////////////////////xml related attributes that are used between different methods in the big constructor
 	private Element qualityItemsElement;
 	Element studyElement;
@@ -322,11 +343,8 @@ public class TrialObject{
 					
 					
 					designVerifyer(designProse);	
-						
-					
-					
 					cleanBlindness(blindingProse);
-					
+					allocationCleaner();
 					
 					
 					//Extracts prose from participant section and tries to match
@@ -851,7 +869,32 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 					
 					
 	}
-	
+	private void allocationCleaner() {
+		
+		m = randomisationPattern.matcher(allocationProse);//the pattern detects if the trial was randomised
+		
+		if (m.find()) {
+			m = quasiPattern.matcher(allocationProse);{//detects if it was quasi-randomised
+				if (m.find()) {
+					allocation = ALLOCATION.QUASI;
+					allocationCleaned = allocation.getContent();//gets cleaned prose from allocation enum
+				} else {
+					allocation = ALLOCATION.RANDOM;
+					allocationCleaned = allocation.getContent();//gets cleaned prose from allocation enum
+				}
+			}
+		}
+		String[] additionalAllocationInfoArray;
+		
+		additionalAllocationInfoArray = allocationProse.split("(?=(,|\\s-\\s|\\(|;))", 2);//by splitting on the specified delimiters, additional information will be transferred into the last index of the array. The String is only split once because sometimes more delimiters occur and by splitting too often sense could get lost. The positive lookahead makes sure that the delimiter character does not get lost.
+		
+		try {
+			additionalAllocationInfo = additionalAllocationInfoArray[1];//additional info is written into its String. If there is no additional info, the exception is caught by leaving the String empty
+		} catch (Exception e) {
+		}
+		
+		
+	}
 	private void splitParticipants (String str) {
 		ArrayList<String> storage = new ArrayList<String>();
 		String[] splitParticipantParts;
@@ -1052,7 +1095,7 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 		
 		//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=(Sites?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\s?[:=]))|(?=(Cente?re?\\d?\\s?[:=]))|(?=(Loss\\d?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\s?[:=]))|(?=(([Ff]unding\\d?\\s?[:=])|(Funded\\sby\\d?\\s?[:=]?)))|(?=([rR]aters?\\d?\\s?[:=]))|(?=([aA]llocations?\\d?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\s?[:=]))|(?=([Bb]linding\\d?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind[:=])|(Blind\\d?\\s?[:=]))|(?=([Dd]uration\\d?\\s?[:=]))|(?=([dD]esign\\d?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\s?[:=]))|(?=([lL]oss\\d?\\s?[:=]))|(?=([cC]onsent\\d?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\s?[:=]))|(?=(Settings?\\d?\\s?[:=]))");
+			splitMethodParts = str.split("(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
@@ -1064,51 +1107,51 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 			
 		for (String output: storage) {
 			
-			if (output.matches("(Allocations?\\d?\\s?[:=]).*") || output.matches("([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\s?[:=].*")) {//the wildcard asterisk is making sure that the whole string matches
+			if (output.matches("(All?ocations?\\d?\\*?\\s?[:=]).*") || output.matches("([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=].*")) {//the wildcard asterisk is making sure that the whole string matches
 			
 				allocationProse = addProse(output, allocationProse);//this method reacts to String content status and adds prose;
 				System.out.println("1. Allocation -- " + allocationProse);
 				
-			} else if (output.matches("([Bb]linding[:=]).*")|| output.matches("[Bb]linde?(ed)?n?ess[:=].*") ||output.matches("(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind[:=]).*") || output.matches("Blind[:=].*")) {
+			} else if (output.matches("([Bb]lind(n)?ing\\d?\\*?\\s?[:=]).*")|| output.matches("[Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=].*") ||output.matches("(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=]).*") || output.matches("Blind\\d?\\*?\\s?[:=].*")) {
 				
 				blindingProse = addProse(output, blindingProse);
 				System.out.println("2. Blinding -- " + blindingProse);
 				
-			} else if (output.matches("[dD]uration[:=].*")) {
+			} else if (output.matches("[dD]uration\\d?\\*?\\s?[:=].*")) {
 				durationProse = addProse(output, durationProse);
 				System.out.println("3. Duration -- " + durationProse);
-			} else if (output.matches("[dD]esign[:=].*")) {
+			} else if (output.matches("[dD]esign\\d?\\*?\\s?[:=].*")) {
 				designProse = addProse(output, designProse);
 				System.out.println("4. Design -- " + designProse);
-			} else if (output.matches("Lost\\sto\\sfollow[\\s-]up[:=].*") || output.matches("Follow[\\s-]up[:=].*") || output.matches("Loss\\d?\\s?[:=].*")) {
+			} else if (output.matches("Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=].*") || output.matches("Follow[\\s-]up\\d?\\*?\\s?[:=].*") || output.matches("Loss\\d?\\*?\\s?[:=].*")) {
 				followUpProse = addProse(output, followUpProse);
 				System.out.println("Follow up ----- " + followUpProse);
-			} else if (output.matches("Consent[:=].*")) {
+			} else if (output.matches("Consent\\d?\\*?\\s?[:=].*")) {
 				consentProse = addProse(output, consentProse);
 				System.out.println("6. Consent -- " + consentProse);
-			} else if (output.matches("Settings?[:=].*")) {
+			} else if (output.matches("Settings?\\d?\\*?\\s?[:=].*")) {
 				settingProse = addProse(output, settingProse);
 				System.out.println("7. Setting -- " + settingProse);
-			} else if (output.matches("Locations?[:=].*") || output.matches("Locations?\\sand\\ssetting:.*")) {
+			} else if (output.matches("Locations?\\d?\\*?\\s?[:=].*") || output.matches("Locations?\\sand\\ssetting\\d?\\*?\\s?:.*")) {
 				locationProse = addProse(output, locationProse);
-				if (output.matches("Locations?\\sand\\ssetting[:=].*")) {//because this contains info on setting as well if it comes true
+				if (output.matches("Locations?\\sand\\ssetting\\d?\\*?\\s?[:=].*")) {//because this contains info on setting as well if it comes true
 					settingProse = addProse(output, settingProse);
 				}
 				System.out.println("8. Location -- " + locationProse);
-			} else if (output.matches("Raters?[:=].*") || output.matches("Objectivity\\sof\\sratings?\\sof\\soutcomes?\\d?\\s?[:=].*")) {
+			} else if (output.matches("Raters?\\d?\\*?\\s?[:=].*") || output.matches("Objectivity\\sof\\sratings?\\sof\\soutcomes?\\d?\\*?\\s??[:=].*")) {
 				ratersProse = addProse(output, ratersProse);
 				
 				System.out.println("9. Raters -- " + ratersProse);
-			} else if (output.matches("(Countr(y|ies)[:=].*)")) {
+			} else if (output.matches("(Countr(y|ies)\\d?\\*?\\s?[:=].*)")) {
 				countryProse = addProse(output, countryProse);
 				System.out.println("10. Countries -- " + countryProse);
-			} else if (output.matches("[Ff]unding\\d?\\s?[:=].*") || output.matches("Funded\\sby\\d?\\s?[:=]?.*")) {
+			} else if (output.matches("[Ff]unding\\d?\\*?\\s?[:=].*") || output.matches("Funded\\sby\\d?\\*?\\s?[:=]?.*")) {
 				fundingProse = addProse(output, fundingProse);
 				System.out.println("11. Funding -- " + fundingProse);
-			} else if (output.matches("Assessment\\spoints\\d?\\s?[=:].*")) {
+			} else if (output.matches("Assessment\\spoints\\d?\\*?\\s?[=:].*")) {
 				assessmentPointProse = addProse(output, assessmentPointProse);
 				System.out.println("12. Assessment -- " + assessmentPointProse);
-			} else if (output.matches("Methods?\\d?\\s?[:=].*") || output.matches("Cente?re?\\d?\\s?[:=].*") || output.matches("Sites?\\s[A-Za-z0-9]\\d?[=:-].*")) {
+			} else if (output.matches("Methods?\\d?\\*?\\s?[:=].*") || output.matches("Cente?re?\\d?\\*?\\s?[:=].*") || output.matches("Sites?\\s[A-Za-z0-9]\\d?\\*?\\s?[=:-].*")) {
 				multicentreProse = addProse(output, multicentreProse);
 				System.out.println("13. multicentre -- " + multicentreProse);
 			}
@@ -1586,8 +1629,6 @@ referenceExtracting(); //Extracts all information on references of this trial. S
 	private void cleanBlindness(String str){//looks which kind of blinding methods were extracted for this trial
 		
 	
-		m = blindness.matcher(str);//checks if this String is about blindness at all
-		
 		
 		boolean doubt = false;
 		if (performanceBiasRisk.contains("High")) {//indicates, that authors had doubts about trial methodology
