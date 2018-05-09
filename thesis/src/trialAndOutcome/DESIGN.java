@@ -1,7 +1,7 @@
 package trialAndOutcome;
 
 public enum DESIGN {
-	PARALLEL("Design: parallel"), CROSSOVER("Design: crossover"), FACTORIAL("Design: factorial"), OTHER("Design: see prose for trial design"), NOTAVAILABLE("Design: trial design not extracted");
+	PARALLEL("Design: parallel."), CROSSOVER("Design: crossover."), FACTORIAL("Design: factorial."), PRAGMATIC("Design: pragmatic."), DOSAGE("Design: dosage study."), LONGITUDINAL("Design: longitudinal study."), CLUSTER("Design: cluster randomised trial."), OTHER("Design: see prose for trial design."), NOTAVAILABLE("Design: trial design not extracted.");
 	
 	private final String description;
 
