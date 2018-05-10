@@ -51,8 +51,8 @@ public class CharacteristicsObject {
 	protected String otherParticipantProse = "";
 	
 	protected String countries = "";//////////////to contain country or countries, in alphabetical order. Beware that it will not contain city names!!
+	
 	protected String meerKatCountry = "";//alphabetical, syntax: Either just "country" or ""Multi-Center//country//country//.."
-	protected String countryCombined = ""; // this string is going to be big. but in case a country is not added in the list or a city is added instead of a country we need to screen these one by one
 	protected String countryProse = "";
 	
 	protected SETTING trialSetting = SETTING.NOTAVAILABLE;	//will hold the final value for setting in which this trial was conducted
@@ -251,8 +251,6 @@ protected CharacteristicsObject() {
 		
 		
 		//getCountry(participantStringArray[i]);
-		if (countryCombined != null)
-		countryCombined = countryCombined.trim(); //in case 2 prose strings are appended to each other there will be an unnecessary whitespace in the end. this one is trimmed away
 		
 		revManID = revManID.replaceAll("_x00df_", "ß").replaceAll("(_x002d_)", "-").replaceAll("(_x0026_)", "&").replaceAll("_x00e8_", "è").replaceAll("_x00f6_", "ö").replaceAll("_x00fc_", "ü").replaceAll("_x002b_", "+").replaceAll("_x002f_", "/").replaceAll("_x00a0_", " ").replaceAll("_x002c_", ",").replaceAll("_x0028_", "(").replaceAll("_x0029_", ")").replaceAll("_x00e7_", "ç").replaceAll("_x0027_", "'").replaceAll("_x002a_", "*").replaceAll("_x00e9_", "é").replaceAll("_x00e4_", "ä").replaceAll("_x00b4_", "´");
 	
@@ -484,7 +482,7 @@ private void allocationCleaner() {
 		
 		//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]lace\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))");
+			splitMethodParts = str.split("(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]laces?\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
@@ -521,7 +519,7 @@ private void allocationCleaner() {
 			} else if (output.matches("Settings?\\d?\\*?\\s?[:=].*")) {
 				settingProse = addProse(output, settingProse);
 				System.out.println("7. Setting -- " + settingProse);
-			} else if (output.matches("Locations?\\d?\\*?\\s?[:=].*") || output.matches("Locations?\\sand\\ssetting\\d?\\*?\\s?:.*") || output.matches("[Pp]lace\\d?\\*?\\s?[:=]")) {
+			} else if (output.matches("Locations?\\d?\\*?\\s?[:=].*") || output.matches("Locations?\\sand\\ssetting\\d?\\*?\\s?:.*") || output.matches("[Pp]laces?\\d?\\*?\\s?[:=]")) {
 				locationProse = addProse(output, locationProse);
 				if (output.matches("Locations?\\sand\\ssetting\\d?\\*?\\s?[:=].*")) {//because this contains info on setting as well if it comes true
 					settingProse = addProse(output, settingProse);
@@ -612,52 +610,116 @@ private void allocationCleaner() {
 		 
 	 }
 	
-	 
+	private void checkSpecialCountry() {
+		Pattern specialCountries = Pattern.compile("((?<!(North|South)\\s)Korea)|((?<!(East|West)\\s)Germany)|(US\\b)|(Czech\\b)");// special countries that cause duplicates when checked without regex
+		String[] countriesStrings = {locationProse, countryProse, settingProse, designProse};//Prose that has to be checked for country info
+		
+		for (int i = 0; i < countriesStrings.length; i++) {//checks every prose String in the Array
+			m = specialCountries.matcher(countriesStrings[i]);//fills matcher with the prose that is to be checked
+			if (m.find()) {//if this becomes true, a special country was found. In the following, it will be checked which country it is
+				
+				if (countriesStrings[i].contains("Germany")) {
+					countries = countries + "Germany" + ", ";
+				} 
+				if (countriesStrings[i].contains("Korea")){
+					countries = countries + "Korea" + ", ";
+				}
+				if (countriesStrings[i].contains("US")){
+					countries = countries + "USA" + ", ";//"USA" is added instead of "US"
+				}
+				if (countriesStrings[i].contains("Czech")){
+					countries = countries + "Czech" + ", ";//this is how it appears in MeerKat sometimes. 
+				}
+				
+				if (countryProse.contains(countriesStrings[i]) == false) {
+					countryProse = addProse(countriesStrings[i], countryProse);
+				}
+			}
+		}
+		
+		
+	}
 	private void getCountry(){
 		
-		
+		checkSpecialCountry();//countries that can not be identified below without causing duplicates
 		
 		String[] extractedCountries;
-		String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cambodia","Cameroon","Canada","Cabo Verde","China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia", "Europe", "Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","international","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","multinational", "Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","Norway","Oman","other countries","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru", "Puerto Rico","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","UK", "Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","United States","Uruguay","USA","USSR","Uzbekistan","Vanuatu","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
+		String[] countryList = new String[] {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Aruba","Asia", "Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Basutoland","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burma", "Burundi","Cabo Verde","Cambodia","Cameroon","Canada","CAR", "Caribbean", "China", "Central African Republic","Ceylon","Chad","Chile","Colombia","Comoros","Congo","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Czech Republic","Czechoslovakia","Denmark","Djibouti","Dominica","Dominican Republic","East Germany","East Pakistan","East Timor","Ecuador", "Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia", "Europe", "Fiji","Finland","France","Gabon","Gambia","Georgia","Ghana","Greece","Grenada","Guatemala"," Guinea","Guinea-Bissau","Guyana","Haiti","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","international","Iran"," Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati", "Kosovo","Korea","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia", "Madagascar","Malawi","Malaysia","Maldives","Mali", "Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova", "Monaco","Mongolia","Montenegro","Morocco","Mozambique","multinational", "Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua", "Niger","Nigeria","North America", "Norway","Oman","other countries","Pakistan","Palau","Palestinian Territories","Panama","Papua New Guinea","Paraguay","Peru", "Puerto Rico","Philippines","Poland","Portugal","Qatar","Rhodesia","Romania","Rwanda","Russia","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Sikkim","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South America", "South Sudan","South Vietnam","Southwest Africa","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Tanganyika","Taiwan","Tajikistan","Tanzania"," Thailand"," Timor-Leste"," Togo"," Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","UK", "Ukraine","UAE","Union of Soviet Socialist Republics","United Arab Emirates","United Arab Republic","United Kingdom","United States","Uruguay","USA","USSR","Uzbekistan","Vanuatu", "Vatican","Venezuela","Vietnam", "Western Samoa","West Germany","Yemen","Yugoslavia","Zaire","Zambia","Zanzibar","Zimbabwe"};
 		
 		
 		for (int i = 0; i < countryList.length; i++){//country info pops up in these strings, therefore they are checked for ocurrence of any country in the world, and for countries that existed after ww2
 			
 			if (locationProse.contains(countryList[i])){
+				countries = countries + countryList[i] + ", ";//the country that was found is added to a String
+				
+				if (countryProse.contains(locationProse) == false) {//checks if the prose String is already contained in the big prose
+					countryProse = addProse(locationProse, countryProse); //the String that contained the country is added to a big prose String
+				}
+				
+				
+			} else if  (countryProse.contains(countryList[i])) {
 				countries = countries + countryList[i] + ", ";
 				
-			} else if (countryProse.contains(countryList[i])){
-				countries = countries + countryList[i] + ", ";
 				
 			} else if (settingProse.contains(countryList[i])) {
 				countries = countries + countryList[i] + ", ";
 				
+				if (countryProse.contains(settingProse) == false) {
+					countryProse = addProse(settingProse, countryProse);
+				}
 			} else if (designProse.contains(countryList[i])) {
 				countries = countries + countryList[i] + ", ";
+				
+				if (countryProse.contains(designProse) == false) {
+					countryProse = addProse(designProse, countryProse);
+				}
 			}
+			
 		}
 		
-		Pattern pattern = Pattern.compile("(((\\d+)|(one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine)|(ten))\\scountries)");//it can possibly alse say "x countries" instead of actual country names, so this is covered below. If the original says "4 countries", this will appear in cleaned version as well
+		if (countries.contains("United Kingdom")) {//Some countries in this list appear abbreviated and some are written out in reviews. Mostly, they are abbreviated so here, all the non-abbreviated versions are abbreviated for the sake of consistency
+			countries = countries.replaceAll("United Kingdom", "UK");
+		} 
+		if (countries.contains("United States")) {
+			countries = countries.replaceAll("United States", "USA");
+		}
+		if (countries.contains("Central African Republic")) {
+			countries = countries.replaceAll("Central African Republic", "CAR");
+		}
+		if (countries.contains("multinational")) {
+			countries = countries.replaceAll("multinational", "international");
+		}
+		/*Pattern pattern = Pattern.compile("(((\\d+)|(one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine)|(ten))\\scountries)");//it can possibly alse say "x countries" instead of actual country names, so this is covered below. If the original says "4 countries", this will appear in cleaned version as well
 		
 		m = pattern.matcher(locationProse);
 		if (m.find()) {
 			countries = countries + m.group(1) + ", ";
+			if (countryProse.contains(locationProse) == false) {
+				countryProse = addProse(locationProse, countryProse);
+			}
 		} else {
 			m = pattern.matcher(countryProse);
 			if (m.find()) {
 				countries = countries + m.group(1) + ", ";
+				
 			} else {
 				m = pattern.matcher(settingProse);
 				if (m.find()) {
 					countries = countries + m.group(1) + ", ";
+					if (countryProse.contains(settingProse) == false) {
+						countryProse = addProse(settingProse, countryProse);
+					}
 				} else {
 					m = pattern.matcher(designProse);
 					if (m.find()) {
 						countries = countries + m.group(1) + ", ";
+						if (countryProse.contains(designProse) == false) {
+							countryProse = addProse(designProse, countryProse);
+						}
 					}
 				}
 			}
-		}
+		}*/
 		
 		
 		
@@ -1363,13 +1425,7 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 	public void setBlindingMethod(BLINDNESS blindingMethod) {
 		this.blindingMethod = blindingMethod;
 	}
-	public String getCountryProse() {
-		return countryCombined;
-	}
-
-	public void setCountryProse(String countryProse) {
-		this.countryCombined = countryProse;
-	}
+	
 	
 	public String getSettingProse() {
 		return settingProse;
@@ -1424,6 +1480,13 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 
 	public void setPowerCalculationProse(String powerCalculationProse) {
 		this.powerCalculationProse = powerCalculationProse;
+	}
+	public String getCountryProse() {
+		return countryProse;
+	}
+
+	public void setCountryProse(String countryProse) {
+		this.countryProse = countryProse;
 	}
 
 }
