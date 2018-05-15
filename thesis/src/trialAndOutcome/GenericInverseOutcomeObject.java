@@ -11,8 +11,22 @@ public class GenericInverseOutcomeObject extends OutcomeObject{
 	protected final String outcomeType ="Generic Inverse Variance";
 	
 	protected String outcomeName = "";
+	protected String reviewTitle = "";
+	
 protected String subgroupName = "";
 	
+	public String getReviewTitle() {
+	return reviewTitle;
+}
+
+public void setReviewTitle(String reviewTitle) {
+	this.reviewTitle = reviewTitle;
+}
+@XmlElement(name = "Outcome")
+public String getOutcomeName() {
+	return outcomeName;
+}
+
 	@XmlElement(name = "Subgroup")
 	public String getSubgroupName() {
 		return subgroupName;
@@ -42,8 +56,8 @@ protected String subgroupName = "";
 		super();
 	}
 	
-public GenericInverseOutcomeObject(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement) {
-		
+public GenericInverseOutcomeObject(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
+	this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();
 		
 		

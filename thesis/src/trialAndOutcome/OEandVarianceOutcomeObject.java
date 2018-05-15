@@ -12,8 +12,16 @@ public class OEandVarianceOutcomeObject extends OutcomeObject {
 	
 	protected String outcomeName = "";
 	protected String subgroupName = "";
+	protected String reviewTitle = "";
 	
-	
+	public String getReviewTitle() {
+		return reviewTitle;
+	}
+
+	public void setReviewTitle(String reviewTitle) {
+		this.reviewTitle = reviewTitle;
+	}
+
 	@XmlElement(name = "Subgroup")
 	public String getSubgroupName() {
 		return subgroupName;
@@ -50,8 +58,8 @@ public class OEandVarianceOutcomeObject extends OutcomeObject {
 
 
 
-	public OEandVarianceOutcomeObject(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement) {
-		
+	public OEandVarianceOutcomeObject(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
+		this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();
 		
 		if (oeSubgroupElement != null) {//because it is possible that the outcome is stored directly under the outcome node and not in a subgroup

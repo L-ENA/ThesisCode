@@ -13,6 +13,12 @@ import org.w3c.dom.NodeList;
 public class DichotomousOutcomeObject extends OutcomeObject{
 	
 	
+	public String getReviewTitle() {
+		return reviewTitle;
+	}
+	public void setReviewTitle(String reviewTitle) {
+		this.reviewTitle = reviewTitle;
+	}
 	@XmlAttribute
     protected final String outcomeType ="Dichotomous";
 	
@@ -35,6 +41,67 @@ public class DichotomousOutcomeObject extends OutcomeObject{
 	public String getComparisonName() {
 		return comparisonName;
 	}
+
+	public String getInterventionGroupName() {
+	return interventionGroupName;
+}
+public void setInterventionGroupName(String interventionGroupName) {
+	this.interventionGroupName = interventionGroupName;
+}
+public String getInterventionProse() {
+	return interventionProse;
+}
+public void setInterventionProse(String interventionProse) {
+	this.interventionProse = interventionProse;
+}
+public String getControlGroupName() {
+	return controlGroupName;
+}
+public void setControlGroupName(String controlGroupName) {
+	this.controlGroupName = controlGroupName;
+}
+public String getControlProse() {
+	return controlProse;
+}
+public void setControlProse(String controlProse) {
+	this.controlProse = controlProse;
+}
+public String getGraphLabel1() {
+	return graphLabel1;
+}
+public void setGraphLabel1(String graphLabel1) {
+	this.graphLabel1 = graphLabel1;
+}
+public String getGraphLabel2() {
+	return graphLabel2;
+}
+public void setGraphLabel2(String graphLabel2) {
+	this.graphLabel2 = graphLabel2;
+}
+public int getInterventionEvents() {
+	return interventionEvents;
+}
+public void setInterventionEvents(int interventionEvents) {
+	this.interventionEvents = interventionEvents;
+}
+public int getControlEvents() {
+	return controlEvents;
+}
+public void setControlEvents(int controlEvents) {
+	this.controlEvents = controlEvents;
+}
+public int getInterventionTotalN() {
+	return interventionTotalN;
+}
+public void setInterventionTotalN(int interventionTotalN) {
+	this.interventionTotalN = interventionTotalN;
+}
+public int getControlTotalN() {
+	return controlTotalN;
+}
+public void setControlTotalN(int controlTotalN) {
+	this.controlTotalN = controlTotalN;
+}
 	//@XmlElement
 	public void setComparisonName(String comparisonName) {
 		this.comparisonName = comparisonName;
@@ -134,6 +201,7 @@ public class DichotomousOutcomeObject extends OutcomeObject{
 	protected int controlEvents;
 	protected int interventionTotalN;
 	protected int controlTotalN;
+	protected String reviewTitle = "";
 	
 	
 	private Pattern invalidIC = Pattern.compile("(\\b[Ee]xperiment(al)?)|(\\b[Cc]ontrol(s)?)|(\\b[Cc]ombination(s)?|([Cc]omparison(s)?))");//checks the first string extracted for I/C 
@@ -148,8 +216,8 @@ public class DichotomousOutcomeObject extends OutcomeObject{
 	//What does "ORDER" attribute mean?
 	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
-	DichotomousOutcomeObject(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement){
-		
+	DichotomousOutcomeObject(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement, String review){
+		this.reviewTitle = review;
 		NodeList groupLabel1List = dichOutcomeElement.getElementsByTagName("GROUP_LABEL_1");	//for intervention name
 		Node groupLabel1Node = groupLabel1List.item(0);
 		Element groupLabel1Element = (Element) groupLabel1Node;
