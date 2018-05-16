@@ -1,7 +1,7 @@
 package references;
 
 public class CochraneProtocolReferenceObject extends ReferenceObject{
-	protected String type = "Cochrane protocol";
+	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
 	protected String originalTitle = "";
@@ -19,6 +19,7 @@ public class CochraneProtocolReferenceObject extends ReferenceObject{
 	}
 
 	public CochraneProtocolReferenceObject(String[] referencesArray, int i){
+		type = "Cochrane Protocol";
 		
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;

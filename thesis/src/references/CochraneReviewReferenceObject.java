@@ -1,7 +1,7 @@
 package references;
 
 public class CochraneReviewReferenceObject extends ReferenceObject{
-	protected String type = "CochraneReview";
+	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
 	protected String originalTitle = "";
@@ -19,6 +19,7 @@ public class CochraneReviewReferenceObject extends ReferenceObject{
 	}
 
 	public CochraneReviewReferenceObject(String[] referencesArray, int i){
+		type = "Cochrane Review";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}

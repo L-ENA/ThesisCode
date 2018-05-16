@@ -13,7 +13,16 @@ public class OtherOutcomeObject extends OutcomeObject{
 	
 	protected String outcomeName = "";
 	protected String subgroupName = "";
+	protected String reviewTitle = "";
 	
+	public String getReviewTitle() {
+		return reviewTitle;
+	}
+
+	public void setReviewTitle(String reviewTitle) {
+		this.reviewTitle = reviewTitle;
+	}
+
 	@XmlElement(name = "Subgroup")
 	public String getSubgroupName() {
 		return subgroupName;
@@ -46,8 +55,8 @@ public class OtherOutcomeObject extends OutcomeObject{
 		super();
 	}
 	
-public OtherOutcomeObject(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement) {
-		
+public OtherOutcomeObject(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
+	this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();
 		
 		

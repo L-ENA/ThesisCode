@@ -1,7 +1,7 @@
 package references;
 
 public class SoftwareReferenceObject extends ReferenceObject{
-	protected String type = "Software";
+	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
 	
@@ -24,6 +24,7 @@ public class SoftwareReferenceObject extends ReferenceObject{
 	}
 
 	public SoftwareReferenceObject(String[] referencesArray, int i){
+		type = "Software";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}

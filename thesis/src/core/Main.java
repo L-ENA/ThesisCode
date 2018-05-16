@@ -41,7 +41,19 @@ public class Main {
 						references.UnpublishedReferenceObject.class,
 						
 						trialAndOutcome.ContinuousOutcomeObject.class,
-						trialAndOutcome.DichotomousOutcomeObject.class
+						trialAndOutcome.DichotomousOutcomeObject.class,
+						trialAndOutcome.GenericInverseOutcomeObject.class,
+						trialAndOutcome.OEandVarianceOutcomeObject.class,
+						trialAndOutcome.OtherOutcomeObject.class,
+						trialAndOutcome.OutcomeObject.class,
+						
+						identifiers.OtherObject.class,
+						identifiers.ClinTrialGovObject.class,
+						identifiers.DoiObject.class,
+						identifiers.IsrctnObject.class,
+						identifiers.IdentifierObject.class
+						
+						
 						
 						
 						
@@ -51,7 +63,7 @@ public class Main {
 				
 				
 				
-				String path = "C:\\Users\\msals12\\Desktop\\Thesis\\XMLs\\1405.xml";
+				String path = "C:\\Users\\msals12\\Desktop\\Thesis\\XMLs\\1505.xml";
 				jaxbMarshaller.marshal(d, new File(path));	//puts database into a xml file that is saved according to path String
 				
 				System.out.println("File created successfully");

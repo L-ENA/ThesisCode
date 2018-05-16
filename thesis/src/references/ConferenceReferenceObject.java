@@ -2,7 +2,7 @@ package references;
 
 public class ConferenceReferenceObject extends ReferenceObject{
 	//if the information in the references section points to conference proceedings
-	protected String type = "Conference proceedings";
+	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
 	protected String conferenceName = "";
@@ -34,6 +34,8 @@ public class ConferenceReferenceObject extends ReferenceObject{
 
 
 	public ConferenceReferenceObject(String[] referencesArray, int i){
+		
+		type = "Conference Proceedings";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}

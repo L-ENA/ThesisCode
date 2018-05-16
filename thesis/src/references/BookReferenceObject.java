@@ -1,7 +1,7 @@
 package references;
 
 public class BookReferenceObject extends ReferenceObject{
-	protected String type = "Book";
+	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
 	protected String date = "";
@@ -20,6 +20,7 @@ public class BookReferenceObject extends ReferenceObject{
 	}
 
 	public BookReferenceObject(String[] referencesArray, int i){
+		type = "Book";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}

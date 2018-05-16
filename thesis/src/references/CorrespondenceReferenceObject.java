@@ -1,7 +1,7 @@
 package references;
 
 public class CorrespondenceReferenceObject extends ReferenceObject{
-	protected String type = "Correspondence";
+	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
 	protected String originalTitle = "";
@@ -18,6 +18,7 @@ public class CorrespondenceReferenceObject extends ReferenceObject{
 	}
 
 	public CorrespondenceReferenceObject(String[] referencesArray, int i){
+		type = "Correspondence";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}

@@ -283,7 +283,7 @@ private void allocationCleaner() {
 		ArrayList<String> storage = new ArrayList<String>();
 		String[] splitParticipantParts;
 		//location country setting: b is word boundary, d is any digit, s is space char//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////(?(?=Location\\sand\\s[Ss]etting)(?=(Setting\\sand\\s[Ll]ocation\\d?\\s?[:=])|((?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))))
-		splitParticipantParts = str.split("(?=(\\bPhase\\b\\d?\\s?[:=]))|(?=(Consent\\sand\\sethics\\d?\\s?[:=]))|(?=(\\b[Cc]ompleted?\\sstudy\\b:?\\s[Nn]))|(?=(((\\b[Ff]unding\\b)|(\\b[Ff]unded\\sby\\b))\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))|(?=(\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=]))|(?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\bDiagnosis\\b\\d?\\s?[:=]))|(?=(\\bTypes?\\b\\d?\\s?:))|(?=([.]\\s?[^(]?([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?[:=]))|(?=(([Mm]ean\\s)?[Aa]ge((\\srange)|(,\\syears))?[*\\d]?\\s?[:=]))|(?=((([Ss]ex)|(\\b[Gg]ender))[*\\d]?\\s?[:=]))|(?=(([Mm]edication\\s[Hh]istory\\b\\d?\\s?[:=])))|(?=((?![Mm]edication\\s)\\bHistory\\b\\d?\\s?[:=]))|(?=((([Ee]xcluded)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=]))|(?=(Average\\slength\\sof\\sillness\\d?\\s?[:=]))|(?=(\\b[Dd]uration\\b\\s\\b[Ii]ll\\b\\d?\\s?[:=]))|(?=(Length\\sof\\sillness\\d?\\s?[:=]))|(?=((\\b[Ee]thnicit(y|ies)\\b\\d?\\s?[:=])|(\\b[Rr]ace\\b\\d?\\s?[:=])))|(?=(\\b[cC]onsent(given)?\\d?\\s?[:=]))|(?=((?<!Lost\\sto\\s)//b[Ff]ollow[-\\s]up\\b\\d?\\s?[:=]))");
+		splitParticipantParts = str.split("(?=(Racial\\sorigins?\\b\\d?\\s?\\**[:=]))|(?=(\\bPhase\\b\\d?\\s?\\**[:=]))|(?=(Consent\\sand\\sethics\\d?\\s?\\**[:=]))|(?=(\\b[Cc]ompleted?\\sstudy\\b:?\\s\\**[Nn]))|(?=(((\\b[Ff]unding\\b)|(\\b[Ff]unded\\sby\\b))\\d?\\s?\\**[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?\\**[:=]))|(?=(\\b[cC]ountr(y|ies)\\b\\d?\\s?\\**[:=]))|(?=(\\b[sS]ettings?\\b\\d?\\s?\\**[:=]))|(?=(\\bDiagnos[ie]s?\\b\\d?\\s?\\**[:=]))|(?=(\\bTypes?\\b\\d?\\s?\\**:))|(?=([.]\\s?[^(]?([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?\\**[:=]))|(?=(([Mm]ean\\s)?[Aa]ge((\\srange)|(,\\syears))?[*\\d]?\\s?\\**[:=]))|(?=((([Ss]ex)|(\\b[Gg]ender))[*\\d]?\\s?\\**[:=]))|(?=(([Mm]edication\\s[Hh]istory\\b\\d?\\s?\\**[:=])))|(?=((?![Mm]edication\\s)\\bHistory\\b\\d?\\s?\\**[:=]))|(?=((([Ee]xcluded?)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?\\**[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?\\**[:=]))|(?=(\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?\\**[:=]))|(?=(Average\\slength\\sof\\sillness\\d?\\s?\\**[:=]))|(?=(\\b[Dd]uration\\b\\s\\b[Ii]ll\\b\\d?\\s?\\**[:=]))|(?=(Length\\sof\\sillness\\d?\\s?\\**[:=]))|(?=((\\b[Ee]thnicit(y|ies)\\b\\d?\\s?\\**[:=])|(\\b[Rr]ace\\b\\d?\\s?\\**[:=])))|(?=(\\b[cC]onsent(given)?\\d?\\s?\\**[:=]))|(?=((?<!Lost\\sto\\s)//b[Ff]ollow[-\\s]up\\b\\d?\\s?\\**[:=]))");
 		
 		for (int j = 0; j < splitParticipantParts.length; j++) {
 			
@@ -303,7 +303,7 @@ private void allocationCleaner() {
 			output = storage.get(i);
 			
 			
-			if (output.matches("\\bDiagnosis\\b\\d?\\s?[:=].*") || output.matches("\\bTypes?\\b\\d?\\s?:.*")) {//since the whole String needs to match, the .* is used as wildcard for the rest of the String
+			if (output.matches("\\bDiagnos[ie]s?\\b\\d?\\s?\\**[:=].*") || output.matches("\\bTypes?\\b\\d?\\s?\\**:.*")) {//since the whole String needs to match, the .* is used as wildcard for the rest of the String
 				
 				if (diagnosisProse != "") {
 					
@@ -315,7 +315,7 @@ private void allocationCleaner() {
 				
 				
 				//System.out.println(diagnosisProse);
-			} else if (output.matches("\\b[Hh]istory\\b\\d?\\s?[:=].*") || output.matches("[Mm]edication\\s[Hh]istory\\b\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b[Hh]istory\\b\\d?\\s?\\**[:=].*") || output.matches("[Mm]edication\\s[Hh]istory\\b\\d?\\s?\\**[:=].*")) {
 				if (historyProse != "") {
 					
 					historyProse = historyProse + " " + output;//this happens in Becker 1983 and others in the review Antidepressants for people with both schizophrenia and depression, because a field called "Medication history:" comes up. it is added to the standard participant history prose.
@@ -325,7 +325,7 @@ private void allocationCleaner() {
 					
 				}
 				
-			} else if (output.matches("([Mm]ean\\s)?[Aa]ge((\\srange)|(,\\syears))?[*\\d]?\\s?[:=].*")) {//the word boundaries before age and sex are deleted because of the possible missing . character after "n"
+			} else if (output.matches("([Mm]ean\\s)?[Aa]ge((\\srange)|(,\\syears))?[*\\d]?\\s?\\**[:=].*")) {//the word boundaries before age and sex are deleted because of the possible missing . character after "n"
 				if (ageProse != "") {
 					
 					ageProse = ageProse + " " + output; // antipsychotics childhood schizophrenia, xiaong study has "Age:" and "Mean age:", ocurrences like this are combined here.
@@ -334,7 +334,7 @@ private void allocationCleaner() {
 					ageProse = output;
 				}
 				
-			} else if (output.matches("(\\b[Gg]ender)[*\\d]?\\s?[:=].*") || output.matches("([Ss]ex)[*\\d]?\\s?[:=].*")) {
+			} else if (output.matches("(\\b[Gg]ender)[*\\d]?\\s?\\**[:=].*") || output.matches("([Ss]ex)[*\\d]?\\s?\\**[:=].*")) {
 				if (genderProse != "") {
 					genderProse = genderProse + " " + output;
 					//System.out.println("gender stuff-- " + genderProse);
@@ -342,7 +342,7 @@ private void allocationCleaner() {
 					genderProse = output;
 				}
 				
-			} else if (output.matches("(\\b[Ee]xcluded\\b)\\d?\\s?[:=].*") || output.matches("\\b[Ee]xclusion\\scriteria?\\d?\\s?[:=].*") || output.matches("\\b[Ee]xclusions?\\b\\d\\s?[:=].*")) {
+			} else if (output.matches("(\\b[Ee]xcluded?\\b)\\d?\\s?\\**[:=].*") || output.matches("\\b[Ee]xclusion\\scriteria?\\d?\\s?\\**[:=].*") || output.matches("\\b[Ee]xclusions?\\b\\d?\\s?[:=].*")) {
 				if (excludedProse != "") {
 					excludedProse = excludedProse + " " + output;
 					//System.out.println("excluded stuff-- " + excludedProse);
@@ -350,7 +350,7 @@ private void allocationCleaner() {
 					excludedProse = output;
 				}
 				
-			} else if (output.matches("(\\b[Ii]ncluded\\b)\\d?\\s?[:=].*") || output.matches("\\b[Ii]nclusion\\scriteria\\d?\\s?[:=].*") || output.matches("\\b[Ii]nclusions?\\b\\d\\s?[:=].*")) {
+			} else if (output.matches("(\\b[Ii]ncluded\\b)\\d?\\s?\\**[:=].*") || output.matches("\\b[Ii]nclusion\\scriteria\\d?\\s?\\**[:=].*") || output.matches("\\b[Ii]nclusions?\\b\\d?\\s?[:=].*")) {
 				if (includedProse != "") {
 					includedProse = includedProse + " " + output;
 					//System.out.println("included stuff-- " + includedProse);
@@ -358,10 +358,10 @@ private void allocationCleaner() {
 					includedProse = output;
 				}
 				
-			} else if (output.matches("([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?\\s?[:=].*") || output.matches("\\b[Cc]ompleted?\\s(study\\b)?:?\\s[Nn].*")) {
+			} else if (output.matches("([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?\\s?\\**[:=].*") || output.matches("\\b[Cc]ompleted?\\s(study\\b)?:?\\s[Nn].*")) {
 				if (nProse != "") {
 					
-					if (output.matches(".*([Tt]otal\\s)?\\b[Nn]\\b\\s?[:=].*")) {
+					if (output.matches(".*([Tt]otal\\s)?\\b[Nn]\\b\\s?\\**[:=].*")) {
 					nProse = nProse +" " + output;
 					otherParticipantProse = otherParticipantProse.replace(output, "");
 					//System.out.println("nprose stuff--" + nProse);
@@ -372,7 +372,7 @@ private void allocationCleaner() {
 					nProse = output;
 				}
 				
-			} else if (output.matches("\\b[lL]ocations?\\b\\d?\\s?[:=].*")) {//next 3(location, country, setting) have special treatment because they can appear in methods section also. Sometimes they appear double, so Strings have to be appended to each other
+			} else if (output.matches("\\b[lL]ocations?\\b\\d?\\s?\\**[:=].*")) {//next 3(location, country, setting) have special treatment because they can appear in methods section also. Sometimes they appear double, so Strings have to be appended to each other
 				if (locationProse.equals("")) {//if it is empty, there is no double occurrence, so it can be filled as usual
 					locationProse = output;
 					
@@ -380,7 +380,7 @@ private void allocationCleaner() {
 					locationProse = locationProse + " " + output;
 					//System.out.println("Location stuff-- " + locationProse);
 				}
-			} else if (output.matches("\\b[cC]ountr(y|ies)\\b\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b[cC]ountr(y|ies)\\b\\d?\\s?\\**[:=].*")) {
 				if (countryProse.equals("")) {
 					countryProse = output;
 					
@@ -388,7 +388,7 @@ private void allocationCleaner() {
 					countryProse = countryProse + " " + output;
 					//System.out.println("country stuff-- " + countryProse);
 				}
-			} else if (output.matches("\\b[sS]etting\\b\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b[sS]ettings?\\b\\d?\\s?\\**[:=].*")) {
 				if (settingProse != "") {
 					
 					settingProse = settingProse + " " + output; //Xu 2007, Yan 2008a, Yang 2006.. in aripiprazole vs other atypials has setting twice, here the Strings are appended.
@@ -401,7 +401,7 @@ private void allocationCleaner() {
 				
 				
 				
-			} else if (output.matches("(?<!Lost\\sto\\s)\\b[Ff]ollow[-\\s]up\\d?\\s?[:=].*")) {
+			} else if (output.matches("(?<!Lost\\sto\\s)\\b[Ff]ollow[-\\s]up\\d?\\s?\\**[:=].*")) {
 				
 				if (followUpOrAnalysisProse.equals("")) {
 					followUpOrAnalysisProse = output;
@@ -413,7 +413,7 @@ private void allocationCleaner() {
 				
 			} 
 			
-			else if (output.matches("\\b[cC]onsent(given)?\\d?\\s?[:=].*") || output.matches("Consent\\sand\\sethics\\d?\\s?[:=].*")) {
+			else if (output.matches("\\b[cC]onsent(given)?\\d?\\s?\\**[:=].*") || output.matches("Consent\\sand\\sethics\\d?\\s?\\**[:=].*")) {
 				if (consentProse != "") {
 					consentProse = consentProse + " " + output;
 					//System.out.println("consent stuff-- " + consentProse);
@@ -421,7 +421,7 @@ private void allocationCleaner() {
 					consentProse = output;
 				}
 				
-			} else if (output.matches("\\b[Dd]uration\\s[Ii]ll\\d?\\s?[:=].*") || output.matches("\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?[:=].*") || output.matches("Average\\slength\\sof\\sillness\\d?\\s?[:=].*") || output.matches("Length\\sof\\sillness\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b[Dd]uration\\s[Ii]ll\\d?\\s?\\**[:=].*") || output.matches("\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?\\**[:=].*") || output.matches("Average\\slength\\sof\\sillness\\d?\\s?[:=].*") || output.matches("Length\\sof\\sillness\\d?\\s?[:=].*")) {
 				if (durationIllProse != "") {
 					durationIllProse = durationIllProse + " " + output;
 					//System.out.println("durationIll stuff-- " + durationIllProse);
@@ -429,7 +429,7 @@ private void allocationCleaner() {
 					durationIllProse = output;
 				}
 				
-			} else if (output.matches("\\b([Rr]ace)\\b\\d?\\s?[:=].*") || output.matches("\\b([Ee]thnicit(y|ies))\\b\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b([Rr]ace)\\b\\d?\\s?\\**[:=].*") || output.matches("\\b([Ee]thnicit(y|ies))\\b\\d?\\s?\\**[:=].*") || output.matches("Racial\\sorigins?\\b\\d?\\s?\\**[:=].*")) {
 				if (ethnicityProse != "") {
 					ethnicityProse = ethnicityProse + " " + output;
 					//System.out.println("ethnicity stuff-- " + ethnicityProse);
@@ -437,7 +437,7 @@ private void allocationCleaner() {
 					ethnicityProse = output;
 				}
 				
-			} else if (output.matches("\\b[Ff]unding\\b\\d?\\s?[:=].*") || output.matches("(\\b[Ff]unded\\sby\\b)\\d?\\s?[:=].*")) {
+			} else if (output.matches("\\b[Ff]unding\\b\\d?\\s?\\**[:=].*") || output.matches("(\\b[Ff]unded\\sby\\b)\\d?\\s?\\**[:=].*")) {
 				if (fundingProse != "") {
 					fundingProse = fundingProse + " " + output;
 					//System.out.println("funding stuff-- " + fundingProse);
@@ -445,7 +445,7 @@ private void allocationCleaner() {
 					fundingProse = output;
 				}
 				
-			} else if (output.matches("\\bPhase\\b\\d?\\s?[:=].*")){ 
+			} else if (output.matches("\\bPhase\\b\\d?\\s?\\**[:=].*")){ 
 				if (phaseProse != "") {
 					phaseProse = phaseProse + " " + output;
 					//System.out.println("phase stuff-- " + phaseProse);
@@ -483,7 +483,7 @@ private void allocationCleaner() {
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
-				System.out.println(splitMethodParts[j]);
+				//System.out.println(splitMethodParts[j]);
 			}
 		
 		
@@ -525,7 +525,7 @@ private void allocationCleaner() {
 			} else if (output.matches("Raters?\\d?\\*?\\s?[:=].*") || output.matches("Objectivity\\sof\\sratings?\\sof\\soutcomes?\\d?\\*?\\s??[:=].*")) {
 				ratersProse = addProse(output, ratersProse);
 				
-				System.out.println("9. Raters -- " + ratersProse);
+				//System.out.println("9. Raters -- " + ratersProse);
 			} else if (output.matches("(Countr(y|ies)\\d?\\*?\\s?[:=].*)")) {
 				countryProse = addProse(output, countryProse);
 				//System.out.println("10. Countries -- " + countryProse);

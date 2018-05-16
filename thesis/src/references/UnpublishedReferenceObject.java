@@ -3,7 +3,7 @@ package references;
 public class UnpublishedReferenceObject extends ReferenceObject{
 
 	//if the information in the references section points to an unpublished reference
-		protected String type = "Unpublished reference";
+		protected String type = "";
 		protected String allAuthors = "";
 		protected String title = "";
 		protected String source = "";
@@ -20,6 +20,7 @@ public class UnpublishedReferenceObject extends ReferenceObject{
 		}
 
 		public UnpublishedReferenceObject(String[] referencesArray, int i){
+			type = "Unpublished Reference";
 
 			if (referencesArray[i + 1].equals("YES")) {
 				primaryReference = true;

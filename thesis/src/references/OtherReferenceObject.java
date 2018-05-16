@@ -3,7 +3,7 @@ package references;
 public class OtherReferenceObject extends ReferenceObject{
 	
 	//if the information in the references section points to a reference of type "other". 
-			protected String type = "Other reference";
+			protected String type = "";
 			protected String allAuthors = "";
 			protected String title = "";
 			protected String source = "";
@@ -23,6 +23,7 @@ public class OtherReferenceObject extends ReferenceObject{
 			}
 
 			public OtherReferenceObject(String[] referencesArray, int i){
+				type = "Other Reference";
 
 				if (referencesArray[i + 1].equals("YES")) {
 					primaryReference = true;

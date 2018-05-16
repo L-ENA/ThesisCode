@@ -24,18 +24,17 @@ public class JournalReferenceObject extends ReferenceObject{
 	protected String originalTitle = "";
 	protected boolean primaryReference = false;
 	
-	public boolean isPrimaryReference() {
-		return primaryReference;
-	}
-
-	public void setPrimaryReference(boolean primaryReference) {
-		this.primaryReference = primaryReference;
-	}
+	
 
 	public JournalReferenceObject(String[] referencesArray, int i){
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}
+		
+		if (primaryReference == true) {
+			//regex author extraction
+		}
+		
 		type = "Journal article";
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray[i + 3];
@@ -118,5 +117,11 @@ public class JournalReferenceObject extends ReferenceObject{
 	public void setOriginalTitle(String originalTitle) {
 		this.originalTitle = originalTitle;
 	}
+	public boolean isPrimaryReference() {
+		return primaryReference;
+	}
 
+	public void setPrimaryReference(boolean primaryReference) {
+		this.primaryReference = primaryReference;
+	}
 }
