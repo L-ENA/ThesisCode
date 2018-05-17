@@ -282,6 +282,8 @@ private void allocationCleaner() {
 	private void splitParticipants (String str) {
 		ArrayList<String> storage = new ArrayList<String>();
 		String[] splitParticipantParts;
+		str = str.replaceAll("(\\u2028)|(\\u2029)|(\\r)|(\\v)", "\\n"); //replaces various forms of linebreaks with newline character. this is neede especially because lsep character makes the following code fail
+		
 		//location country setting: b is word boundary, d is any digit, s is space char//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////(?(?=Location\\sand\\s[Ss]etting)(?=(Setting\\sand\\s[Ll]ocation\\d?\\s?[:=])|((?=(\\b[sS]etting\\b\\d?\\s?[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?[:=]))))
 		splitParticipantParts = str.split("(?=(Racial\\sorigins?\\b\\d?\\s?\\**[:=]))|(?=(\\bPhase\\b\\d?\\s?\\**[:=]))|(?=(Consent\\sand\\sethics\\d?\\s?\\**[:=]))|(?=(\\b[Cc]ompleted?\\sstudy\\b:?\\s\\**[Nn]))|(?=(((\\b[Ff]unding\\b)|(\\b[Ff]unded\\sby\\b))\\d?\\s?\\**[:=]))|(?=(\\b[Ll]ocations?\\b\\d?\\s?\\**[:=]))|(?=(\\b[cC]ountr(y|ies)\\b\\d?\\s?\\**[:=]))|(?=(\\b[sS]ettings?\\b\\d?\\s?\\**[:=]))|(?=(\\bDiagnos[ie]s?\\b\\d?\\s?\\**[:=]))|(?=(\\bTypes?\\b\\d?\\s?\\**:))|(?=([.]\\s?[^(]?([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?\\**[:=]))|(?=(([Mm]ean\\s)?[Aa]ge((\\srange)|(,\\syears))?[*\\d]?\\s?\\**[:=]))|(?=((([Ss]ex)|(\\b[Gg]ender))[*\\d]?\\s?\\**[:=]))|(?=(([Mm]edication\\s[Hh]istory\\b\\d?\\s?\\**[:=])))|(?=((?![Mm]edication\\s)\\bHistory\\b\\d?\\s?\\**[:=]))|(?=((([Ee]xcluded?)|([Ee]x?cli?usions?(\\scriteria)?))\\d?\\s?\\**[:=]))|(?=((([Ii]ncluded)|([Ii]nclusions?(\\scriteria)?))\\d?\\s?\\**[:=]))|(?=(\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?\\**[:=]))|(?=(Average\\slength\\sof\\sillness\\d?\\s?\\**[:=]))|(?=(\\b[Dd]uration\\b\\s\\b[Ii]ll\\b\\d?\\s?\\**[:=]))|(?=(Length\\sof\\sillness\\d?\\s?\\**[:=]))|(?=((\\b[Ee]thnicit(y|ies)\\b\\d?\\s?\\**[:=])|(\\b[Rr]ace\\b\\d?\\s?\\**[:=])))|(?=(\\b[cC]onsent(given)?\\d?\\s?\\**[:=]))|(?=((?<!Lost\\sto\\s)//b[Ff]ollow[-\\s]up\\b\\d?\\s?\\**[:=]))");
 		
@@ -475,11 +477,11 @@ private void allocationCleaner() {
 	private void splitMethods (String str) {//Uses positive lookahead regex to split method prose into Strings that are stored in Array and later identified ant written into their respective prose Strings																													//take care here
 		ArrayList<String> storage = new ArrayList<String>();//this is used because lists are easier to have variables added to them
 		String[] splitMethodParts;//to store all parts of the big methods string that gets broken by the regex
-		
+		str = str.replaceAll("(\\u2028)|(\\u2029)|(\\r)|(\\v)", " "); //replaces various forms of linebreaks with newline character. this is neede especially because lsep character makes the following code fail
 		
 		//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=((Length\\sof\\sfollow[\\s-]up\\d?\\*?\\s?[:=])))|(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]laces?\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=([cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))");
+			splitMethodParts = str.split("(?=((Length\\sof\\sfollow[\\s-]up\\d?\\*?\\s?[:=])))|(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]laces?\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))|((?=((\\d+\\s)?[cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|\\s(?=(((\\d+\\s)[cC]ountr(y|ies))\\d?\\*?\\s?[:=])))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
@@ -526,7 +528,7 @@ private void allocationCleaner() {
 				ratersProse = addProse(output, ratersProse);
 				
 				//System.out.println("9. Raters -- " + ratersProse);
-			} else if (output.matches("(Countr(y|ies)\\d?\\*?\\s?[:=].*)")) {
+			} else if (output.matches("(\\d+\\s)?[cC]ountr(y|ies)\\d?\\*?\\s?[:=].*")) {
 				countryProse = addProse(output, countryProse);
 				//System.out.println("10. Countries -- " + countryProse);
 			} else if (output.matches("[Ff]unding\\d?\\*?\\s?[:=].*") || output.matches("Funded\\sby\\d?\\*?\\s?[:=]?.*")) {
@@ -544,6 +546,10 @@ private void allocationCleaner() {
 			}
 			else {
 				otherMethodProse = addProse(output, otherMethodProse);
+				if (allocationProse.equals("") && blindingProse.equals("") && designProse.equals("")) {//sometimes char tables are almost empty because they only describe a study centre, e.g. Intensive case management for severe mental illness, Rosenheck, so this info has to be added to multicentre prose
+					multicentreProse = otherMethodProse + multicentreProse;
+					otherMethodProse = "";
+				}
 				//System.out.println("OTHER methods: " + otherMethodProse);
 			}
 		}
