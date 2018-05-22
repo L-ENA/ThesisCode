@@ -29,9 +29,13 @@ import references.UnpublishedReferenceObject;
 
 import identifiers.IdentifierObject;
 import identifiers.IsrctnObject;
-import identifiers.OtherObject;
+import identifiers.MedlineObject;
+import identifiers.OtherIdentifierObject;
+import identifiers.PubMedObject;
+import identifiers.CentralObject;
 import identifiers.ClinTrialGovObject;
 import identifiers.DoiObject;
+import identifiers.EmbaseObject;
 
 
 public class TrialObject{
@@ -69,10 +73,11 @@ public class TrialObject{
 	protected ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. 
 	protected List<ReferenceObject> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects
 
-	protected IdentifierObject trialIdentifierObject; //////////holds values of identifiers for this trial -> trial level, not single reference level
-	protected List<IdentifierObject> trialIdentifierObjectsList = new ArrayList<>();//identifier objects get stored in here
+	protected IdentifierObject trialIdObject; //////////holds values of identifiers for this trial -> trial level, not single reference level
+	protected List<IdentifierObject> trialIdList = new ArrayList<>();//identifier objects get stored in here
 	
-	
+	protected IdentifierObject referenceIdObj;
+	protected List<IdentifierObject> referenceIdList = new ArrayList<>();
 
 	/////////////////////////////////////////////////////////////xml related attributes that are used between different methods in the big constructor
 	private Element qualityItemsElement;
@@ -674,6 +679,59 @@ public class TrialObject{
 	private void referenceIdentifiersExtracting(int j) {//extracts the identifiers of the reference specified by the integer parameter
 		Element referenceElement = (Element) referencesList.item(j);
 		
+		NodeList identifiersList = referenceElement.getElementsByTagName("IDENTIFIERS");//node list of all identifier nodes
+		Element identifiersElement = (Element) identifiersList.item(0);
+		
+		
+		
+		NodeList referenceIdentifierList = identifiersElement.getElementsByTagName("IDENTIFIER");
+		System.out.println("Liste lang: " + referenceIdentifierList.getLength());
+		
+		
+		
+		for (int i = 0; i < referenceIdentifierList.getLength(); i++) {
+			Element referenceIdentifierElement = (Element) referenceIdentifierList.item(i);//crates element for each node in identidiersList
+			
+			if (referenceIdentifierElement.getParentNode().getNodeName().equals("STUDY") == false) {
+			
+			
+				String idType = referenceIdentifierElement.getAttribute("TYPE");//to test which object type has to be created below
+				System.out.println("Value ist: " + idType);
+				if (idType.equals("DOI")) {
+					referenceIdObj = new DoiObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdList.add(referenceIdObj);
+					System.out.println("DOI added");
+
+				} else if (idType.equals("OTHER")) {
+					referenceIdObj = new OtherIdentifierObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdList.add(referenceIdObj);
+					System.out.println("Other added ");
+
+				} else if (idType.equals("EMBASE")) {
+					referenceIdObj = new EmbaseObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdList.add(referenceIdObj);
+					System.out.println("Embase added ");
+
+				} else if (idType.equals("CENTRAL")) {
+					referenceIdObj = new CentralObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdList.add(referenceIdObj);
+					System.out.println("Central added ");
+
+				} else if (idType.equals("MEDLINE")) {
+					referenceIdObj = new MedlineObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdList.add(referenceIdObj);
+					System.out.println("Medline added " + revManID + reviewTitle);
+
+				} else if (idType.equals("PUBMED")) {
+					referenceIdObj = new PubMedObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdList.add(referenceIdObj);
+					System.out.println("Pubmed added ");
+
+				}
+				
+			
+			}
+		}
 		
 	}
 	
@@ -695,24 +753,24 @@ public class TrialObject{
 				String idValue = identifierElement.getAttribute("TYPE");
 				
 				if (idValue.equals("DOI")) {
-					trialIdentifierObject = new DoiObject(identifierElement, authorYearLetter, reviewTitle);
-					trialIdentifierObjectsList.add(trialIdentifierObject);
-					System.out.println("DOI added " );
+					trialIdObject = new DoiObject(identifierElement, revManID, reviewTitle);
+					trialIdList.add(trialIdObject);
+					//System.out.println("DOI added " );
 					
 				} else if (idValue.equals("CTG")){
-					trialIdentifierObject = new ClinTrialGovObject(identifierElement, authorYearLetter, reviewTitle);
-					trialIdentifierObjectsList.add(trialIdentifierObject);
-					System.out.println("CTG added " );
+					trialIdObject = new ClinTrialGovObject(identifierElement, revManID, reviewTitle);
+					trialIdList.add(trialIdObject);
+					//System.out.println("CTG added " );
 					
 				} else if (idValue.equals("ISRCTN")){
-					trialIdentifierObject = new IsrctnObject(identifierElement, authorYearLetter, reviewTitle);
-					trialIdentifierObjectsList.add(trialIdentifierObject);
-					System.out.println("ISRCTN added " );
+					trialIdObject = new IsrctnObject(identifierElement, revManID, reviewTitle);
+					trialIdList.add(trialIdObject);
+					//System.out.println("ISRCTN added " );
 					
 				} else if (idValue.equals("OTHER")){
-					trialIdentifierObject = new OtherObject(identifierElement, authorYearLetter, reviewTitle);
-					trialIdentifierObjectsList.add(trialIdentifierObject);
-					System.out.println("Other added " );
+					trialIdObject = new OtherIdentifierObject(identifierElement, revManID, reviewTitle);
+					trialIdList.add(trialIdObject);
+					//System.out.println("Other added " );
 				}
 			}
 		}
@@ -1241,19 +1299,19 @@ public class TrialObject{
 		this.charObject = charObject;
 	}
 	public List<IdentifierObject> getTrialIdentifierObjectsList() {
-		return trialIdentifierObjectsList;
+		return trialIdList;
 	}
 
 	public void setTrialIdentifierObjectsList(List<IdentifierObject> trialIdentifierObjectsList) {
-		this.trialIdentifierObjectsList = trialIdentifierObjectsList;
+		this.trialIdList = trialIdentifierObjectsList;
 	}
 
 	public IdentifierObject getTrialIdentifierObject() {
-		return trialIdentifierObject;
+		return trialIdObject;
 	}
 
 	public void setTrialIdentifierObject(IdentifierObject trialIdentifierObject) {
-		this.trialIdentifierObject = trialIdentifierObject;
+		this.trialIdObject = trialIdentifierObject;
 	}
 	
 	public String getExtractedAuthor() {
@@ -1263,4 +1321,17 @@ public class TrialObject{
 	public void setExtractedAuthor(String extractedAuthor) {
 		this.extractedAuthor = extractedAuthor;
 	}
+	public IdentifierObject getReferenceIdObj() {
+		return referenceIdObj;
+	}
+	public void setReferenceIdObj(IdentifierObject referenceIdObj) {
+		this.referenceIdObj = referenceIdObj;
+	}
+	public List<IdentifierObject> getReferenceIdList() {
+		return referenceIdList;
+	}
+	public void setReferenceIdList(List<IdentifierObject> referenceIdList) {
+		this.referenceIdList = referenceIdList;
+	}
+
 }

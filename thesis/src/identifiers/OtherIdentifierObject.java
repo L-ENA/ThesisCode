@@ -3,7 +3,7 @@ package identifiers;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class OtherObject extends IdentifierObject {
+public class OtherIdentifierObject extends IdentifierObject {
 
 	protected String type = "";
 	protected String exactType = "";
@@ -14,7 +14,7 @@ public class OtherObject extends IdentifierObject {
 	
 
 
-	public OtherObject(Element identifierElement, String link, String review) {
+	public OtherIdentifierObject(Element identifierElement, String link, String review) {
 		type = "Other";
 		this.link = link;
 		this.review = review;
@@ -28,7 +28,7 @@ public class OtherObject extends IdentifierObject {
 			
 			
 			value = identifierElement.getAttribute("VALUE");
-			System.out.println("Other value is : " + value);
+			//System.out.println("Other value is : " + value);
 			
 			
 		} catch (Exception e) {
@@ -41,7 +41,7 @@ public class OtherObject extends IdentifierObject {
 
 
 
-	public OtherObject() {
+	public OtherIdentifierObject() {
 		
 	}
 	

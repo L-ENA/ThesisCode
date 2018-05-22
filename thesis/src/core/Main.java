@@ -26,7 +26,7 @@ public class Main {
 		} else {
 			try {
 				JAXBContext jaxbContext = JAXBContext.newInstance(
-						
+						//this makes it possible to marshal instances of these classes to XML
 						Database.class,
 						
 						references.JournalReferenceObject.class,
@@ -47,11 +47,18 @@ public class Main {
 						trialAndOutcome.OtherOutcomeObject.class,
 						trialAndOutcome.OutcomeObject.class,
 						
-						identifiers.OtherObject.class,
+						identifiers.OtherIdentifierObject.class,
 						identifiers.ClinTrialGovObject.class,
 						identifiers.DoiObject.class,
 						identifiers.IsrctnObject.class,
-						identifiers.IdentifierObject.class
+						identifiers.IdentifierObject.class, 
+						
+						identifiers.MedlineObject.class,
+						identifiers.PubMedObject.class,
+						identifiers.CentralObject.class,
+						identifiers.EmbaseObject.class
+						
+						
 						
 						
 						
