@@ -52,6 +52,7 @@ File[] files = null;
 	
 	protected int numberOfIncludedStudies(Document rm5){
 		
+		
 		// Gets root element of parsed XML document, moves to included studies section and returns length of included studies list.
 		NodeList rootList = rm5.getElementsByTagName("COCHRANE_REVIEW");
 		Node rootNode = rootList.item(0);

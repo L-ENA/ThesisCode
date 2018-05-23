@@ -78,6 +78,8 @@ public class TrialObject{
 	
 	protected IdentifierObject referenceIdObj;
 	protected List<IdentifierObject> referenceIdList = new ArrayList<>();
+	
+	
 
 	/////////////////////////////////////////////////////////////xml related attributes that are used between different methods in the big constructor
 	private Element qualityItemsElement;
@@ -685,8 +687,6 @@ public class TrialObject{
 		
 		
 		NodeList referenceIdentifierList = identifiersElement.getElementsByTagName("IDENTIFIER");
-		System.out.println("Liste lang: " + referenceIdentifierList.getLength());
-		
 		
 		
 		for (int i = 0; i < referenceIdentifierList.getLength(); i++) {
@@ -696,36 +696,36 @@ public class TrialObject{
 			
 			
 				String idType = referenceIdentifierElement.getAttribute("TYPE");//to test which object type has to be created below
-				System.out.println("Value ist: " + idType);
+				//System.out.println("Value ist: " + idType);
 				if (idType.equals("DOI")) {
 					referenceIdObj = new DoiObject(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
-					System.out.println("DOI added");
+					//System.out.println("DOI added");
 
 				} else if (idType.equals("OTHER")) {
 					referenceIdObj = new OtherIdentifierObject(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
-					System.out.println("Other added ");
+					//System.out.println("Other added ");
 
 				} else if (idType.equals("EMBASE")) {
 					referenceIdObj = new EmbaseObject(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
-					System.out.println("Embase added ");
+					//System.out.println("Embase added ");
 
 				} else if (idType.equals("CENTRAL")) {
 					referenceIdObj = new CentralObject(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
-					System.out.println("Central added ");
+					//System.out.println("Central added ");
 
 				} else if (idType.equals("MEDLINE")) {
 					referenceIdObj = new MedlineObject(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
-					System.out.println("Medline added " + revManID + reviewTitle);
+					//System.out.println("Medline added " + revManID + reviewTitle);
 
 				} else if (idType.equals("PUBMED")) {
 					referenceIdObj = new PubMedObject(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
-					System.out.println("Pubmed added ");
+					//System.out.println("Pubmed added ");
 
 				}
 				
