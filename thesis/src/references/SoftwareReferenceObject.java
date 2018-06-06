@@ -4,12 +4,9 @@ public class SoftwareReferenceObject extends ReferenceObject{
 	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
-	
 	protected String date = "";
 	protected String originalTitle = "";
-	
 	protected String edition = "";
-	
 	protected String publisher = "";
 	protected String city = "";
 	protected String medium = "";

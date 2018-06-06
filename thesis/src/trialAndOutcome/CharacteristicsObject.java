@@ -88,7 +88,7 @@ public class CharacteristicsObject {
 
 	
 	protected String durationProse = "";
-	protected String lostToFollowUpProse = "";
+	
 	protected String consentProse = "";
 	protected String locationProse = "";
 	protected String followUpOrAnalysisProse = "";
@@ -1391,13 +1391,7 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 		this.durationProse = durationProse;
 	}
 
-	public String getLostToFollowUpProse() {
-		return lostToFollowUpProse;
-	}
-
-	public void setLostToFollowUpProse(String lostToFollowUpProse) {
-		this.lostToFollowUpProse = lostToFollowUpProse;
-	}
+	
 
 	public String getConsentProse() {
 		return consentProse;

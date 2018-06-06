@@ -23,8 +23,8 @@ public class ContinuousOutcomeObject extends OutcomeObject{
 	protected String interventionProse = ""; // if additional prose cleaning happens this String contains the prose to double check cleaning manually
 	protected String controlGroupName = "";	//e.g. Placebo
 	protected String controlProse = "";
-	protected String graphLabel1 = "";
-	protected String graphLabel2 = "";
+	//protected String graphLabel1 = "";
+	//protected String graphLabel2 = "";
 	protected String subgroupName ="";	//e.g. short-term
 	
 	protected float interventionMean;
@@ -64,13 +64,13 @@ public class ContinuousOutcomeObject extends OutcomeObject{
 		controlGroupName = groupLabel2Element.getTextContent().toLowerCase();
 		//group2Name = group2Name.substring(0, 1).toUpperCase() + group2Name.substring(1);
 		
-		NodeList graphLabel1List = contOutcomeElement.getElementsByTagName("GRAPH_LABEL_1");
-		Element graphLabel1Element = (Element) graphLabel1List.item(0);
-		graphLabel1 = graphLabel1Element.getTextContent();
+		//NodeList graphLabel1List = contOutcomeElement.getElementsByTagName("GRAPH_LABEL_1");
+		//Element graphLabel1Element = (Element) graphLabel1List.item(0);
+		//graphLabel1 = graphLabel1Element.getTextContent();
 		
-		NodeList graphLabel2List = contOutcomeElement.getElementsByTagName("GRAPH_LABEL_2");
-		Element graphLabel2Element = (Element) graphLabel2List.item(0);
-		graphLabel2 = graphLabel2Element.getTextContent();
+		//NodeList graphLabel2List = contOutcomeElement.getElementsByTagName("GRAPH_LABEL_2");
+		//Element graphLabel2Element = (Element) graphLabel2List.item(0);
+		//graphLabel2 = graphLabel2Element.getTextContent();
 		
 		if (contSubgroupElement != null) {//because it is possible that the outcome is stored directly under the outcome node and not in a subgroup
 			NodeList contNameOfSubgroupList = contSubgroupElement.getElementsByTagName("NAME");
@@ -197,7 +197,7 @@ public class ContinuousOutcomeObject extends OutcomeObject{
 		return "ContinuousOutcomeObject [comparisonName=" + comparisonName + ", outcomeName=" + outcomeName
 				+ ", interventionGroupName=" + interventionGroupName + ", interventionProse=" + interventionProse
 				+ ", controlGroupName=" + controlGroupName + ", controlProse=" + controlProse + ", graphLabel1="
-				+ graphLabel1 + ", graphLabel2=" + graphLabel2 + ", isGroup1Intervention=" 
+				 + ", graphLabel2="  + ", isGroup1Intervention=" 
 				+ ", subgroupName=" + subgroupName + ", interventionMean=" + interventionMean + ", controlMean="
 				+ controlMean + ", interventionSD=" + interventionSD + ", controlSD=" + controlSD
 				+ ", interventionTotalN=" + interventionTotalN + ", controlTotalN=" + controlTotalN + ", invalidIC="
@@ -350,21 +350,7 @@ public class ContinuousOutcomeObject extends OutcomeObject{
 		this.controlProse = controlProse;
 	}
 
-	public String getGraphLabel1() {
-		return graphLabel1;
-	}
-
-	public void setGraphLabel1(String graphLabel1) {
-		this.graphLabel1 = graphLabel1;
-	}
-
-	public String getGraphLabel2() {
-		return graphLabel2;
-	}
-
-	public void setGraphLabel2(String graphLabel2) {
-		this.graphLabel2 = graphLabel2;
-	}
+	
 
 	public int getInterventionTotalN() {
 		return interventionTotalN;
