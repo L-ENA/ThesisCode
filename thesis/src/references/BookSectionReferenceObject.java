@@ -5,7 +5,7 @@ public class BookSectionReferenceObject extends ReferenceObject{
 	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
-	protected String bookName = "";
+	protected String journalBookSource = "";
 	protected String date = "";
 	protected String originalTitle = "";
 	protected String volume = "";
@@ -31,7 +31,7 @@ public class BookSectionReferenceObject extends ReferenceObject{
 		}
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray[i + 3];
-		bookName = referencesArray [i + 4];
+		journalBookSource = referencesArray [i + 4];
 		date = referencesArray[i + 5];
 		originalTitle = referencesArray[i + 9];
 		volume = referencesArray[i + 6];
@@ -68,11 +68,11 @@ public class BookSectionReferenceObject extends ReferenceObject{
 	}
 
 	public String getBookName() {
-		return bookName;
+		return journalBookSource;
 	}
 
 	public void setBookName(String bookName) {
-		this.bookName = bookName;
+		this.journalBookSource = bookName;
 	}
 
 	public String getDate() {

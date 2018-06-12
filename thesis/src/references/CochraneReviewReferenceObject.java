@@ -5,9 +5,9 @@ public class CochraneReviewReferenceObject extends ReferenceObject{
 	protected String allAuthors = "";
 	protected String title = "";
 	protected String originalTitle = "";
-	protected String source = "";
+	protected String journalBookSource = "";
 	protected String date = "";
-	protected String volume = "";
+	protected String issue = "";
 	protected boolean primaryReference = false;
 	
 	public boolean isPrimaryReference() {
@@ -27,8 +27,8 @@ public class CochraneReviewReferenceObject extends ReferenceObject{
 		title = referencesArray [i + 3];
 		date = referencesArray[i + 5];
 		originalTitle = referencesArray[i + 9];
-		source = referencesArray [i + 4];
-		volume = referencesArray[i + 6];
+		journalBookSource = referencesArray [i + 4];
+		issue = referencesArray[i + 7];
 	}
 
 	public String getType() {
@@ -64,11 +64,11 @@ public class CochraneReviewReferenceObject extends ReferenceObject{
 	}
 
 	public String getSource() {
-		return source;
+		return journalBookSource;
 	}
 
 	public void setSource(String source) {
-		this.source = source;
+		this.journalBookSource = source;
 	}
 
 	public String getDate() {
@@ -80,11 +80,11 @@ public class CochraneReviewReferenceObject extends ReferenceObject{
 	}
 
 	public String getVolume() {
-		return volume;
+		return issue;
 	}
 
 	public void setVolume(String volume) {
-		this.volume = volume;
+		this.issue = volume;
 	}
 	
 }

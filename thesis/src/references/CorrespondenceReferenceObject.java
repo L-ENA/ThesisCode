@@ -5,7 +5,7 @@ public class CorrespondenceReferenceObject extends ReferenceObject{
 	protected String allAuthors = "";
 	protected String title = "";
 	protected String originalTitle = "";
-	protected String source = "";
+	protected String journalBookSource = "";
 	protected String date = "";
 	protected boolean primaryReference = false;
 	
@@ -25,7 +25,7 @@ public class CorrespondenceReferenceObject extends ReferenceObject{
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray[i + 3];
 		originalTitle = referencesArray[i + 9];
-		source = referencesArray [i + 4];
+		journalBookSource = referencesArray [i + 4];
 		date = referencesArray[i + 5];
 	}
 
@@ -62,11 +62,11 @@ public class CorrespondenceReferenceObject extends ReferenceObject{
 	}
 
 	public String getSource() {
-		return source;
+		return journalBookSource;
 	}
 
 	public void setSource(String source) {
-		this.source = source;
+		this.journalBookSource = source;
 	}
 
 	public String getDate() {

@@ -6,7 +6,7 @@ public class OtherReferenceObject extends ReferenceObject{
 			protected String type = "";
 			protected String allAuthors = "";
 			protected String title = "";
-			protected String source = "";
+			protected String journalBookSource = "";
 			protected String date = "";
 			protected String volume = "";
 			protected String issue = "";
@@ -30,7 +30,7 @@ public class OtherReferenceObject extends ReferenceObject{
 				}
 				allAuthors = referencesArray[i + 2];
 				title = referencesArray[i + 3];
-				source = referencesArray [i + 4];
+				journalBookSource = referencesArray [i + 4];
 				date = referencesArray[i + 5];
 				volume = referencesArray[i + 6];
 				issue = referencesArray[i + 7];
@@ -66,11 +66,11 @@ public class OtherReferenceObject extends ReferenceObject{
 			}
 
 			public String getSource() {
-				return source;
+				return journalBookSource;
 			}
 
 			public void setSource(String source) {
-				this.source = source;
+				this.journalBookSource = source;
 			}
 
 			public String getDate() {

@@ -5,7 +5,7 @@ public class ConferenceReferenceObject extends ReferenceObject{
 	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
-	protected String conferenceName = "";
+	protected String journalBookSource = "";
 	protected String date = "";
 	protected String originalTitle = "";
 	protected String volume = "";
@@ -42,7 +42,7 @@ public class ConferenceReferenceObject extends ReferenceObject{
 		
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray[i + 3];
-		conferenceName = referencesArray [i + 4];
+		journalBookSource = referencesArray [i + 4];
 		date = referencesArray[i + 5];
 		originalTitle = referencesArray[i + 9];
 		volume = referencesArray[i + 6];
@@ -101,14 +101,14 @@ public class ConferenceReferenceObject extends ReferenceObject{
 
 
 	public String getConferenceName() {
-		return conferenceName;
+		return journalBookSource;
 	}
 
 
 
 
 	public void setConferenceName(String conferenceName) {
-		this.conferenceName = conferenceName;
+		this.journalBookSource = conferenceName;
 	}
 
 

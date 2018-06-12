@@ -16,7 +16,7 @@ public class JournalReferenceObject extends ReferenceObject{
 	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
-	protected String journalName = "";
+	protected String journalBookSource = "";
 	protected String date = "";
 	protected String volume = "";
 	protected String issue = "";
@@ -38,7 +38,7 @@ public class JournalReferenceObject extends ReferenceObject{
 		type = "Journal article";
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray[i + 3];
-		journalName = referencesArray [i + 4];
+		journalBookSource = referencesArray [i + 4];
 		date = referencesArray[i + 5];
 		volume = referencesArray[i + 6];
 		issue = referencesArray[i + 7];
@@ -71,11 +71,11 @@ public class JournalReferenceObject extends ReferenceObject{
 	}
 
 	public String getJournalName() {
-		return journalName;
+		return journalBookSource;
 	}
 
 	public void setJournalName(String journalName) {
-		this.journalName = journalName;
+		this.journalBookSource = journalName;
 	}
 
 	public String getDate() {

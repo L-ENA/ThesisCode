@@ -60,6 +60,7 @@ public class TrialObject{
 	protected String revManID;//check
 	protected String[] references; //to contain all references to this trial
 	
+	protected List<OutcomeObject> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
 	
 	
 	protected DichotomousOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
@@ -1244,7 +1245,6 @@ public class TrialObject{
 		this.dobj = dobj;
 	}
 
-	protected List<OutcomeObject> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
 	
 	@XmlElement(name = "OUTCOME")
 	public List<OutcomeObject> getOutcomeList() {

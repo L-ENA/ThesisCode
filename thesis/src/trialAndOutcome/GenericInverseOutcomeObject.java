@@ -169,7 +169,7 @@ public String getOutcomeName() {
 	}
 	
 	@XmlAttribute
-	protected final String outcomeType ="Generic Inverse Variance";
+	protected final String outcomeType = "Generic Inverse Variance";
 	protected String outcomeName = "";
 	protected String reviewTitle = "";
 	protected String subgroupName = "";

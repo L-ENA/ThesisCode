@@ -6,7 +6,7 @@ public class UnpublishedReferenceObject extends ReferenceObject{
 		protected String type = "";
 		protected String allAuthors = "";
 		protected String title = "";
-		protected String source = "";
+		protected String journalBookSource = "";
 		protected String date = "";
 		protected String originalTitle = "";
 		protected boolean primaryReference = false;
@@ -27,7 +27,7 @@ public class UnpublishedReferenceObject extends ReferenceObject{
 			}
 			allAuthors = referencesArray[i + 2];
 			title = referencesArray[i + 3];
-			source = referencesArray [i + 4];
+			journalBookSource = referencesArray [i + 4];
 			date = referencesArray[i + 5];
 			originalTitle = referencesArray[i + 9];
 			
@@ -61,11 +61,11 @@ public class UnpublishedReferenceObject extends ReferenceObject{
 		}
 
 		public String getSource() {
-			return source;
+			return journalBookSource;
 		}
 
 		public void setSource(String source) {
-			this.source = source;
+			this.journalBookSource = source;
 		}
 
 		public String getDate() {

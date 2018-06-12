@@ -3,7 +3,7 @@ package references;
 public class BookReferenceObject extends ReferenceObject{
 	protected String type = "";
 	protected String allAuthors = "";
-	protected String title = "";
+	protected String journalBookSource = "";
 	protected String date = "";
 	protected String volume = "";
 	protected String edition = "";
@@ -25,7 +25,7 @@ public class BookReferenceObject extends ReferenceObject{
 			primaryReference = true;
 		}
 		allAuthors = referencesArray[i + 2];
-		title = referencesArray [i + 4];
+		journalBookSource = referencesArray [i + 4];
 		date = referencesArray[i + 5];
 		volume = referencesArray[i + 6];
 		edition = referencesArray[i + 10];
@@ -50,11 +50,11 @@ public class BookReferenceObject extends ReferenceObject{
 	}
 
 	public String getTitle() {
-		return title;
+		return journalBookSource;
 	}
 
 	public void setTitle(String title) {
-		this.title = title;
+		this.journalBookSource = title;
 	}
 
 	public String getDate() {
