@@ -3,6 +3,7 @@ package trialAndOutcome;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,6 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import identifiers.IdentifierObject;
 import trialAndOutcome.ALLOCATION;
 import trialAndOutcome.BLINDNESS;
 import trialAndOutcome.DESIGN;
@@ -35,6 +37,10 @@ public class CharacteristicsObject {
 	
 	protected String methodString = "";//holds whole methods paragraph in prose
 	protected String participantString = "";//holds whole participants paragraph in prose
+	protected String interventionsString = "";//info on interventions from chars table
+	protected String outcomesString = ""; //holds outcomes info from chars String
+	protected String notesString = ""; //holds info on notes from chars table
+	
 	
 	private DESIGN trialDesign = DESIGN.NOTAVAILABLE;////variables to do with trial design info
 	protected String designCleaned = trialDesign.getContent();
@@ -203,8 +209,51 @@ protected CharacteristicsObject() {
 		otherBiasRisk = biasArray[0];
 		otherBiasJudgement = biasArray[1];
 		
-
+		/////////////////////////////////////////////////////////////////////////////////////////////////////
+		//extracts prose about interventions
 		
+		NodeList charInterventionsList = studyToExtractElement.getElementsByTagName("CHAR_INTERVENTIONS");
+		Element charInterventionsElement = (Element) charInterventionsList.item(0);
+		
+		interventionsString = charInterventionsElement.getTextContent();
+		
+		System.out.println("INTERVENTIONS: " + interventionsString);
+		
+		String[] charInterventionsArray = interventionsString.split("\\n");
+		
+		List<String> interventionsList = new ArrayList<>();
+		
+		
+		int count = 1;
+		
+		for (int i = 0; i < charInterventionsArray.length; i++) {
+			if (charInterventionsArray[i].equals("") == false) {// that means if this String is not empty
+					interventionsList.add(charInterventionsArray[i]);
+					System.out.println(count + " " + charInterventionsArray[i]);
+					count ++;
+			}
+			
+			}
+		
+		
+		
+		/////////////////////////////////////////////////////////////////////////////////////////////////
+		//extracts prose about outcomes
+		
+		NodeList charOutcomesList = studyToExtractElement.getElementsByTagName("CHAR_OUTCOMES");
+		Element charOutcomesElement = (Element) charOutcomesList.item(0);
+		
+		outcomesString = charOutcomesElement.getTextContent();
+		//System.out.println("OUTCOMES: " + outcomesString);
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		//Notes from chars table
+		
+		NodeList charsNotesList = studyToExtractElement.getElementsByTagName("CHAR_NOTES");
+		Element charNotesElement = (Element) charsNotesList.item(0);
+		
+		notesString = charNotesElement.getTextContent();
+		//System.out.println("NOTES: " + notesString);
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 		//extracts prose about methods and tries to match this prose to create a standardised output
@@ -249,8 +298,7 @@ protected CharacteristicsObject() {
 		
 		//getCountry(participantStringArray[i]);
 		
-		revManID = revManID.replaceAll("_x00df_", "ß").replaceAll("(_x002d_)", "-").replaceAll("(_x0026_)", "&").replaceAll("_x00e8_", "è").replaceAll("_x00f6_", "ö").replaceAll("_x00fc_", "ü").replaceAll("_x002b_", "+").replaceAll("_x002f_", "/").replaceAll("_x00a0_", " ").replaceAll("_x002c_", ",").replaceAll("_x0028_", "(").replaceAll("_x0029_", ")").replaceAll("_x00e7_", "ç").replaceAll("_x0027_", "'").replaceAll("_x002a_", "*").replaceAll("_x00e9_", "é").replaceAll("_x00e4_", "ä").replaceAll("_x00b4_", "´");
-	
+		
 	}
 	
 private void allocationCleaner() {
@@ -1657,6 +1705,32 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 	public void setAdditionalAllocationInfo(String additionalAllocationInfo) {
 		this.additionalAllocationInfo = additionalAllocationInfo;
 	}
+
+	public String getInterventionsString() {
+		return interventionsString;
+	}
+
+	public void setInterventionsString(String interventionsString) {
+		this.interventionsString = interventionsString;
+	}
+
+	public String getOutcomesString() {
+		return outcomesString;
+	}
+
+	public void setOutcomesString(String outcomesString) {
+		this.outcomesString = outcomesString;
+	}
+
+	public String getNotesString() {
+		return notesString;
+	}
+
+	public void setNotesString(String notesString) {
+		this.notesString = notesString;
+	}
+	
+	
 
 }
 
