@@ -147,9 +147,13 @@ private Pattern doubleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Dd]ouble)"
 private Pattern singleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Ss]ingle)");
 private Pattern tripleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Tt]riple)");
 private Pattern quadrupleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Qq]adruple)");
-private Pattern openLabel = Pattern.compile("([Oo]pen)|([Nn]ot\\sblind(ed)?)|([Nn]on\\s?-?[Bb]lind(ing)?)|(:\\s?(no|none)\\Z)");
-private Pattern unclearBlinding = Pattern.compile("([Nn]ot\\sclear)|([Uu]nclear)");
-private Pattern notReported = Pattern.compile("([Nn]ot?\\s(specified|stated|report|reported|indicated|indication|described|description|available|information))");
+private Pattern openLabel = Pattern.compile("([Oo]pen((\\strial|\\sstudy|\\sexperiment|[-\\s]label|\\s?([.,-])|\\s?.[.]|\\Z)))|([Nn]ot\\sblind(ed)?)|([Nn]on?\\s?-?[Bb]lind(ing)?)|(:\\s?(no|none|unblinded)\\s?[.,-])");
+private Pattern unclearBlinding = Pattern.compile(":\\s?([Uu]nclear|[Uu]nsure|(no(ne)?t?\\s(further\\s)?((details?[.])|clear|sure)))");
+//([Nn]ot\\sclear)|([Uu]nclear)|([Uu]nsure)
+private Pattern noDetails = Pattern.compile(":\\s?((no(ne)?t?\\s(further\\s)((details?[.])|(mention(ed)?[.])|(data.?[.])|information[.]|(reported[.]))))");
+private Pattern assessorBlinding = Pattern.compile("((([Oo]utcomes?\\s)?[Aa]ssess(ors?|ments?)\\s?-?(were\\s|are\\s)?blind(ed)?)|(:\\s?[Aa]ssessors?\\.))|(([Rr]aters?\\s?-?((reported\\sas\\s)|(was\\s)|(were\\s))?blind(ed)?)|(:\\s?[Rr]aters?\\.))");
+private Pattern assessorsUnclear = Pattern.compile("([Pp]sychiatrists?)|([Cc]linicians?)|([Pp]atients?)|([Pp]articipants?)|([Pp]hysicians)");
+private Pattern notReported = Pattern.compile(":\\s[Uu]nknown|([Nn]o(ne)?t?\\s(specified|stated|report|reported|indicated|indication|described|description|available|information|(mention(ed)?[.])|(data.?[.])))");
 
 private Pattern countryPattern = Pattern.compile("(Locations?:)|([Cc]ountr(y|ies):)|([Ss]etting:)");
 
@@ -529,7 +533,7 @@ private void allocationCleaner() {
 		
 		//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=((Length\\sof\\sfollow[\\s-]up\\d?\\*?\\s?[:=])))|(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]laces?\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))|((?=((\\d+\\s)?[cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|\\s(?=(((\\d+\\s)[cC]ountr(y|ies))\\d?\\*?\\s?[:=])))");
+			splitMethodParts = str.split("(?=((Length\\sof\\sfollow[\\s-]up\\d?\\*?\\s?[:=])))|(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]laces?\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration(\\sof\\sthe\\follow[-\\s]up)?\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))|((?=((\\d+\\s)?[cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|\\s(?=(((\\d+\\s)[cC]ountr(y|ies))\\d?\\*?\\s?[:=])))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
@@ -551,7 +555,7 @@ private void allocationCleaner() {
 				blindingProse = addProse(output, blindingProse);
 				//System.out.println("2. Blinding -- " + blindingProse);
 				
-			} else if (output.matches("[dD]uration\\d?\\*?\\s?[:=].*")) {
+			} else if (output.matches("[dD]uration\\d?\\*?\\s?[:=].*") || output.matches("[dD]uration(\\sof\\sthe\\follow[-\\s]up)?\\d?\\*?\\s?[:=].*")) {
 				durationProse = addProse(output, durationProse);
 				//System.out.println("3. Duration -- " + durationProse);
 			} else if (output.matches("[dD]esign\\d?\\*?\\s?[:=].*")) {
@@ -1112,10 +1116,10 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 			if (m.find()){
 				if (doubt) {
 					blindingMethod = BLINDNESS.BIASEDDOUBLE;//review authors had significant doubts about this trial, therefore the value becomes unclear
-					blindnessCleaned = blindingMethod.getDescription(); //this recurring line fills the cleaned String that is written into the database. Content of this String is defined in the BLINDNESS enum.
+					 //this recurring line fills the cleaned String that is written into the database. Content of this String is defined in the BLINDNESS enum.
 				} else {
 					blindingMethod = BLINDNESS.DOUBLE;//the pattern matched so this trial is classified as double-blind
-					blindnessCleaned = blindingMethod.getDescription(); //this recurring line fills the cleaned String that is written into the database. Content of this String is defined in the BLINDNESS enum.
+					 //this recurring line fills the cleaned String that is written into the database. Content of this String is defined in the BLINDNESS enum.
 				}
 				
 			} else {//the pattern did not match so other options are explored. Blindness options are checked in order of decreasing likelihood.
@@ -1123,10 +1127,10 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 				if (m.find()){
 					if (doubt) {
 						blindingMethod = BLINDNESS.BIASEDSINGLE;
-						blindnessCleaned = blindingMethod.getDescription(); 
+						 
 					} else {
 						blindingMethod = BLINDNESS.SINGLE;
-						blindnessCleaned = blindingMethod.getDescription(); 
+						 
 					}
 					
 					} else {
@@ -1135,10 +1139,10 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 							
 							if (doubt) {
 								blindingMethod = BLINDNESS.BIASEDOPEN;
-								blindnessCleaned = blindingMethod.getDescription(); 
+								 
 							} else {
 								blindingMethod = BLINDNESS.OPENTRIAL;
-								blindnessCleaned = blindingMethod.getDescription(); 
+								 
 							}
 							
 						} else {
@@ -1146,10 +1150,10 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 							if (m.find()){
 								if (doubt) {
 									blindingMethod = BLINDNESS.BIASEDTRIPLE;
-									blindnessCleaned = blindingMethod.getDescription(); 
+									 
 								} else {
 									blindingMethod = BLINDNESS.TRIPLE;
-									blindnessCleaned = blindingMethod.getDescription(); 
+									 
 								}
 								
 							} else {
@@ -1158,25 +1162,51 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 									
 									if (doubt) {
 										blindingMethod = BLINDNESS.BIASEDQUADRUPLE;
-										blindnessCleaned = blindingMethod.getDescription(); 
+										 
 									} else {
 										blindingMethod = BLINDNESS.QUADRUPLE;
-										blindnessCleaned = blindingMethod.getDescription(); 
+										 
 									}
 									
 								} else {
 									m = notReported.matcher(str);
 									if (m.find()) {
 										blindingMethod = BLINDNESS.NOTREPORTED;
-										blindnessCleaned = blindingMethod.getDescription(); 
+										 
 									} else {
 										m = unclearBlinding.matcher(str);
 										if (m.find()) {
 											blindingMethod = BLINDNESS.UNCLEAR;
-											blindnessCleaned = blindingMethod.getDescription();
+											
 										} else {
-											blindingMethod = BLINDNESS.OTHER;
-											blindnessCleaned = blindingMethod.getDescription(); 
+											m = noDetails.matcher(str);
+											if (m.find()) {
+												blindingMethod = BLINDNESS.UNCLEAR;
+												
+											} else {
+												m = assessorBlinding.matcher(str);
+												if (m.find()) {
+													m = assessorsUnclear.matcher(str);//this regex checks for ocurrences of words such as patients, clinitians etc. If they occur, the blinding might not be purely assessor blind.
+													if (m.find()) {
+														blindingMethod = BLINDNESS.OTHER;
+														
+													} else {
+														if (doubt) {
+															blindingMethod = BLINDNESS.BIASEDASSESSOR;
+															
+														} else {
+															blindingMethod = BLINDNESS.ASSESSOR;
+															
+														}
+														
+													}
+												} else {
+													blindingMethod = BLINDNESS.OTHER;
+													
+												}
+												
+											}
+											 
 										}
 										
 									} 
@@ -1187,6 +1217,7 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 					}
 				}
 			
+			blindnessCleaned = blindingMethod.getDescription();//fills the description into the cleaned variable
 		}
 	
 	public String getDesignProse() {
