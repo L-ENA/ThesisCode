@@ -20,6 +20,10 @@ import trialAndOutcome.SETTING;
 
 public class CharacteristicsObject {
 	
+	protected List<String> interventionsList = new ArrayList<>();
+	
+	
+
 	protected String selectionBiasRandomSequenceJudgement;
 	protected String selectionBiasRandomSequenceBiasRisk;
 	protected String selectionBiasAllocationConcealmentBiasRisk;
@@ -225,7 +229,7 @@ protected CharacteristicsObject() {
 		
 		String[] charInterventionsArray = interventionsString.split("\\n");
 		
-		List<String> interventionsList = new ArrayList<>();
+		
 		
 		
 		int count = 1;
@@ -1759,6 +1763,13 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 
 	public void setNotesString(String notesString) {
 		this.notesString = notesString;
+	}
+	public List<String> getInterventionsList() {
+		return interventionsList;
+	}
+
+	public void setInterventionsList(List<String> interventionsList) {
+		this.interventionsList = interventionsList;
 	}
 	
 	
