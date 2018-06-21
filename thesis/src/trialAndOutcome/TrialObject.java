@@ -63,21 +63,21 @@ public class TrialObject{
 	protected List<OutcomeObject> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
 	
 	
-	protected DichotomousOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
-	protected ContinuousOutcomeObject cobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
-	protected OEandVarianceOutcomeObject oeobj;//same description as above
-	protected GenericInverseOutcomeObject givobj;//same as above
-	protected OtherOutcomeObject oobj;//same as above
+	private DichotomousOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
+	private ContinuousOutcomeObject cobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
+	private OEandVarianceOutcomeObject oeobj;//same description as above
+	private GenericInverseOutcomeObject givobj;//same as above
+	private OtherOutcomeObject oobj;//same as above
 	
 	protected CharacteristicsObject charObject;//this object contains extracted prose info from the characteristics of included studies table of this trial
 	
-	protected ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. 
+	private ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. 
 	protected List<ReferenceObject> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects
 
-	protected IdentifierObject trialIdObject; //////////holds values of identifiers for this trial -> trial level, not single reference level
+	private IdentifierObject trialIdObject; //////////holds values of identifiers for this trial -> trial level, not single reference level
 	protected List<IdentifierObject> trialIdList = new ArrayList<>();//identifier objects get stored in here
 	
-	protected IdentifierObject referenceIdObj;
+	private IdentifierObject referenceIdObj;
 	protected List<IdentifierObject> referenceIdList = new ArrayList<>();
 	
 	
@@ -1208,14 +1208,14 @@ public class TrialObject{
 	}
 /////////////////////////////////complicated ones
 
-	public ReferenceObject getRefObject() {
-		return refObject;
-	}
-
-
-	public void setRefObject(ReferenceObject refObject) {
-		this.refObject = refObject;
-	}
+//	public ReferenceObject getRefObject() {
+//		return refObject;
+//	}
+//
+//
+//	public void setRefObject(ReferenceObject refObject) {
+//		this.refObject = refObject;
+//	}
 	
 	
 	public List<ReferenceObject> getReferenceList() {
@@ -1228,23 +1228,23 @@ public class TrialObject{
 	}
 
 
-	public ContinuousOutcomeObject getCobj() {
-		return cobj;
-	}
-
-
-	public void setCobj(ContinuousOutcomeObject cobj) {
-		this.cobj = cobj;
-	}
-
-
-	public DichotomousOutcomeObject getDobj() {
-		return dobj;
-	}
-
-	public void setDobj(DichotomousOutcomeObject dobj) {
-		this.dobj = dobj;
-	}
+//	public ContinuousOutcomeObject getCobj() {
+//		return cobj;
+//	}
+//
+//
+//	public void setCobj(ContinuousOutcomeObject cobj) {
+//		this.cobj = cobj;
+//	}
+//
+//
+//	public DichotomousOutcomeObject getDobj() {
+//		return dobj;
+//	}
+//
+//	public void setDobj(DichotomousOutcomeObject dobj) {
+//		this.dobj = dobj;
+//	}
 
 	
 	@XmlElement(name = "OUTCOME")
@@ -1268,27 +1268,27 @@ public class TrialObject{
 		this.doi = doi;
 	}
 	
-	public OEandVarianceOutcomeObject getOeobj() {
-		return oeobj;
-	}
-
-	public void setOeobj(OEandVarianceOutcomeObject oeobj) {
-		this.oeobj = oeobj;
-	}
-	public GenericInverseOutcomeObject getGivobj() {
-		return givobj;
-	}
-
-	public void setGivobj(GenericInverseOutcomeObject givobj) {
-		this.givobj = givobj;
-	}
-	public OtherOutcomeObject getOobj() {
-		return oobj;
-	}
-
-	public void setOobj(OtherOutcomeObject oobj) {
-		this.oobj = oobj;
-	}
+//	public OEandVarianceOutcomeObject getOeobj() {
+//		return oeobj;
+//	}
+//
+//	public void setOeobj(OEandVarianceOutcomeObject oeobj) {
+//		this.oeobj = oeobj;
+//	}
+//	public GenericInverseOutcomeObject getGivobj() {
+//		return givobj;
+//	}
+//
+//	public void setGivobj(GenericInverseOutcomeObject givobj) {
+//		this.givobj = givobj;
+//	}
+//	public OtherOutcomeObject getOobj() {
+//		return oobj;
+//	}
+//
+//	public void setOobj(OtherOutcomeObject oobj) {
+//		this.oobj = oobj;
+//	}
 	
 
 	public CharacteristicsObject getCharObject() {
@@ -1307,13 +1307,13 @@ public class TrialObject{
 		this.trialIdList = trialIdentifierObjectsList;
 	}
 
-	public IdentifierObject getTrialIdentifierObject() {
-		return trialIdObject;
-	}
-
-	public void setTrialIdentifierObject(IdentifierObject trialIdentifierObject) {
-		this.trialIdObject = trialIdentifierObject;
-	}
+//	public IdentifierObject getTrialIdentifierObject() {
+//		return trialIdObject;
+//	}
+//
+//	public void setTrialIdentifierObject(IdentifierObject trialIdentifierObject) {
+//		this.trialIdObject = trialIdentifierObject;
+//	}
 	
 	public String getExtractedAuthor() {
 		return extractedAuthor;
@@ -1322,12 +1322,12 @@ public class TrialObject{
 	public void setExtractedAuthor(String extractedAuthor) {
 		this.extractedAuthor = extractedAuthor;
 	}
-	public IdentifierObject getReferenceIdObj() {
-		return referenceIdObj;
-	}
-	public void setReferenceIdObj(IdentifierObject referenceIdObj) {
-		this.referenceIdObj = referenceIdObj;
-	}
+//	public IdentifierObject getReferenceIdObj() {
+//		return referenceIdObj;
+//	}
+//	public void setReferenceIdObj(IdentifierObject referenceIdObj) {
+//		this.referenceIdObj = referenceIdObj;
+//	}
 	public List<IdentifierObject> getReferenceIdList() {
 		return referenceIdList;
 	}

@@ -8,9 +8,11 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 import identifiers.IdentifierObject;
 import trialAndOutcome.ALLOCATION;
@@ -20,10 +22,11 @@ import trialAndOutcome.SETTING;
 
 public class CharacteristicsObject {
 	
-	protected List<String> interventionsList = new ArrayList<>();
-	
+	private List<String> interventionsList = new ArrayList<>();
+	protected Interventions interventionsObj;
 	
 
+	
 	protected String selectionBiasRandomSequenceJudgement;
 	protected String selectionBiasRandomSequenceBiasRisk;
 	protected String selectionBiasAllocationConcealmentBiasRisk;
@@ -225,25 +228,22 @@ protected CharacteristicsObject() {
 		
 		interventionsString = charInterventionsElement.getTextContent();
 		
-		System.out.println("INTERVENTIONS: " + interventionsString);
+		//System.out.println("INTERVENTIONS: " + interventionsString);
 		
-		String[] charInterventionsArray = interventionsString.split("\\n");
-		
-		
+		String[] charInterventionsArray = interventionsString.split("\\n");//
 		
 		
-		int count = 1;
 		
 		for (int i = 0; i < charInterventionsArray.length; i++) {
 			if (charInterventionsArray[i].equals("") == false) {// that means if this String is not empty
 					interventionsList.add(charInterventionsArray[i]);
-					System.out.println(count + " " + charInterventionsArray[i]);
-					count ++;
+					//System.out.println(charInterventionsArray[i]);
+					
 			}
 			
 			}
 		
-		
+		interventionsObj = new Interventions(revManID,reviewTitle, interventionsList);
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		//extracts prose about outcomes
@@ -1764,15 +1764,24 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 	public void setNotesString(String notesString) {
 		this.notesString = notesString;
 	}
-	public List<String> getInterventionsList() {
-		return interventionsList;
+	//public List<String> getInterventionsList() {
+		//return interventionsList;
+	//}
+
+	//public void setInterventionsList(List<String> interventionsList) {
+		//this.interventionsList = interventionsList;
+	//}
+	
+
+
+	public Interventions getInterventionsObj() {
+		return interventionsObj;
 	}
 
-	public void setInterventionsList(List<String> interventionsList) {
-		this.interventionsList = interventionsList;
+	public void setInterventionsObj(Interventions interventionsObj) {
+		this.interventionsObj = interventionsObj;
 	}
-	
-	
+
 
 }
 

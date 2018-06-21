@@ -46,6 +46,10 @@ public class Main {
 						trialAndOutcome.OEandVarianceOutcomeObject.class,
 						trialAndOutcome.OtherOutcomeObject.class,
 						trialAndOutcome.OutcomeObject.class,
+						trialAndOutcome.Interventions.class,
+						trialAndOutcome.ProbablyIntervention.class,
+						trialAndOutcome.UnlikelyIntervention.class,
+						trialAndOutcome.UnclearIntervention.class,
 						
 						identifiers.OtherIdentifierObject.class,
 						identifiers.ClinTrialGovObject.class,
