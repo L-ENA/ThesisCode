@@ -19,7 +19,8 @@ public class Interventions {
 	
 	public Interventions(String revManID,String reviewTitle, List <String> interventionsList) {
 		
-		
+		revManID = revManID.replaceAll("_x00df_", "ß").replaceAll("(_x002d_)", "-").replaceAll("(_x0026_)", "&").replaceAll("_x00e8_", "è").replaceAll("_x00f6_", "ö").replaceAll("_x00fc_", "ü").replaceAll("_x002b_", "+").replaceAll("_x002f_", "/").replaceAll("_x00a0_", " ").replaceAll("_x002c_", ",").replaceAll("_x0028_", "(").replaceAll("_x0029_", ")").replaceAll("_x00e7_", "ç").replaceAll("_x0027_", "'").replaceAll("_x002a_", "*").replaceAll("_x00e9_", "é").replaceAll("_x00e4_", "ä").replaceAll("_x00b4_", "´");
+			
 		
 		
 		for(String thisItem : interventionsList) {

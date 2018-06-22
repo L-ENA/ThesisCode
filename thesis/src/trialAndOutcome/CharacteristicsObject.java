@@ -24,9 +24,17 @@ public class CharacteristicsObject {
 	
 	private List<String> interventionsList = new ArrayList<>();
 	protected Interventions interventionsObj;
-	
+	protected OutcomeCharTable outcomeCharObj;
 
 	
+	public OutcomeCharTable getOutcomeCharObj() {
+		return outcomeCharObj;
+	}
+
+	public void setOutcomeCharObj(OutcomeCharTable outcomeCharObj) {
+		this.outcomeCharObj = outcomeCharObj;
+	}
+
 	protected String selectionBiasRandomSequenceJudgement;
 	protected String selectionBiasRandomSequenceBiasRisk;
 	protected String selectionBiasAllocationConcealmentBiasRisk;
@@ -252,7 +260,9 @@ protected CharacteristicsObject() {
 		Element charOutcomesElement = (Element) charOutcomesList.item(0);
 		
 		outcomesString = charOutcomesElement.getTextContent();
-		//System.out.println("OUTCOMES: " + outcomesString);
+		
+		outcomeCharObj = new OutcomeCharTable(revManID, reviewTitle, outcomesString);
+		
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		//Notes from chars table

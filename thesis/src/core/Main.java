@@ -50,6 +50,9 @@ public class Main {
 						trialAndOutcome.ProbablyIntervention.class,
 						trialAndOutcome.UnlikelyIntervention.class,
 						trialAndOutcome.UnclearIntervention.class,
+						trialAndOutcome.OutcomeCharTable.class,
+						trialAndOutcome.UnusedOutcome.class,
+						trialAndOutcome.UsedOutcome.class,
 						
 						identifiers.OtherIdentifierObject.class,
 						identifiers.ClinTrialGovObject.class,
@@ -74,7 +77,7 @@ public class Main {
 				
 				
 				
-				String path = "C:\\Users\\msals12\\Desktop\\Thesis\\XMLs\\1506.xml";
+				String path = "C:\\Users\\msals12\\Desktop\\Thesis\\XMLs\\2206.xml";
 				jaxbMarshaller.marshal(d, new File(path));	//puts database into a xml file that is saved according to path String
 				
 				System.out.println("File created successfully");
