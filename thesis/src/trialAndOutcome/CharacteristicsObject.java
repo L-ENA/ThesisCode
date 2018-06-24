@@ -158,6 +158,7 @@ private Pattern community = Pattern.compile("([Cc]ommunity|[Cc]ommunities)");
 private Pattern hospital = Pattern.compile("([Ii]n\\s)?([Hh]ospital(i[sz]ed)?)|([Mm]ental\\shealth\\scente?re?)|([Ii]ntensive\\scare)");
 private Pattern psychiatricHospital = Pattern.compile("([Pp]sychiatr(y|ic))");
 
+private Pattern probablyNot = Pattern.compile(":\\s?[pP]robably\\snot");
 private Pattern doubleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Dd]ouble)");
 private Pattern singleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Ss]ingle)");
 private Pattern tripleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Tt]riple)");
@@ -180,6 +181,7 @@ private Pattern endPunctuationCleanerB = Pattern.compile("([^!?.][\"'])$");	//to
 
 private Pattern randomisationPattern = Pattern.compile("(?<!(([Nn]on|[Nn]ot|[Nn]o|[Uu]nclear)(\\sdetails?|\\sclear|\\sstate(d|ment)|\\sdescri(bed|ption)|\\sreport(ed)?)?(\\sif|\\swhether|\\sof)?)).([Rr]andom(.+?)?\\b|[Bb]y\\schance|([Tt]oss|[Ss]pin)\\sof(\\sa)?\\scoin)");//recognises if a trial was randomised
 private Pattern quasiPattern = Pattern.compile("\\b[Qq]uasi[\\s-]");
+private Pattern unclearAllocation = Pattern.compile("([Uu]nclear)|([Pp]robably\\srandom)|([Nn]ot\\sclear)|([Uu]nsure)|([Nn]ot\\ssure)");
 
 private Pattern multicentrePattern = Pattern.compile("(?<!(([Nn]on|[Nn]ot|[Nn]o|[Uu]nclear)(\\sdetails?|\\sclear|\\sstate(d|ment)|\\sdescri(bed|ption)|\\sreport(ed)?)?(\\sif|\\swhether|\\sof)?)\\s)([Mm]ulti(ple)?[\\s-]?(([cC]ent(e?re?s?|ric))|sites?|locations?|(psychiatric\\s)?hospitals?|(psychiatric\\s)?clinics?))|((two|three|four|five|six|seven|eight|nine|ten|leven|twelve|thirteen)|\\[2-9]\\d?\\d?)\\s(sites?|locations?|(psychiatric\\s)?hospitals?|(psychiatric\\s)?clinics?|cente?r?e?s?)");
 	
@@ -320,20 +322,26 @@ protected CharacteristicsObject() {
 	}
 	
 private void allocationCleaner() {
-		
+	m = unclearAllocation.matcher(allocationProse);
+	if (m.find()) {
+		allocation = ALLOCATION.UNCLEAR;
+	} else {//the word unclear does not appear
 		m = randomisationPattern.matcher(allocationProse);//the pattern detects if the trial was randomised
-		
 		if (m.find()) {
 			m = quasiPattern.matcher(allocationProse);{//detects if it was quasi-randomised
 				if (m.find()) {
 					allocation = ALLOCATION.QUASI;
-					allocationCleaned = allocation.getContent();//gets cleaned prose from allocation enum
 				} else {
 					allocation = ALLOCATION.RANDOM;
-					allocationCleaned = allocation.getContent();//gets cleaned prose from allocation enum
+					
 				}
 			}
 		}
+	}
+		
+		
+		allocationCleaned = allocation.getContent();//gets cleaned prose from allocation enum
+		
 		String[] additionalAllocationInfoArray;
 		
 		additionalAllocationInfoArray = allocationProse.split("(?=(,|\\s-\\s|\\(|;))", 2);//by splitting on the specified delimiters, additional information will be transferred into the last index of the array. The String is only split once because sometimes more delimiters occur and by splitting too often sense could get lost. The positive lookahead makes sure that the delimiter character does not get lost.
@@ -547,7 +555,7 @@ private void allocationCleaner() {
 		
 		//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=((Length\\sof\\sfollow[\\s-]up\\d?\\*?\\s?[:=])))|(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]laces?\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration(\\sof\\sthe\\follow[-\\s]up)?\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))|((?=((\\d+\\s)?[cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|\\s(?=(((\\d+\\s)[cC]ountr(y|ies))\\d?\\*?\\s?[:=])))");
+			splitMethodParts = str.split("(?=(Evaluation\\d?\\*?\\s?[:=]))|(?=((Length\\sof\\sfollow[\\s-]up\\d?\\*?\\s?[:=])))|(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]laces?\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration(\\sof\\sthe\\follow[-\\s]up)?\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))|((?=((\\d+\\s)?[cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|\\s(?=(((\\d+\\s)[cC]ountr(y|ies))\\d?\\*?\\s?[:=])))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
@@ -564,7 +572,7 @@ private void allocationCleaner() {
 				allocationProse = addProse(output, allocationProse);//this method reacts to String content status and adds prose;
 				//System.out.println("1. Allocation -- " + allocationProse);
 				
-			} else if (output.matches("([Bb]lind(n)?ing\\d?\\*?\\s?[:=]).*")|| output.matches("[Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=].*") ||output.matches("(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=]).*") || output.matches("Blind\\d?\\*?\\s?[:=].*")) {
+			} else if (output.matches("([Bb]lind(n)?ing\\d?\\*?\\s?[:=]).*")|| output.matches("[Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=].*") ||output.matches("(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=]).*") || output.matches("Blind\\d?\\*?\\s?[:=].*") || output.matches("Evaluation\\d?\\*?\\s?[:=].*")) {
 				
 				blindingProse = addProse(output, blindingProse);
 				//System.out.println("2. Blinding -- " + blindingProse);
@@ -958,7 +966,11 @@ private void allocationCleaner() {
 	}
 	
 private void designVerifyer(String str){
-		
+	str = str.trim();	
+	if (str.equals("")) {
+			trialDesign = DESIGN.NOTAVAILABLE;
+			return;
+		}
 		//To see if this String contains info on trial design
 		m = parallelDesign.matcher(str); 	//Uses regex pattern for identifying parallel trials
 		if (m.find()){	//To see if this trial is a parallel trial. Returns true if the trial is parallel
@@ -1035,7 +1047,7 @@ private void designVerifyer(String str){
 								if (m.find()) {
 									trialDesign = DESIGN.CLUSTER;
 								} else {
-									otherDesign = true;
+									
 									trialDesign = DESIGN.OTHER;
 									designProse = str.trim();
 									//System.out.println("DesignProse: " + designProse);
@@ -1121,7 +1133,12 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 		}
 		
 		
-		
+		m = probablyNot.matcher(str);//if String after colon starts with "probably not", the value is set to unclear and the method returns
+		if (m.find()) {
+			blindingMethod = BLINDNESS.UNCLEAR;
+			blindnessCleaned = blindingMethod.getDescription();//fills the description into the cleaned variable
+			return;
+		}
 			
 			
 			
