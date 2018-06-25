@@ -119,9 +119,18 @@ public class CharacteristicsObject {
 	private BLINDNESS blindingMethod = BLINDNESS.NOTAVAILABLE;//all about blinding
 	protected String blindnessCleaned = BLINDNESS.NOTAVAILABLE.getDescription();
 	protected String blindingProse = "";
+	protected String additionalBlindingInfo = "";
 	
 	
 	
+	public String getAdditionalBlindingProse() {
+		return additionalBlindingInfo;
+	}
+
+	public void setAdditionalBlindingProse(String additionalBlindingProse) {
+		this.additionalBlindingInfo = additionalBlindingProse;
+	}
+
 	////////////Strings that are extracted from Participants field of characteristics of included studies table
 	protected String diagnosisProse = "";
 	
@@ -290,9 +299,55 @@ protected CharacteristicsObject() {
 		
 		
 		designVerifyer(designProse);
+		System.out.println(trialDesign.getContent());
+		///////////////////////////////////////////////////////////////////////////info on design can come up in blinding or allocation prose as well
+		if (trialDesign.equals(DESIGN.NOTAVAILABLE)) {
+			designVerifyer(blindingProse);
+			
+			if(trialDesign.equals(DESIGN.OTHER)) {//trial design becomes "OTHER" after checking. It is only allowed to stay like that when the original design string is searched. Since here blinding is searched and no relevant info is found we can assume that the rest of the blinding string is not relevant to dsign
+				trialDesign = DESIGN.NOTAVAILABLE;
+				
+			}
+			if (trialDesign.equals(DESIGN.NOTAVAILABLE) == false) {//if it was filled using the method before
+			
+				designProse = blindingProse;//blinding prose contained relevant info, so it is filled into design prose
+				
+			}
+			if (trialDesign.getContent().equals(DESIGN.NOTAVAILABLE.getContent())) {
+				designProse = "";
+			}
+		} 
+		
+		if (trialDesign.equals(DESIGN.NOTAVAILABLE)) {//if no design info was found in blinding String, it will try the allocation string
+			designVerifyer(allocationProse);
+			System.out.println("after allocationCheck " + trialDesign.getContent());
+			if(trialDesign.equals(DESIGN.OTHER)) {//trial design becomes "OTHER" after checking. It is only allowed to stay like that when the original design string is searched. Since here allocation is searched and no relevant info is found we can assume that the rest of the blinding string is not relevant to dsign
+				trialDesign = DESIGN.NOTAVAILABLE;
+				System.out.println("after first reset" + trialDesign.getContent());
+			}
+			if (trialDesign.equals(DESIGN.NOTAVAILABLE) == false) {
+			
+				designProse = allocationProse;
+				System.out.println("between schubert and sharma, should not be printed");
+			}
+			if (trialDesign.getContent().equals(DESIGN.NOTAVAILABLE.getContent())) {
+				designProse = "";
+			}
+			System.out.println("This is trial design" + designProse);
+		}
+		//////////////////////////////////////////////////////////////////////////////
 		designCleaned = trialDesign.getContent();
-		cleanBlindness(blindingProse);
+		
+		cleanBlindness(blindingProse);//tries to fill the enum attribute with correct blinding type
+		if (blindingMethod.equals(BLINDNESS.OTHER) == false) {
+			additionalBlindingInfo = getAdditionalInfo(blindingProse);//if possible, splits additional info and writes it into this string
+		}
+		
+		
 		allocationCleaner();
+		additionalAllocationInfo = getAdditionalInfo(allocationProse);
+		
+		
 		
 		
 		//Extracts prose from participant section and tries to match
@@ -342,14 +397,7 @@ private void allocationCleaner() {
 		
 		allocationCleaned = allocation.getContent();//gets cleaned prose from allocation enum
 		
-		String[] additionalAllocationInfoArray;
 		
-		additionalAllocationInfoArray = allocationProse.split("(?=(,|\\s-\\s|\\(|;))", 2);//by splitting on the specified delimiters, additional information will be transferred into the last index of the array. The String is only split once because sometimes more delimiters occur and by splitting too often sense could get lost. The positive lookahead makes sure that the delimiter character does not get lost.
-		
-		try {
-			additionalAllocationInfo = additionalAllocationInfoArray[1];//additional info is written into its String. If there is no additional info, the exception is caught by leaving the String empty
-		} catch (Exception e) {
-		}
 		
 		
 	}
@@ -1121,6 +1169,36 @@ private String[] biasAnalyser(int index, String description){
 		}
 	}
 	return forReturn;
+}
+
+private String getAdditionalInfo (String prose) {
+	//used to split additional info from cleanable part
+	String additionalInfo = "";
+	String[] cleanableAdditional = prose.split("((?<=:.{1,15}):)|([.;(,])|(?=((no\\sfurther\\b|no\\sdetails|using\\sa\\b|but\\b|for\\b)))|(-(?!\\s?(blind|label)))|(?=((in\\s|with\\s|on\\s)?(a\\s)?\\d:))|(?=(randomi[sz](ed|ation)\\s(by\\s)?using))", 2);
+	
+	if (cleanableAdditional.length == 2) {//is true if some info was split into index 1 of the array (therefore, length will be 2)
+		additionalInfo = cleanableAdditional[1];
+		additionalInfo = additionalInfo.trim();
+		
+		Integer quotMarks = additionalInfo.length() - additionalInfo.replace("\"", "").length();//to see if quotation marks are balanced
+		if (quotMarks % 2 == 0) {
+			//nothing, there is an even number of quotation marks
+		} else {
+			additionalInfo = additionalInfo.replaceFirst("\"", "");
+		}
+		
+		if (additionalInfo.contains("(") && additionalInfo.contains(")"))  {
+			//nothing, because the parentheses belong together
+		} else if (additionalInfo.contains(")")) {
+			additionalInfo = additionalInfo.replace(")", "");
+		}
+		if (additionalInfo.matches("[\",]?\\.[\",]?")) {//if it only consists of the last full stop that is usually there in the String
+			additionalInfo = "";
+		}
+		
+	}
+	
+	return additionalInfo;
 }
 	
 private void cleanBlindness(String str){//looks which kind of blinding methods were extracted for this trial
