@@ -173,7 +173,7 @@ private Pattern singleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Ss]ingle)"
 private Pattern tripleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Tt]riple)");
 private Pattern quadrupleBlind = Pattern.compile("(?<!(not|non)[\\s-]?)([Qq]adruple)");
 private Pattern openLabel = Pattern.compile("([Oo]pen((\\strial|\\sstudy|\\sexperiment|[-\\s]label|\\s?([.,-])|\\s?.[.]|\\Z)))|([Nn]ot\\sblind(ed)?)|([Nn]on?\\s?-?[Bb]lind(ing)?)|(:\\s?(no|none|unblinded)\\s?[.,-])");
-private Pattern unclearBlinding = Pattern.compile(":\\s?([Uu]nclear|[Uu]nsure|(no(ne)?t?\\s(further\\s)?((details?[.])|clear|sure)))");
+private Pattern unclearPattern = Pattern.compile(":\\s?([Uu]nclear|[Uu]nsure|(no(ne)?t?\\s(further\\s)?((details?[.])|clear|sure)))");
 //([Nn]ot\\sclear)|([Uu]nclear)|([Uu]nsure)
 private Pattern noDetails = Pattern.compile(":\\s?((no(ne)?t?\\s(further\\s)((details?[.])|(mention(ed)?[.])|(data.?[.])|information[.]|(reported[.]))))");
 private Pattern assessorBlinding = Pattern.compile("((([Oo]utcomes?\\s)?[Aa]ssess(ors?|ments?)\\s?-?(were\\s|are\\s)?blind(ed)?)|(:\\s?[Aa]ssessors?\\.))|(([Rr]aters?\\s?-?((reported\\sas\\s)|(was\\s)|(were\\s))?blind(ed)?)|(:\\s?[Rr]aters?\\.))");
@@ -195,6 +195,7 @@ private Pattern unclearAllocation = Pattern.compile("([Uu]nclear)|([Pp]robably\\
 private Pattern multicentrePattern = Pattern.compile("(?<!(([Nn]on|[Nn]ot|[Nn]o|[Uu]nclear)(\\sdetails?|\\sclear|\\sstate(d|ment)|\\sdescri(bed|ption)|\\sreport(ed)?)?(\\sif|\\swhether|\\sof)?)\\s)([Mm]ulti(ple)?[\\s-]?(([cC]ent(e?re?s?|ric))|sites?|locations?|(psychiatric\\s)?hospitals?|(psychiatric\\s)?clinics?))|((two|three|four|five|six|seven|eight|nine|ten|leven|twelve|thirteen)|\\[2-9]\\d?\\d?)\\s(sites?|locations?|(psychiatric\\s)?hospitals?|(psychiatric\\s)?clinics?|cente?r?e?s?)");
 	
 private NodeList qualityItemList;
+protected Element charOutcomesElement;
 
 protected String revManID = "";
 protected String reviewTitle = "";
@@ -268,7 +269,7 @@ protected CharacteristicsObject() {
 		//extracts prose about outcomes
 		
 		NodeList charOutcomesList = studyToExtractElement.getElementsByTagName("CHAR_OUTCOMES");
-		Element charOutcomesElement = (Element) charOutcomesList.item(0);
+		charOutcomesElement = (Element) charOutcomesList.item(0);
 		
 		outcomesString = charOutcomesElement.getTextContent();
 		
@@ -299,43 +300,32 @@ protected CharacteristicsObject() {
 		
 		
 		designVerifyer(designProse);
-		System.out.println(trialDesign.getContent());
+		System.out.println(trialDesign.getContent() + designProse + " "+ revManID);
 		///////////////////////////////////////////////////////////////////////////info on design can come up in blinding or allocation prose as well
 		if (trialDesign.equals(DESIGN.NOTAVAILABLE)) {
 			designVerifyer(blindingProse);
+			designProse = blindingProse;
 			
 			if(trialDesign.equals(DESIGN.OTHER)) {//trial design becomes "OTHER" after checking. It is only allowed to stay like that when the original design string is searched. Since here blinding is searched and no relevant info is found we can assume that the rest of the blinding string is not relevant to dsign
 				trialDesign = DESIGN.NOTAVAILABLE;
-				
+				designProse = "";//blinding prose did not contain relevant info, so its deleted from the design string
 			}
-			if (trialDesign.equals(DESIGN.NOTAVAILABLE) == false) {//if it was filled using the method before
 			
-				designProse = blindingProse;//blinding prose contained relevant info, so it is filled into design prose
-				
-			}
-			if (trialDesign.getContent().equals(DESIGN.NOTAVAILABLE.getContent())) {
-				designProse = "";
-			}
+			
 		} 
 		
 		if (trialDesign.equals(DESIGN.NOTAVAILABLE)) {//if no design info was found in blinding String, it will try the allocation string
 			designVerifyer(allocationProse);
-			System.out.println("after allocationCheck " + trialDesign.getContent());
+			designProse = allocationProse;
 			if(trialDesign.equals(DESIGN.OTHER)) {//trial design becomes "OTHER" after checking. It is only allowed to stay like that when the original design string is searched. Since here allocation is searched and no relevant info is found we can assume that the rest of the blinding string is not relevant to dsign
 				trialDesign = DESIGN.NOTAVAILABLE;
-				System.out.println("after first reset" + trialDesign.getContent());
-			}
-			if (trialDesign.equals(DESIGN.NOTAVAILABLE) == false) {
-			
-				designProse = allocationProse;
-				System.out.println("between schubert and sharma, should not be printed");
-			}
-			if (trialDesign.getContent().equals(DESIGN.NOTAVAILABLE.getContent())) {
 				designProse = "";
 			}
-			System.out.println("This is trial design" + designProse);
+			
+			
 		}
 		//////////////////////////////////////////////////////////////////////////////
+		System.out.println("This is trial design" + designProse);
 		designCleaned = trialDesign.getContent();
 		
 		cleanBlindness(blindingProse);//tries to fill the enum attribute with correct blinding type
@@ -1024,16 +1014,16 @@ private void designVerifyer(String str){
 		if (m.find()){	//To see if this trial is a parallel trial. Returns true if the trial is parallel
 			paralellTrial = true;	//Boolean to store that this trial is parallel
 			trialDesign = DESIGN.PARALLEL;
-			designProse = str.trim();	//stores intact description of the trial
-			
-			m = parallelDesignCleaner.matcher(str);	//uses regex pattern for cleaning parellel trial
-			designAddedInfo = m.replaceAll("").trim();	//cleans additional info from prose
-			m = beginningEnd.matcher(designAddedInfo);	//regex pattern for cleaning beginning/end from non-word characters
-			designAddedInfo = m.replaceAll("");	//cleans additional info from prose
-			
-			if (designAddedInfo.length() != 0)	//capitalises first letter
-				designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
-			
+//			designProse = str.trim();	//stores intact description of the trial
+//			
+//			m = parallelDesignCleaner.matcher(str);	//uses regex pattern for cleaning parellel trial
+//			designAddedInfo = m.replaceAll("").trim();	//cleans additional info from prose
+//			m = beginningEnd.matcher(designAddedInfo);	//regex pattern for cleaning beginning/end from non-word characters
+//			designAddedInfo = m.replaceAll("");	//cleans additional info from prose
+//			
+//			if (designAddedInfo.length() != 0)	//capitalises first letter
+//				designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
+//			
 	//		System.out.println("Design: parallel" + ". PROSE DESIGN: " + designProse);
 			
 			m = crossoverDesign.matcher(str);//this is checked now because sometimes trials are described as both parallel and crossover or part/part. Here the checking has to be done by a human
@@ -1046,32 +1036,32 @@ private void designVerifyer(String str){
 			if (m.find()){
 				crossoverTrial = true;
 				trialDesign = DESIGN.CROSSOVER;
-				designProse = str.trim();
-				//System.out.println("DesignProse: " + designProse);
-				m = crossoverDesignCleaner.matcher(str);
-				designAddedInfo = m.replaceAll("").trim();
-				m = beginningEnd.matcher(designAddedInfo);
-			
-				designAddedInfo = m.replaceAll("");
-				if (designAddedInfo.length() != 0)
-					designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
-				
+//				designProse = str.trim();
+//				//System.out.println("DesignProse: " + designProse);
+//				m = crossoverDesignCleaner.matcher(str);
+//				designAddedInfo = m.replaceAll("").trim();
+//				m = beginningEnd.matcher(designAddedInfo);
+//			
+//				designAddedInfo = m.replaceAll("");
+//				if (designAddedInfo.length() != 0)
+//					designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
+//				
 	//		System.out.println("Design: Crossover" + ". PROSE DESIGN: " + designProse);
 			} else {
 				m = factorialDesign.matcher(str);
 				if (m.find()){
 					factorialTrial = true;
 					trialDesign = DESIGN.FACTORIAL;
-					designProse = str.trim();
-					//System.out.println("DesignProse: " + designProse);
-					m = factorialDesignCleaner.matcher(str);
-					designAddedInfo = m.replaceAll("").trim();
-					m = beginningEnd.matcher(designAddedInfo);
-				
-					designAddedInfo = m.replaceAll("");
-					if (designAddedInfo.length() != 0)
-							designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
-					
+//					designProse = str.trim();
+//					//System.out.println("DesignProse: " + designProse);
+//					m = factorialDesignCleaner.matcher(str);
+//					designAddedInfo = m.replaceAll("").trim();
+//					m = beginningEnd.matcher(designAddedInfo);
+//				
+//					designAddedInfo = m.replaceAll("");
+//					if (designAddedInfo.length() != 0)
+//							designAddedInfo= designAddedInfo.substring(0, 1).toUpperCase() + designAddedInfo.substring(1);
+//					
 					
 	//			System.out.println("Design: factorial" + ". PROSE DESIGN: " + designProse);
 				} else {
@@ -1095,26 +1085,27 @@ private void designVerifyer(String str){
 								if (m.find()) {
 									trialDesign = DESIGN.CLUSTER;
 								} else {
-									
-									trialDesign = DESIGN.OTHER;
-									designProse = str.trim();
-									//System.out.println("DesignProse: " + designProse);
-									designAddedInfo = "";
+									m = notReported.matcher(str);
+									if (m.find() && (str.contains("Allocation")==false) && (str.contains("Random")==false) && (str.contains("Blind")==false) && (str.contains("blind")==false) && (str.contains("Evaluation")==false) && (str.contains("follow")==false)) {
+										trialDesign = DESIGN.UNCLEAR;
+									} else {
+										m = unclearPattern.matcher(str);
+										if (m.find()&& (str.contains("Allocation")==false) && (str.contains("Random")==false) && (str.contains("Blind")==false) && (str.contains("blind")==false) && (str.contains("Evaluation")==false) && (str.contains("follow")==false)) {
+											trialDesign = DESIGN.UNCLEAR;
+										} else {
+											trialDesign = DESIGN.OTHER;
+											designProse = str.trim();
+											//System.out.println("DesignProse: " + designProse);
+											//designAddedInfo = "";
+										}
+									}
 								}
 							}
-							
-							
-						}
-						
-						
+						 }
 					}
-					
-					
-					
 				}
 			}
 		}
-		
 	}
 
 private String[] biasAnalyser(int index, String description){
@@ -1283,7 +1274,7 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 										blindingMethod = BLINDNESS.NOTREPORTED;
 										 
 									} else {
-										m = unclearBlinding.matcher(str);
+										m = unclearPattern.matcher(str);
 										if (m.find()) {
 											blindingMethod = BLINDNESS.UNCLEAR;
 											

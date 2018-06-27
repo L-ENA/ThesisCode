@@ -15,7 +15,7 @@ import org.xml.sax.SAXException;
 
 public class ParseReview {
 	
-	protected Document[] chooseAndParse() throws ParserConfigurationException{
+	public Document[] chooseAndParse() throws ParserConfigurationException{
 		
 JFileChooser chooser = new JFileChooser();
 chooser.setMultiSelectionEnabled(true);

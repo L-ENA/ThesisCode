@@ -9,8 +9,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 
 import trialAndOutcome.TrialObject;
+import trialAndOutcome.writeBack;
 @XmlRootElement
 public class Database {
+	
 	public Database() {
 		super();
 	}
@@ -39,6 +41,8 @@ public class Database {
 
 				a = new TrialObject(reviewArray[i], j);//extracts all data of the specified trial and dumps it into the trial list
 				trialList.add(a);
+				//writeBack
+				//writeBack.cleanReview(a);
 				//System.out.println("Trial " + a.aauthorYearLetter + " added!");
 
 			}

@@ -88,6 +88,8 @@ public class TrialObject{
 	private NodeList qualityItemList;
 	private NodeList referencesList;
 	
+	protected Element characteristicsOfIncludedStudiesElement;
+	
 	public TrialObject(Document review, int studyNumber){//////////the constructor that fills all attributes
 		////study number tells, which study has to be extracted
 					
@@ -130,7 +132,7 @@ public class TrialObject{
 						
 						NodeList characteristicsOfIncludedStudiesList = characteristicsOfStudiesElement.getElementsByTagName("CHARACTERISTICS_OF_INCLUDED_STUDIES");
 						Node characteristicsOfIncludedStudiesNode = characteristicsOfIncludedStudiesList.item(0);
-						Element characteristicsOfIncludedStudiesElement = (Element) characteristicsOfIncludedStudiesNode;
+						characteristicsOfIncludedStudiesElement = (Element) characteristicsOfIncludedStudiesNode;
 						
 						NodeList includedStudiesList = characteristicsOfIncludedStudiesElement.getElementsByTagName("INCLUDED_CHAR");
 						Node studyToExtractNode = includedStudiesList.item(studyNumber);
