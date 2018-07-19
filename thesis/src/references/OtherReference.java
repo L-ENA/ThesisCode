@@ -1,6 +1,6 @@
 package references;
 
-public class OtherReferenceObject extends ReferenceObject{
+public class OtherReference extends Reference{
 	
 	//if the information in the references section points to a reference of type "other". 
 			protected String type = "";
@@ -22,7 +22,7 @@ public class OtherReferenceObject extends ReferenceObject{
 				this.primaryReference = primaryReference;
 			}
 
-			public OtherReferenceObject(String[] referencesArray, int i){
+			public OtherReference(String[] referencesArray, int i){
 				type = "Other Reference";
 
 				if (referencesArray[i + 1].equals("YES")) {

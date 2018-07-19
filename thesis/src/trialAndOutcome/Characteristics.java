@@ -14,13 +14,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import identifiers.IdentifierObject;
+import identifiers.Identifier;
 import trialAndOutcome.ALLOCATION;
 import trialAndOutcome.BLINDNESS;
 import trialAndOutcome.DESIGN;
 import trialAndOutcome.SETTING;
 
-public class CharacteristicsObject {
+public class Characteristics {
 	
 	private List<String> interventionsList = new ArrayList<>();
 	protected Interventions interventionsObj;
@@ -146,6 +146,10 @@ public class CharacteristicsObject {
 	protected String assessmentPointProse = "";
 	protected String multicentreProse = "";
 	
+	protected String mainYear = "";
+	
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////all the patterns for cleaning and extraction
 private int breakBiasVerification;
 private Matcher m;
@@ -199,11 +203,13 @@ protected Element charOutcomesElement;
 
 protected String revManID = "";
 protected String reviewTitle = "";
-protected CharacteristicsObject() {
+protected Characteristics() {
 	//empty constructor for xml marshalling
 }
 
-	protected CharacteristicsObject(Element studyToExtractElement, NodeList qualityItemList, String revManID,String reviewTitle) {
+	protected Characteristics(Element studyToExtractElement, NodeList qualityItemList, String revManID, String reviewTitle, String year) {
+		mainYear = year;
+		System.out.println(mainYear);
 		this.qualityItemList = qualityItemList;
 		this.revManID = revManID;
 		this.reviewTitle = reviewTitle;
@@ -1878,6 +1884,12 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 		this.interventionsObj = interventionsObj;
 	}
 
+	public String getMainYear() {
+		return mainYear;
+	}
 
+	public void setMainYear(String mainYear) {
+		this.mainYear = mainYear;
+	}
 }
 

@@ -1,6 +1,6 @@
 package references;
 
-public class UnpublishedReferenceObject extends ReferenceObject{
+public class UnpublishedReference extends Reference{
 
 	//if the information in the references section points to an unpublished reference
 		protected String type = "";
@@ -19,7 +19,7 @@ public class UnpublishedReferenceObject extends ReferenceObject{
 			this.primaryReference = primaryReference;
 		}
 
-		public UnpublishedReferenceObject(String[] referencesArray, int i){
+		public UnpublishedReference(String[] referencesArray, int i){
 			type = "Unpublished Reference";
 
 			if (referencesArray[i + 1].equals("YES")) {

@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 //@XmlRootElement(name = "ContOutcome")
-public class ContinuousOutcomeObject extends OutcomeObject{
+public class ContinuousOutcome extends Outcome{
 
 	@XmlAttribute
     protected final String outcomeType ="Continuous";
@@ -48,7 +48,7 @@ public class ContinuousOutcomeObject extends OutcomeObject{
 	//What does "ORDER" attribute mean?
 	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
-	ContinuousOutcomeObject(Element contDataElement, Element comparisonNameElement, Element contOutcomeNameElement, Element contOutcomeElement, Element contSubgroupElement, String review){
+	ContinuousOutcome(Element contDataElement, Element comparisonNameElement, Element contOutcomeNameElement, Element contOutcomeElement, Element contSubgroupElement, String review){
 		
 		this.reviewTitle = review;
 		
@@ -187,7 +187,7 @@ public class ContinuousOutcomeObject extends OutcomeObject{
 				
 	}
 	
-	public ContinuousOutcomeObject() {
+	public ContinuousOutcome() {
 		super();
 	}
 	

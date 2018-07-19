@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 //@XmlRootElement(name = "OEandVarianceOutcome")
-public class OEandVarianceOutcomeObject extends OutcomeObject {
+public class OEandVarianceOutcome extends Outcome {
 	@XmlAttribute
 	protected final String outcomeType ="O-E and Variance";
 	
@@ -223,13 +223,13 @@ public class OEandVarianceOutcomeObject extends OutcomeObject {
 
 
 
-	public OEandVarianceOutcomeObject() {
+	public OEandVarianceOutcome() {
 		super();
 	}
 
 
 
-	public OEandVarianceOutcomeObject(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
+	public OEandVarianceOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
 		this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();
 		comparisonName = comparisonNameElement.getTextContent();

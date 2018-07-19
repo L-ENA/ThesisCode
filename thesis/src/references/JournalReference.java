@@ -1,6 +1,6 @@
 package references;
 
-public class JournalReferenceObject extends ReferenceObject{
+public class JournalReference extends Reference{
 	
 	//0th, 9th ..index -> Type of publication, eg. Journal ->"TYPE"
 	//1st..., 10th..index -> Primary attribute: Yes or No ->"PRIMARY"
@@ -26,7 +26,7 @@ public class JournalReferenceObject extends ReferenceObject{
 	
 	
 
-	public JournalReferenceObject(String[] referencesArray, int i){
+	public JournalReference(String[] referencesArray, int i){
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}

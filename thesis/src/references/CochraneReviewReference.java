@@ -1,6 +1,6 @@
 package references;
 
-public class CochraneProtocolReferenceObject extends ReferenceObject{
+public class CochraneReviewReference extends Reference{
 	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
@@ -18,13 +18,11 @@ public class CochraneProtocolReferenceObject extends ReferenceObject{
 		this.primaryReference = primaryReference;
 	}
 
-	public CochraneProtocolReferenceObject(String[] referencesArray, int i){
-		type = "Cochrane Protocol";
-		
+	public CochraneReviewReference(String[] referencesArray, int i){
+		type = "Cochrane Review";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}
-		
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray [i + 3];
 		date = referencesArray[i + 5];
@@ -88,5 +86,5 @@ public class CochraneProtocolReferenceObject extends ReferenceObject{
 	public void setVolume(String volume) {
 		this.issue = volume;
 	}
-
+	
 }

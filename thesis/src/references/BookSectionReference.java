@@ -1,7 +1,7 @@
 package references;
 
-public class ConferenceReferenceObject extends ReferenceObject{
-	//if the information in the references section points to conference proceedings
+public class BookSectionReference extends Reference{
+	
 	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
@@ -16,30 +16,19 @@ public class ConferenceReferenceObject extends ReferenceObject{
 	protected String city = "";
 	protected boolean primaryReference = false;
 	
-	
-	
-	
 	public boolean isPrimaryReference() {
 		return primaryReference;
 	}
-
-
-
 
 	public void setPrimaryReference(boolean primaryReference) {
 		this.primaryReference = primaryReference;
 	}
 
-
-
-
-	public ConferenceReferenceObject(String[] referencesArray, int i){
-		
-		type = "Conference Proceedings";
+	public BookSectionReference(String[] referencesArray, int i){
+		type = "Book section";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}
-		
 		allAuthors = referencesArray[i + 2];
 		title = referencesArray[i + 3];
 		journalBookSource = referencesArray [i + 4];
@@ -52,172 +41,99 @@ public class ConferenceReferenceObject extends ReferenceObject{
 		publisher= referencesArray[i + 12];
 		city= referencesArray[i + 13];
 		
-		
 	}
-
-
-
 
 	public String getType() {
 		return type;
 	}
 
-
-
-
 	public void setType(String type) {
 		this.type = type;
 	}
-
-
-
 
 	public String getAllAuthors() {
 		return allAuthors;
 	}
 
-
-
-
 	public void setAllAuthors(String allAuthors) {
 		this.allAuthors = allAuthors;
 	}
-
-
-
 
 	public String getTitle() {
 		return title;
 	}
 
-
-
-
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
-
-
-
-	public String getConferenceName() {
+	public String getBookName() {
 		return journalBookSource;
 	}
 
-
-
-
-	public void setConferenceName(String conferenceName) {
-		this.journalBookSource = conferenceName;
+	public void setBookName(String bookName) {
+		this.journalBookSource = bookName;
 	}
-
-
-
 
 	public String getDate() {
 		return date;
 	}
 
-
-
-
 	public void setDate(String date) {
 		this.date = date;
 	}
-
-
-
 
 	public String getOriginalTitle() {
 		return originalTitle;
 	}
 
-
-
-
 	public void setOriginalTitle(String originalTitle) {
 		this.originalTitle = originalTitle;
 	}
-
-
-
 
 	public String getVolume() {
 		return volume;
 	}
 
-
-
-
 	public void setVolume(String volume) {
 		this.volume = volume;
 	}
-
-
-
 
 	public String getPages() {
 		return pages;
 	}
 
-
-
-
 	public void setPages(String pages) {
 		this.pages = pages;
 	}
-
-
-
 
 	public String getEdition() {
 		return edition;
 	}
 
-
-
-
 	public void setEdition(String edition) {
 		this.edition = edition;
 	}
-
-
-
 
 	public String getEditor() {
 		return editor;
 	}
 
-
-
-
 	public void setEditor(String editor) {
 		this.editor = editor;
 	}
-
-
-
 
 	public String getPublisher() {
 		return publisher;
 	}
 
-
-
-
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
 
-
-
-
 	public String getCity() {
 		return city;
 	}
-
-
-
 
 	public void setCity(String city) {
 		this.city = city;

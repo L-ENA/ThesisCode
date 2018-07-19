@@ -3,7 +3,7 @@ package identifiers;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class CentralObject extends IdentifierObject {
+public class MedlineIdentifier extends Identifier {
 
 	protected String type = "";
 	protected String value = "";
@@ -14,11 +14,11 @@ public class CentralObject extends IdentifierObject {
 
 
 
-	public CentralObject(Element identifierElement, String link, String review) {
+	public MedlineIdentifier(Element identifierElement, String link, String review) {
 		
 		this.link = link;
 		this.review = review;
-		type = "CENTRAL";
+		type = "MEDLINE";
 		try {
 			value = identifierElement.getAttribute("VALUE");
 			
@@ -33,7 +33,7 @@ public class CentralObject extends IdentifierObject {
 	
 	
 	
-public CentralObject() {
+public MedlineIdentifier() {
 		
 	}
 

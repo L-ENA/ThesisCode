@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class GenericInverseOutcomeObject extends OutcomeObject{
+public class GenericInverseOutcome extends Outcome{
 	
 	
 	public String getReviewTitle() {
@@ -204,11 +204,11 @@ public String getOutcomeName() {
 
 
 
-	public GenericInverseOutcomeObject() {
+	public GenericInverseOutcome() {
 		super();
 	}
 	
-public GenericInverseOutcomeObject(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
+public GenericInverseOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
 	this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();
 		comparisonName = comparisonNameElement.getTextContent();

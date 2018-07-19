@@ -14,33 +14,33 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import references.BookSectionReferenceObject;
+import references.BookSectionReference;
 
-import references.BookReferenceObject;
-import references.CochraneProtocolReferenceObject;
-import references.CochraneReviewReferenceObject;
-import references.ConferenceReferenceObject;
-import references.CorrespondenceReferenceObject;
-import references.JournalReferenceObject;
-import references.OtherReferenceObject;
-import references.ReferenceObject;
-import references.SoftwareReferenceObject;
-import references.UnpublishedReferenceObject;
+import references.BookReference;
+import references.CochraneProtocolReference;
+import references.CochraneReviewReference;
+import references.ConferenceReference;
+import references.CorrespondenceReference;
+import references.JournalReference;
+import references.OtherReference;
+import references.Reference;
+import references.SoftwareReference;
+import references.UnpublishedReference;
 
-import identifiers.IdentifierObject;
-import identifiers.IsrctnObject;
-import identifiers.MedlineObject;
-import identifiers.OtherIdentifierObject;
-import identifiers.PubMedObject;
-import identifiers.CentralObject;
-import identifiers.ClinTrialGovObject;
-import identifiers.DoiObject;
-import identifiers.EmbaseObject;
+import identifiers.Identifier;
+import identifiers.IsrctnIdentifier;
+import identifiers.MedlineIdentifier;
+import identifiers.OtherIdentifier;
+import identifiers.PubMedIdentifier;
+import identifiers.CentralIdentifier;
+import identifiers.ClinTrialGovIdentifier;
+import identifiers.DoiIdentifier;
+import identifiers.EmbaseIdentifier;
 
 
-public class TrialObject{
+public class Trial{
 	///////////////////////////////////////////////////empty constructor for xml creation only
-	public TrialObject() {
+	public Trial() {
 		super();
 	}
 //comment
@@ -60,25 +60,25 @@ public class TrialObject{
 	protected String revManID;//check
 	protected String[] references; //to contain all references to this trial
 	
-	protected List<OutcomeObject> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
+	protected List<Outcome> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
 	
 	
-	private DichotomousOutcomeObject dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
-	private ContinuousOutcomeObject cobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
-	private OEandVarianceOutcomeObject oeobj;//same description as above
-	private GenericInverseOutcomeObject givobj;//same as above
-	private OtherOutcomeObject oobj;//same as above
+	private DichotomousOutcome dobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
+	private ContinuousOutcome cobj;//object that contains data of one outcome. It will be immediately dumped in the outcome list and re-filled with the next outcome
+	private OEandVarianceOutcome oeobj;//same description as above
+	private GenericInverseOutcome givobj;//same as above
+	private OtherOutcome oobj;//same as above
 	
-	protected CharacteristicsObject charObject;//this object contains extracted prose info from the characteristics of included studies table of this trial
+	protected Characteristics charObject;//this object contains extracted prose info from the characteristics of included studies table of this trial
 	
-	private ReferenceObject refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. 
-	protected List<ReferenceObject> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects
+	private Reference refObject;/// for one reference, can be of different types. Procedure similar to outcomeObject. 
+	protected List<Reference> referenceList = new ArrayList<>(); ///////List that will contain all referenceObjects
 
-	private IdentifierObject trialIdObject; //////////holds values of identifiers for this trial -> trial level, not single reference level
-	protected List<IdentifierObject> trialIdList = new ArrayList<>();//identifier objects get stored in here
+	private Identifier trialIdObject; //////////holds values of identifiers for this trial -> trial level, not single reference level
+	protected List<Identifier> trialIdList = new ArrayList<>();//identifier objects get stored in here
 	
-	private IdentifierObject referenceIdObj;
-	protected List<IdentifierObject> referenceIdList = new ArrayList<>();
+	private Identifier referenceIdObj;
+	protected List<Identifier> referenceIdList = new ArrayList<>();
 	
 	
 
@@ -90,7 +90,7 @@ public class TrialObject{
 	
 	protected Element characteristicsOfIncludedStudiesElement;
 	
-	public TrialObject(Document review, int studyNumber){//////////the constructor that fills all attributes
+	public Trial(Document review, int studyNumber){//////////the constructor that fills all attributes
 		////study number tells, which study has to be extracted
 					
 					//Creates rootElement
@@ -113,6 +113,7 @@ public class TrialObject{
 						NodeList titleList = coverSheetElement.getElementsByTagName("TITLE");
 						Element titleElement = (Element) titleList.item(0);
 						reviewTitle = titleElement.getTextContent().trim();
+						reviewTitle = reviewTitle.replace("\\", " ").replaceAll("/", " ");//in case review title is used as filename the slasheds need to go.
 						//System.out.println(reviewTitle);
 					} catch (DOMException e1) {
 						// TODO Auto-generated catch block
@@ -197,7 +198,7 @@ public class TrialObject{
 	
 					//////////////extracts characteristics and prose tables
 					
-					charObject = new CharacteristicsObject(studyToExtractElement, qualityItemList, revManID, reviewTitle);
+					
 
 					/////////////////////////////////////////////////////////////////////////////////////////////////
 					////////////////////////////////////////////
@@ -207,53 +208,51 @@ public class TrialObject{
 					
 					for (int i = 0; i < references.length; i++){
 						if (references[i].equals("JOURNAL_ARTICLE")){
-							refObject = new JournalReferenceObject(references, i);
+							refObject = new JournalReference(references, i);
 							referenceList.add(refObject);
-							//System.out.println(refObject.getClass());
-							i = i + 14; 	//its plus 14 because +1 is added at the end of the loop and this array contains new info to check on every 15th index
+							i = i + 14; //its plus 14 because +1 is added at the end of the loop and 
+							//this array contains new info to check on every 15th index
 						} else if (references[i].equals("CONFERENCE_PROC")){
-							refObject = new ConferenceReferenceObject(references, i);
+							refObject = new ConferenceReference(references, i);
 							referenceList.add(refObject);
-							
-							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("UNPUBLISHED")){
-							refObject = new UnpublishedReferenceObject(references, i);
+							refObject = new UnpublishedReference(references, i);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("OTHER")){
-							refObject = new OtherReferenceObject(references, i);
+							refObject = new OtherReference(references, i);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("BOOK_SECTION")){
-							refObject = new BookSectionReferenceObject(references, i);
+							refObject = new BookSectionReference(references, i);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("CORRESPONDENCE")){
-							refObject = new CorrespondenceReferenceObject(references, i);
+							refObject = new CorrespondenceReference(references, i);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("BOOK")){
-							refObject = new BookReferenceObject(references, i);
+							refObject = new BookReference(references, i);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("COCHRANE_REVIEW")){
-							refObject = new CochraneReviewReferenceObject(references, i);
+							refObject = new CochraneReviewReference(references, i);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("COCHRANE_PROTOCOL")){
-							refObject = new CochraneProtocolReferenceObject(references, i);
+							refObject = new CochraneProtocolReference(references, i);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						}else if (references[i].equals("COMPUTER_PROGRAM")){
-							refObject = new SoftwareReferenceObject(references, i);
+							refObject = new SoftwareReference(references, i);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
@@ -267,8 +266,8 @@ public class TrialObject{
 					} catch (NumberFormatException e8) {
 						try {
 							// if year can't be extracted as attribute it is tried via revman-ID. In case there is a hyphen or..., the characters resulting from this are eliminated and the String is restored to normal
-							year = revManID.replaceAll("(_x002d_)", "-").replace("(_x0026_)", "&").replaceAll("[^\\d.]", "");
-							
+							//year = revManID.replaceAll("(_x002d_)", "-").replace("(_x0026_)", "&").replaceAll("[^\\d.]", "");
+							year = "";
 						
 						} catch (NumberFormatException e) {
 							try {
@@ -288,7 +287,7 @@ public class TrialObject{
 						}
 					}
 					
-					
+					charObject = new Characteristics(studyToExtractElement, qualityItemList, revManID, reviewTitle, year);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Extracts OutcomeObjects for this trial
 					
@@ -340,7 +339,7 @@ public class TrialObject{
 										
 										if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
 											
-											dobj = new DichotomousOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement, reviewTitle);
+											dobj = new DichotomousOutcome(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement, reviewTitle);
 											outcomeList.add(dobj);
 											//System.out.println("Outcome added to list");
 										}
@@ -357,7 +356,7 @@ public class TrialObject{
 											
 											if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
 												
-												dobj = new DichotomousOutcomeObject(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement, reviewTitle);
+												dobj = new DichotomousOutcome(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement, reviewTitle);
 												outcomeList.add(dobj);
 												//System.out.println("Outcome added to list");
 											}
@@ -397,7 +396,7 @@ public class TrialObject{
 										
 										if (contDataElement.getAttribute("STUDY_ID").equals(revManID)){
 											
-											cobj = new ContinuousOutcomeObject(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle);
+											cobj = new ContinuousOutcome(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle);
 											outcomeList.add(cobj);
 											//System.out.println("Outcome added to list");
 										}
@@ -414,7 +413,7 @@ public class TrialObject{
 											
 											if (contDataElement.getAttribute("STUDY_ID").equals(revManID)){
 												
-												cobj = new ContinuousOutcomeObject(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle);
+												cobj = new ContinuousOutcome(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle);
 												outcomeList.add(cobj);
 												//System.out.println("Outcome added to list");
 											}
@@ -457,7 +456,7 @@ public class TrialObject{
 												
 												Element oSubgroupElement = null;
 												
-												oobj = new OtherOutcomeObject(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle);
+												oobj = new OtherOutcome(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle);
 												outcomeList.add(oobj);
 												counter++;
 												
@@ -476,7 +475,7 @@ public class TrialObject{
 												
 												if (oDataElement.getAttribute("STUDY_ID").equals(revManID)){
 													
-													oobj = new OtherOutcomeObject(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle);
+													oobj = new OtherOutcome(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle);
 													outcomeList.add(oobj);
 													counter++;
 													
@@ -522,7 +521,7 @@ public class TrialObject{
 												
 												Element ivSubgroupElement = null;
 												
-												givobj = new GenericInverseOutcomeObject(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle);
+												givobj = new GenericInverseOutcome(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle);
 												outcomeList.add(givobj);
 												
 												
@@ -541,7 +540,7 @@ public class TrialObject{
 												
 												if (ivDataElement.getAttribute("STUDY_ID").equals(revManID)){
 													
-													givobj = new GenericInverseOutcomeObject(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle);
+													givobj = new GenericInverseOutcome(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle);
 													outcomeList.add(givobj);
 													
 													
@@ -587,7 +586,7 @@ public class TrialObject{
 												
 												Element oeSubgroupElement = null;
 												
-												oeobj = new OEandVarianceOutcomeObject(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle);
+												oeobj = new OEandVarianceOutcome(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle);
 												outcomeList.add(oeobj);
 												
 												
@@ -606,7 +605,7 @@ public class TrialObject{
 												
 												if (oeDataElement.getAttribute("STUDY_ID").equals(revManID)){
 													
-													oeobj = new OEandVarianceOutcomeObject(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle);
+													oeobj = new OEandVarianceOutcome(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle);
 													outcomeList.add(oeobj);
 													
 												}
@@ -703,32 +702,32 @@ public class TrialObject{
 				String idType = referenceIdentifierElement.getAttribute("TYPE");//to test which object type has to be created below
 				//System.out.println("Value ist: " + idType);
 				if (idType.equals("DOI")) {
-					referenceIdObj = new DoiObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new DoiIdentifier(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("DOI added");
 
 				} else if (idType.equals("OTHER")) {
-					referenceIdObj = new OtherIdentifierObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new OtherIdentifier(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("Other added ");
 
 				} else if (idType.equals("EMBASE")) {
-					referenceIdObj = new EmbaseObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new EmbaseIdentifier(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("Embase added ");
 
 				} else if (idType.equals("CENTRAL")) {
-					referenceIdObj = new CentralObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new CentralIdentifier(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("Central added ");
 
 				} else if (idType.equals("MEDLINE")) {
-					referenceIdObj = new MedlineObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new MedlineIdentifier(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("Medline added " + revManID + reviewTitle);
 
 				} else if (idType.equals("PUBMED")) {
-					referenceIdObj = new PubMedObject(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new PubMedIdentifier(referenceIdentifierElement, revManID, reviewTitle);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("Pubmed added ");
 
@@ -758,22 +757,22 @@ public class TrialObject{
 				String idValue = identifierElement.getAttribute("TYPE");
 				
 				if (idValue.equals("DOI")) {
-					trialIdObject = new DoiObject(identifierElement, revManID, reviewTitle);
+					trialIdObject = new DoiIdentifier(identifierElement, revManID, reviewTitle);
 					trialIdList.add(trialIdObject);
 					//System.out.println("DOI added " );
 					
 				} else if (idValue.equals("CTG")){
-					trialIdObject = new ClinTrialGovObject(identifierElement, revManID, reviewTitle);
+					trialIdObject = new ClinTrialGovIdentifier(identifierElement, revManID, reviewTitle);
 					trialIdList.add(trialIdObject);
 					//System.out.println("CTG added " );
 					
 				} else if (idValue.equals("ISRCTN")){
-					trialIdObject = new IsrctnObject(identifierElement, revManID, reviewTitle);
+					trialIdObject = new IsrctnIdentifier(identifierElement, revManID, reviewTitle);
 					trialIdList.add(trialIdObject);
 					//System.out.println("ISRCTN added " );
 					
 				} else if (idValue.equals("OTHER")){
-					trialIdObject = new OtherIdentifierObject(identifierElement, revManID, reviewTitle);
+					trialIdObject = new OtherIdentifier(identifierElement, revManID, reviewTitle);
 					trialIdList.add(trialIdObject);
 					//System.out.println("Other added " );
 				}
@@ -1206,7 +1205,7 @@ public class TrialObject{
 
 	
 
-	public void setOutcomeList(List<OutcomeObject> outcomeList) {
+	public void setOutcomeList(List<Outcome> outcomeList) {
 		this.outcomeList = outcomeList;
 	}
 /////////////////////////////////complicated ones
@@ -1221,12 +1220,12 @@ public class TrialObject{
 //	}
 	
 	
-	public List<ReferenceObject> getReferenceList() {
+	public List<Reference> getReferenceList() {
 		return referenceList;
 	}
 
 
-	public void setReferenceList(List<ReferenceObject> referenceList) {
+	public void setReferenceList(List<Reference> referenceList) {
 		this.referenceList = referenceList;
 	}
 
@@ -1251,7 +1250,7 @@ public class TrialObject{
 
 	
 	@XmlElement(name = "OUTCOME")
-	public List<OutcomeObject> getOutcomeList() {
+	public List<Outcome> getOutcomeList() {
 		return outcomeList;
 	}
 	
@@ -1294,19 +1293,19 @@ public class TrialObject{
 //	}
 	
 
-	public CharacteristicsObject getCharObject() {
+	public Characteristics getCharObject() {
 		return charObject;
 	}
 
 
-	public void setCharObject(CharacteristicsObject charObject) {
+	public void setCharObject(Characteristics charObject) {
 		this.charObject = charObject;
 	}
-	public List<IdentifierObject> getTrialIdentifierObjectsList() {
+	public List<Identifier> getTrialIdentifierObjectsList() {
 		return trialIdList;
 	}
 
-	public void setTrialIdentifierObjectsList(List<IdentifierObject> trialIdentifierObjectsList) {
+	public void setTrialIdentifierObjectsList(List<Identifier> trialIdentifierObjectsList) {
 		this.trialIdList = trialIdentifierObjectsList;
 	}
 
@@ -1331,10 +1330,10 @@ public class TrialObject{
 //	public void setReferenceIdObj(IdentifierObject referenceIdObj) {
 //		this.referenceIdObj = referenceIdObj;
 //	}
-	public List<IdentifierObject> getReferenceIdList() {
+	public List<Identifier> getReferenceIdList() {
 		return referenceIdList;
 	}
-	public void setReferenceIdList(List<IdentifierObject> referenceIdList) {
+	public void setReferenceIdList(List<Identifier> referenceIdList) {
 		this.referenceIdList = referenceIdList;
 	}
 

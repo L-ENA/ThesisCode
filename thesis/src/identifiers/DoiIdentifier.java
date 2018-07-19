@@ -3,7 +3,7 @@ package identifiers;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class DoiObject extends IdentifierObject {
+public class DoiIdentifier extends Identifier {
 
 	protected String type = "";
 	protected String value = "";
@@ -14,7 +14,7 @@ public class DoiObject extends IdentifierObject {
 
 
 
-	public DoiObject(Element identifierElement, String link, String review) {
+	public DoiIdentifier(Element identifierElement, String link, String review) {
 		
 		this.link = link;
 		this.review = review;
@@ -33,7 +33,7 @@ public class DoiObject extends IdentifierObject {
 	
 	
 	
-public DoiObject() {
+public DoiIdentifier() {
 		
 	}
 

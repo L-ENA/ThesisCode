@@ -1,13 +1,12 @@
 package references;
 
-public class CochraneReviewReferenceObject extends ReferenceObject{
+public class CorrespondenceReference extends Reference{
 	protected String type = "";
 	protected String allAuthors = "";
 	protected String title = "";
 	protected String originalTitle = "";
 	protected String journalBookSource = "";
 	protected String date = "";
-	protected String issue = "";
 	protected boolean primaryReference = false;
 	
 	public boolean isPrimaryReference() {
@@ -18,17 +17,16 @@ public class CochraneReviewReferenceObject extends ReferenceObject{
 		this.primaryReference = primaryReference;
 	}
 
-	public CochraneReviewReferenceObject(String[] referencesArray, int i){
-		type = "Cochrane Review";
+	public CorrespondenceReference(String[] referencesArray, int i){
+		type = "Correspondence";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}
 		allAuthors = referencesArray[i + 2];
-		title = referencesArray [i + 3];
-		date = referencesArray[i + 5];
+		title = referencesArray[i + 3];
 		originalTitle = referencesArray[i + 9];
 		journalBookSource = referencesArray [i + 4];
-		issue = referencesArray[i + 7];
+		date = referencesArray[i + 5];
 	}
 
 	public String getType() {
@@ -79,12 +77,4 @@ public class CochraneReviewReferenceObject extends ReferenceObject{
 		this.date = date;
 	}
 
-	public String getVolume() {
-		return issue;
-	}
-
-	public void setVolume(String volume) {
-		this.issue = volume;
-	}
-	
 }

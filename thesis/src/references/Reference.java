@@ -1,6 +1,6 @@
 package references;
 
-public class ReferenceObject {
+public class Reference {
 	protected String date = "";
 
 	public String getDate() {

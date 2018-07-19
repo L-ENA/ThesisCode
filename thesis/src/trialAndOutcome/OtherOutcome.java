@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class OtherOutcomeObject extends OutcomeObject{
+public class OtherOutcome extends Outcome{
 
 	@XmlAttribute
 	protected final String outcomeType ="Other";
@@ -51,11 +51,11 @@ public class OtherOutcomeObject extends OutcomeObject{
 
 
 
-	public OtherOutcomeObject() {
+	public OtherOutcome() {
 		super();
 	}
 	
-public OtherOutcomeObject(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
+public OtherOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
 	this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();
 		

@@ -3,7 +3,7 @@ package identifiers;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class MedlineObject extends IdentifierObject {
+public class EmbaseIdentifier extends Identifier {
 
 	protected String type = "";
 	protected String value = "";
@@ -14,18 +14,20 @@ public class MedlineObject extends IdentifierObject {
 
 
 
-	public MedlineObject(Element identifierElement, String link, String review) {
+	public EmbaseIdentifier(Element identifierElement, String link, String review) {
 		
 		this.link = link;
 		this.review = review;
-		type = "MEDLINE";
+		type = "EMBASE";
 		try {
 			value = identifierElement.getAttribute("VALUE");
+			
 			
 			
 		} catch (Exception e) {
 			
 			e.printStackTrace();
+			System.out.println("EMBASE ERROR");
 		}
 	
 	}
@@ -33,7 +35,7 @@ public class MedlineObject extends IdentifierObject {
 	
 	
 	
-public MedlineObject() {
+public EmbaseIdentifier() {
 		
 	}
 

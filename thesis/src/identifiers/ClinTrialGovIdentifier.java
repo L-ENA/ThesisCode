@@ -3,22 +3,26 @@ package identifiers;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class PubMedObject extends IdentifierObject {
+public class ClinTrialGovIdentifier extends Identifier {
 
 	protected String type = "";
+	
 	protected String value = "";
+	
 	protected String link = "";
+
 	protected String review = "";
+
 	
 
 
 
-
-	public PubMedObject(Element identifierElement, String link, String review) {
-		
+	public ClinTrialGovIdentifier(Element identifierElement, String link, String review) {
 		this.link = link;
 		this.review = review;
-		type = "PubMed";
+		
+		type = "ClinicalTrials.gov";
+		
 		try {
 			value = identifierElement.getAttribute("VALUE");
 			
@@ -33,24 +37,9 @@ public class PubMedObject extends IdentifierObject {
 	
 	
 	
-public PubMedObject() {
+public ClinTrialGovIdentifier() {
 		
 	}
-
-
-public String getReview() {
-	return review;
-}
-
-
-
-
-public void setReview(String review) {
-	this.review = review;
-}
-
-
-
 
 public String getLink() {
 	return link;
@@ -78,12 +67,6 @@ public void setType(String type) {
 }
 
 
-
-
-
-
-
-
 public String getValue() {
 	return value;
 }
@@ -97,5 +80,16 @@ public void setValue(String value) {
 
 
 
+
+public String getReview() {
+	return review;
+}
+
+
+
+
+public void setReview(String review) {
+	this.review = review;
+}
 
 }

@@ -1,14 +1,15 @@
 package references;
 
-public class BookReferenceObject extends ReferenceObject{
+public class SoftwareReference extends Reference{
 	protected String type = "";
 	protected String allAuthors = "";
-	protected String journalBookSource = "";
+	protected String title = "";
 	protected String date = "";
-	protected String volume = "";
+	protected String originalTitle = "";
 	protected String edition = "";
 	protected String publisher = "";
 	protected String city = "";
+	protected String medium = "";
 	protected boolean primaryReference = false;
 	
 	public boolean isPrimaryReference() {
@@ -19,18 +20,20 @@ public class BookReferenceObject extends ReferenceObject{
 		this.primaryReference = primaryReference;
 	}
 
-	public BookReferenceObject(String[] referencesArray, int i){
-		type = "Book";
+	public SoftwareReference(String[] referencesArray, int i){
+		type = "Software";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}
 		allAuthors = referencesArray[i + 2];
-		journalBookSource = referencesArray [i + 4];
+		title = referencesArray[i + 3];
 		date = referencesArray[i + 5];
-		volume = referencesArray[i + 6];
+		originalTitle = referencesArray[i + 9];
 		edition = referencesArray[i + 10];
 		publisher= referencesArray[i + 12];
 		city= referencesArray[i + 13];
+		medium = referencesArray[i + 14];
+		
 	}
 
 	public String getType() {
@@ -50,11 +53,11 @@ public class BookReferenceObject extends ReferenceObject{
 	}
 
 	public String getTitle() {
-		return journalBookSource;
+		return title;
 	}
 
 	public void setTitle(String title) {
-		this.journalBookSource = title;
+		this.title = title;
 	}
 
 	public String getDate() {
@@ -65,12 +68,12 @@ public class BookReferenceObject extends ReferenceObject{
 		this.date = date;
 	}
 
-	public String getVolume() {
-		return volume;
+	public String getOriginalTitle() {
+		return originalTitle;
 	}
 
-	public void setVolume(String volume) {
-		this.volume = volume;
+	public void setOriginalTitle(String originalTitle) {
+		this.originalTitle = originalTitle;
 	}
 
 	public String getEdition() {
@@ -95,6 +98,14 @@ public class BookReferenceObject extends ReferenceObject{
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getMedium() {
+		return medium;
+	}
+
+	public void setMedium(String medium) {
+		this.medium = medium;
 	}
 
 }

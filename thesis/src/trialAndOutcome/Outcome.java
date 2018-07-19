@@ -1,5 +1,5 @@
 package trialAndOutcome;
 
-public class OutcomeObject {
+public class Outcome {
 
 }

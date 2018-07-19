@@ -6,7 +6,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import trialAndOutcome.TrialObject;
+import trialAndOutcome.Trial;
 
 
 //test123
@@ -29,23 +29,23 @@ public class Main {
 						//this makes it possible to marshal instances of these classes to XML
 						Database.class,
 						
-						references.JournalReferenceObject.class,
-						references.BookReferenceObject.class,
-						references.BookSectionReferenceObject.class,
-						references.OtherReferenceObject.class,
-						references.ConferenceReferenceObject.class,
-						references.CorrespondenceReferenceObject.class,
-						references.CochraneProtocolReferenceObject.class,
-						references.CochraneReviewReferenceObject.class,
-						references.SoftwareReferenceObject.class,
-						references.UnpublishedReferenceObject.class,
+						references.JournalReference.class,
+						references.BookReference.class,
+						references.BookSectionReference.class,
+						references.OtherReference.class,
+						references.ConferenceReference.class,
+						references.CorrespondenceReference.class,
+						references.CochraneProtocolReference.class,
+						references.CochraneReviewReference.class,
+						references.SoftwareReference.class,
+						references.UnpublishedReference.class,
 						
-						trialAndOutcome.ContinuousOutcomeObject.class,
-						trialAndOutcome.DichotomousOutcomeObject.class,
-						trialAndOutcome.GenericInverseOutcomeObject.class,
-						trialAndOutcome.OEandVarianceOutcomeObject.class,
-						trialAndOutcome.OtherOutcomeObject.class,
-						trialAndOutcome.OutcomeObject.class,
+						trialAndOutcome.ContinuousOutcome.class,
+						trialAndOutcome.DichotomousOutcome.class,
+						trialAndOutcome.GenericInverseOutcome.class,
+						trialAndOutcome.OEandVarianceOutcome.class,
+						trialAndOutcome.OtherOutcome.class,
+						trialAndOutcome.Outcome.class,
 						trialAndOutcome.Interventions.class,
 						trialAndOutcome.ProbablyIntervention.class,
 						trialAndOutcome.UnlikelyIntervention.class,
@@ -54,16 +54,16 @@ public class Main {
 						trialAndOutcome.UnusedOutcome.class,
 						trialAndOutcome.UsedOutcome.class,
 						
-						identifiers.OtherIdentifierObject.class,
-						identifiers.ClinTrialGovObject.class,
-						identifiers.DoiObject.class,
-						identifiers.IsrctnObject.class,
-						identifiers.IdentifierObject.class, 
+						identifiers.OtherIdentifier.class,
+						identifiers.ClinTrialGovIdentifier.class,
+						identifiers.DoiIdentifier.class,
+						identifiers.IsrctnIdentifier.class,
+						identifiers.Identifier.class, 
 						
-						identifiers.MedlineObject.class,
-						identifiers.PubMedObject.class,
-						identifiers.CentralObject.class,
-						identifiers.EmbaseObject.class
+						identifiers.MedlineIdentifier.class,
+						identifiers.PubMedIdentifier.class,
+						identifiers.CentralIdentifier.class,
+						identifiers.EmbaseIdentifier.class
 						
 						
 						
@@ -81,7 +81,7 @@ public class Main {
 				jaxbMarshaller.marshal(d, new File(path));	//puts database into a xml file that is saved according to path String
 				
 				System.out.println("File created successfully");
-				System.out.println(TrialObject.counter);
+				System.out.println(Trial.counter);
 				
 				
 			} catch (JAXBException e) {

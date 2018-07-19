@@ -3,7 +3,7 @@ package identifiers;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class IsrctnObject extends IdentifierObject {
+public class IsrctnIdentifier extends Identifier {
 
 	protected String type = "";
 	protected String link = "";
@@ -11,7 +11,7 @@ public class IsrctnObject extends IdentifierObject {
 	protected String review = "";
 
 
-	public IsrctnObject(Element identifierElement, String link, String review) {
+	public IsrctnIdentifier(Element identifierElement, String link, String review) {
 		type = "ISRCTN";
 		this.link = link;
 		this.review = review;
@@ -28,7 +28,7 @@ public class IsrctnObject extends IdentifierObject {
 	
 	
 	
-public IsrctnObject() {
+public IsrctnIdentifier() {
 		
 	}
 
