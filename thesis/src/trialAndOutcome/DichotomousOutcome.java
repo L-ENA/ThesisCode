@@ -255,7 +255,8 @@ public void setControlTotalN(int controlTotalN) {
 		if (m.find()){
 			controlCleaner();
 		}
-		controlGroupName = controlGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|(\\b)and(\\b)|(\\s[Aa]dded\\sto\\s))", "//");
+		controlGroupName = controlGroupName.replaceAll("(\\s[+]\\s)|((\\b)plus(\\b)|"
+				+ "(\\b)and(\\b)|(\\s[Aa]dded\\sto\\s))", "//");
 //		System.out.println("Control: " +controlGroupName); //+ " Total: " + group2Total + ". Events: " + group2Events );
 		controlGroupName = controlGroupName.toLowerCase();
 		interventionGroupName = interventionGroupName.toLowerCase();

@@ -16,7 +16,7 @@ import org.w3c.dom.Text;
 
 import identifiers.Identifier;
 import trialAndOutcome.ALLOCATION;
-import trialAndOutcome.BLINDNESS;
+import trialAndOutcome.BLINDING;
 import trialAndOutcome.DESIGN;
 import trialAndOutcome.SETTING;
 
@@ -116,8 +116,8 @@ public class Characteristics {
 	
 	
 
-	private BLINDNESS blindingMethod = BLINDNESS.NOTAVAILABLE;//all about blinding
-	protected String blindnessCleaned = BLINDNESS.NOTAVAILABLE.getDescription();
+	private BLINDING blindingMethod = BLINDING.NOTAVAILABLE;//all about blinding
+	protected String blindnessCleaned = BLINDING.NOTAVAILABLE.getDescription();
 	protected String blindingProse = "";
 	protected String additionalBlindingInfo = "";
 	
@@ -306,7 +306,7 @@ protected Characteristics() {
 		
 		
 		designVerifyer(designProse);
-		System.out.println(trialDesign.getContent() + designProse + " "+ revManID);
+		//System.out.println(trialDesign.getContent() + designProse + " "+ revManID);
 		///////////////////////////////////////////////////////////////////////////info on design can come up in blinding or allocation prose as well
 		if (trialDesign.equals(DESIGN.NOTAVAILABLE)) {
 			designVerifyer(blindingProse);
@@ -331,11 +331,15 @@ protected Characteristics() {
 			
 		}
 		//////////////////////////////////////////////////////////////////////////////
-		System.out.println("This is trial design" + designProse);
+		//System.out.println("This is trial design" + designProse);
 		designCleaned = trialDesign.getContent();
 		
-		cleanBlindness(blindingProse);//tries to fill the enum attribute with correct blinding type
-		if (blindingMethod.equals(BLINDNESS.OTHER) == false) {
+		cleanBlinding(blindingProse);//tries to fill the enum attribute with correct blinding type
+		if (blindingProse.equals("")) {
+			blindingMethod = BLINDING.NOTAVAILABLE;
+		}
+		
+		if (blindingMethod.equals(BLINDING.OTHER) == false || blindingMethod.equals(BLINDING.NOTAVAILABLE) == false) {
 			additionalBlindingInfo = getAdditionalInfo(blindingProse);//if possible, splits additional info and writes it into this string
 		}
 		
@@ -599,7 +603,7 @@ private void allocationCleaner() {
 		
 		//since the first option did not come true, the String is checked for "Follow-up:" only
 			
-			splitMethodParts = str.split("(?=(Evaluation\\d?\\*?\\s?[:=]))|(?=((Length\\sof\\sfollow[\\s-]up\\d?\\*?\\s?[:=])))|(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]laces?\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing\\d?\\*?\\s?[:=])|([Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration(\\sof\\sthe\\follow[-\\s]up)?\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))|((?=((\\d+\\s)?[cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|\\s(?=(((\\d+\\s)[cC]ountr(y|ies))\\d?\\*?\\s?[:=])))");
+			splitMethodParts = str.split("(?=(Evaluation\\d?\\*?\\s?[:=]))|(?=((Length\\sof\\sfollow[\\s-]up\\d?\\*?\\s?[:=])))|(?=([pP]ower\\scalculation\\d?\\*?\\s?[:=]))(?=([Pp]laces?\\d?\\*?\\s?[:=]))|(?=((Intention[\\s-]to[\\s-]treat[\\s-])?[Aa]nalysis\\d?\\*?\\s?[:=]))|(?=(Sites?\\*?\\s[A-Za-z0-9]\\d?[=:-]))|(?=(Methods?\\d?\\*?\\s?[:=]))|(?=(Cente?re?\\d?\\*?\\s?[:=]))|(?=(Loss\\d?\\*?\\s?[:=]))|(?=(Assessment\\spoints\\d?\\*?\\s?[=:]))|(?=(Objectivity\\sof\\srating\\sof\\soutcome\\d?\\*?\\s?[:=]))|(?=(([Ff]unding\\d?\\*?\\s?[:=])|(Funded\\sby\\d?\\*?\\s?[:=]?)))|(?=([rR]aters?\\d?\\*?\\s?[:=]))|(?=([aA]ll?ocations?\\d?\\*?\\s?[:=]))|(?=(([Rr]andomi[sz]ed|[Rr]andom(i[sz]ation)?)\\d?\\*?\\s?[:=]))|(?=([Bb]lind(n)?ing(\\sat\\soutcome)?\\d?\\*?\\s?[:=])|([Bb]lind[ie]?(ed)?n?ess\\d?\\*?\\s?[:=])|(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=])|(Blind\\d?\\*?\\s?[:=]))|(?=([Dd]uration(\\sof\\sthe\\follow[-\\s]up)?\\d?\\*?\\s?[:=]))|(?=([dD]esign\\d?\\*?\\s?[:=]))|(?=(Follow[\\s-]up\\d?\\*?\\s?[:=]))|(?=(Lost\\sto\\sfollow[\\s-]up\\d?\\*?\\s?[:=]))|(?=([lL]oss\\d?\\*?\\s?[:=]))|(?=([cC]onsent\\d?\\*?\\s?[:=]))|(?=(((Locations?)|(Locations?\\sand\\ssetting))\\d?\\*?\\s?[:=]))|(?=(Settings?\\d?\\*?\\s?[:=]))|((?=((\\d+\\s)?[cC]ountr(y|ies)\\d?\\*?\\s?[:=]))|\\s(?=(((\\d+\\s)[cC]ountr(y|ies))\\d?\\*?\\s?[:=])))");
 			
 			for (int j = 0; j < splitMethodParts.length; j++) {
 				storage.add(splitMethodParts[j].trim());
@@ -616,7 +620,7 @@ private void allocationCleaner() {
 				allocationProse = addProse(output, allocationProse);//this method reacts to String content status and adds prose;
 				//System.out.println("1. Allocation -- " + allocationProse);
 				
-			} else if (output.matches("([Bb]lind(n)?ing\\d?\\*?\\s?[:=]).*")|| output.matches("[Bb]linde?(ed)?n?ess\\d?\\*?\\s?[:=].*") ||output.matches("(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=]).*") || output.matches("Blind\\d?\\*?\\s?[:=].*") || output.matches("Evaluation\\d?\\*?\\s?[:=].*")) {
+			} else if (output.matches("([Bb]lind(n)?ing(\\sat\\soutcome)?\\d?\\*?\\s?[:=]).*")|| output.matches("[Bb]lind[ie]?(ed)?n?ess\\d?\\*?\\s?[:=].*") ||output.matches("(([Dd]ouble|[Ss]ingle|[Tt]riple)[\\s-]?[Bb]lind\\d?\\*?\\s?[:=]).*") || output.matches("Blind\\d?\\*?\\s?[:=].*") || output.matches("Evaluation\\d?\\*?\\s?[:=].*")) {
 				
 				blindingProse = addProse(output, blindingProse);
 				//System.out.println("2. Blinding -- " + blindingProse);
@@ -665,8 +669,9 @@ private void allocationCleaner() {
 			else {
 				otherMethodProse = addProse(output, otherMethodProse);
 				if (allocationProse.equals("") && blindingProse.equals("") && designProse.equals("")) {//sometimes char tables are almost empty because they only describe a study centre, e.g. Intensive case management for severe mental illness, Rosenheck, so this info has to be added to multicentre prose
-					multicentreProse = otherMethodProse + multicentreProse;
+					multicentreProse = otherMethodProse +" "+ multicentreProse;
 					otherMethodProse = "";
+					multicentre = true;
 				}
 				//System.out.println("OTHER methods: " + otherMethodProse);
 			}
@@ -728,16 +733,16 @@ private void allocationCleaner() {
 			 }
 	}
 	
-	private void checkMulticentre(){//to see if this study is multi centric or not. the 4 prose Strings that could contain info about this are checked
+	private void checkMulticentre(){//to see if this study is multicentric or not. the 5 prose Strings that could contain info about this are checked
 		String[] centresArray = {locationProse, countryProse, settingProse, designProse, multicentreProse};//Prose that has to be checked for country info
 		for (int i = 0; i <centresArray.length; i++) {
 		m = multicentrePattern.matcher(centresArray[i]);
 		if (m.find()) {//if information indicating multiple study centres was found by regex, the multicentre boolean is set to true.
 			multicentre = true;
-			if (multicentreProse.contains(centresArray[i]) == false) {//if this prose String containing the info on centres is not already repreented in the multicentre prose String;
-				multicentreProse = multicentreProse + centresArray[i];
+			if (multicentreProse.contains(centresArray[i]) == false) {//if this prose String containing the info on centres is not already represented 
+				multicentreProse = multicentreProse + " " + centresArray[i];
+				}
 			}
-		}
 		}
 	}
 	
@@ -944,7 +949,7 @@ private void allocationCleaner() {
 		if (countryTree.contains("international") && countryTree.size() > 1) {//this happens only if the country names are specified. Example: Design: international (India, Russia, Ukraine, USA), multicentre. -> we would not want the clean String to say "international" in it
 			countryTree.remove("international");
 		} else if (countryTree.contains("international")) {
-			multicentre = true;//if study sited were international it can be assumed that there were more that 1 sites.
+			multicentre = true;//if study sites were international it can be assumed that there were more that 1 sites.
 		}
 		
 		countries = countryTree.toString();//as a simple, alphabetically ordered string that replresents the countries where this trial was conducted.
@@ -993,7 +998,8 @@ private void allocationCleaner() {
 	
 	if (countryArray.length > 1 || multicentre == true){//if multicentre became true before or if there is more than 1 country in the country list
 		multicentre = true;
-		if (multicentreProse.contains(countryProse) == false) {//if the number of countries is the only indication to the fact that the study is multi centric, here this prose is added to the multicentre prose String
+		if (multicentreProse.contains(countryProse) == false) {//if the number of countries is the only indication to the fact that the study is 
+			//multicentric, here this prose is added to the multicentre prose String
 			multicentreProse = multicentreProse + " " + countryProse;
 		}
 		meerKatCountry = "Multi-Center";
@@ -1148,7 +1154,7 @@ private String[] biasAnalyser(int index, String description){
 				} else {
 					forReturn[0] = "Information on " + description + " could not be extracted";	//if anything unexpected happens
 				}
-				forReturn[1] = specificDataEntryElement.getTextContent().trim().replaceAll("\n", ", ");
+				forReturn[1] = specificDataEntryElement.getTextContent().trim().replaceAll("\n", " ");
 				
 				m = endPunctuationCleanerA.matcher(forReturn[1]);
 				if (m.find())										//Cleaning data: Patterns match when there is no either .!?"' at the very end 
@@ -1198,7 +1204,7 @@ private String getAdditionalInfo (String prose) {
 	return additionalInfo;
 }
 	
-private void cleanBlindness(String str){//looks which kind of blinding methods were extracted for this trial
+private void cleanBlinding(String str){//looks which kind of blinding methods were extracted for this trial
 		
 	
 		
@@ -1210,21 +1216,17 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 		
 		m = probablyNot.matcher(str);//if String after colon starts with "probably not", the value is set to unclear and the method returns
 		if (m.find()) {
-			blindingMethod = BLINDNESS.UNCLEAR;
+			blindingMethod = BLINDING.UNCLEAR;
 			blindnessCleaned = blindingMethod.getDescription();//fills the description into the cleaned variable
 			return;
 		}
-			
-			
-			
-			
 			m = doubleBlind.matcher(str);//looks for indication that the trial is double-blind
 			if (m.find()){
 				if (doubt) {
-					blindingMethod = BLINDNESS.BIASEDDOUBLE;//review authors had significant doubts about this trial, therefore the value becomes unclear
+					blindingMethod = BLINDING.BIASEDDOUBLE;//review authors had significant doubts about this trial, therefore the value becomes unclear
 					 //this recurring line fills the cleaned String that is written into the database. Content of this String is defined in the BLINDNESS enum.
 				} else {
-					blindingMethod = BLINDNESS.DOUBLE;//the pattern matched so this trial is classified as double-blind
+					blindingMethod = BLINDING.DOUBLE;//the pattern matched so this trial is classified as double-blind
 					 //this recurring line fills the cleaned String that is written into the database. Content of this String is defined in the BLINDNESS enum.
 				}
 				
@@ -1232,11 +1234,10 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 				m = singleBlind.matcher(str);
 				if (m.find()){
 					if (doubt) {
-						blindingMethod = BLINDNESS.BIASEDSINGLE;
+						blindingMethod = BLINDING.BIASEDSINGLE;
 						 
 					} else {
-						blindingMethod = BLINDNESS.SINGLE;
-						 
+						blindingMethod = BLINDING.SINGLE;
 					}
 					
 					} else {
@@ -1244,10 +1245,10 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 						if (m.find()){
 							
 							if (doubt) {
-								blindingMethod = BLINDNESS.BIASEDOPEN;
+								blindingMethod = BLINDING.BIASEDOPEN;
 								 
 							} else {
-								blindingMethod = BLINDNESS.OPENTRIAL;
+								blindingMethod = BLINDING.OPENTRIAL;
 								 
 							}
 							
@@ -1255,10 +1256,10 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 							m = tripleBlind.matcher(str);
 							if (m.find()){
 								if (doubt) {
-									blindingMethod = BLINDNESS.BIASEDTRIPLE;
+									blindingMethod = BLINDING.BIASEDTRIPLE;
 									 
 								} else {
-									blindingMethod = BLINDNESS.TRIPLE;
+									blindingMethod = BLINDING.TRIPLE;
 									 
 								}
 								
@@ -1267,47 +1268,53 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 								if (m.find()){
 									
 									if (doubt) {
-										blindingMethod = BLINDNESS.BIASEDQUADRUPLE;
+										blindingMethod = BLINDING.BIASEDQUADRUPLE;
 										 
 									} else {
-										blindingMethod = BLINDNESS.QUADRUPLE;
+										blindingMethod = BLINDING.QUADRUPLE;
 										 
 									}
 									
 								} else {
 									m = notReported.matcher(str);
 									if (m.find()) {
-										blindingMethod = BLINDNESS.NOTREPORTED;
+										blindingMethod = BLINDING.NOTREPORTED;
 										 
 									} else {
 										m = unclearPattern.matcher(str);
 										if (m.find()) {
-											blindingMethod = BLINDNESS.UNCLEAR;
+											blindingMethod = BLINDING.UNCLEAR;
 											
 										} else {
 											m = noDetails.matcher(str);
 											if (m.find()) {
-												blindingMethod = BLINDNESS.UNCLEAR;
+												blindingMethod = BLINDING.UNCLEAR;
 												
 											} else {
 												m = assessorBlinding.matcher(str);
 												if (m.find()) {
 													m = assessorsUnclear.matcher(str);//this regex checks for ocurrences of words such as patients, clinitians etc. If they occur, the blinding might not be purely assessor blind.
 													if (m.find()) {
-														blindingMethod = BLINDNESS.OTHER;
+														blindingMethod = BLINDING.OTHER;
 														
 													} else {
 														if (doubt) {
-															blindingMethod = BLINDNESS.BIASEDASSESSOR;
+															blindingMethod = BLINDING.BIASEDASSESSOR;
 															
 														} else {
-															blindingMethod = BLINDNESS.ASSESSOR;
+															blindingMethod = BLINDING.ASSESSOR;
 															
 														}
 														
 													}
 												} else {
-													blindingMethod = BLINDNESS.OTHER;
+													if (blindingProse.equals("")) {
+														blindingMethod = BLINDING.NOTAVAILABLE;
+													} else {
+														blindingMethod = BLINDING.OTHER;
+													}
+											
+													
 													
 												}
 												
@@ -1747,12 +1754,12 @@ private void cleanBlindness(String str){//looks which kind of blinding methods w
 	public void setTrialDesign(DESIGN trialDesign) {
 		this.trialDesign = trialDesign;
 	}
-	public BLINDNESS getBlindingMethod() {
+	public BLINDING getBlindingMethod() {
 		return blindingMethod;
 	}
 
 
-	public void setBlindingMethod(BLINDNESS blindingMethod) {
+	public void setBlindingMethod(BLINDING blindingMethod) {
 		this.blindingMethod = blindingMethod;
 	}
 	

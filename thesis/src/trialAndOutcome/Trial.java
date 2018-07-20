@@ -262,6 +262,33 @@ public class Trial{
 					//tries to extract year when study was conducted
 					try {
 						year = studyElement.getAttribute("YEAR");
+						if (year.equals("")) {//if the year attribute is blank
+							for (Reference ref : referenceList) {//the year is attempted to be extracted from the references to this study.
+								if (ref.isPrimaryReference() == true) {//at first, the primary reference to this study is targeted
+									if (ref.getDate().matches("\\d+")) {
+										year = ref.getDate();
+										}
+								}
+							}
+							if (year.equals("")) {//all other references of this study will be searched, and the lowest year value is taken.
+								int lowestYear = 2147483647;
+								for (Reference ref : referenceList) {
+									
+									try {
+										int thisYear = Integer.parseInt(ref.getDate());
+										if (thisYear < lowestYear) {
+											lowestYear = thisYear;//only uses the new year value if it is lower than the previously lowest year
+										}
+										} catch (Exception e) {
+										//year could not be parsed, so the next reference is tried.
+									}
+								}
+								if (lowestYear != 2147483647) {//if no parsable year was found, this info is discarded and year stays empty
+									year = Integer.toString(lowestYear);
+									}
+							}
+							
+						}
 						
 					} catch (NumberFormatException e8) {
 						try {
@@ -325,7 +352,6 @@ public class Trial{
 								Node dichOutcomeNameNode = dichOutcomeNameList.item(0);
 								Element dichOutcomeNameElement = (Element) dichOutcomeNameNode;
 								
-								
 								NodeList dichSubgroupList = dichOutcomeElement.getElementsByTagName("DICH_SUBGROUP");
 								
 								if (dichSubgroupList.getLength() == 0) {//there are no subgroups, so the data have to be taken from outcome node directly
@@ -345,20 +371,20 @@ public class Trial{
 										}
 									}
 								} else {
-									for (int j = 0; j <dichSubgroupList.getLength(); j++){
-										Node dichSubgroupNode = dichSubgroupList.item(j);
+									for (int j = 0; j <dichSubgroupList.getLength(); j++){ //looks through each subgroup
+										Node dichSubgroupNode = dichSubgroupList.item(j); //makes node and element for the specified subgroup
 										Element dichSubgroupElement = (Element) dichSubgroupNode;
 										
 										NodeList dichDataList = dichSubgroupElement.getElementsByTagName("DICH_DATA");
-										for (int k = 0; k < dichDataList.getLength(); k++){
-											Node dichDataNode = dichDataList.item(k);
+										for (int k = 0; k < dichDataList.getLength(); k++){//looka through each study in this subgroup
+											Node dichDataNode = dichDataList.item(k);//makes nodes and elements for specified studies
 											Element dichDataElement = (Element) dichDataNode;
 											
-											if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
-												
-												dobj = new DichotomousOutcome(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement, reviewTitle);
-												outcomeList.add(dobj);
-												//System.out.println("Outcome added to list");
+											if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){ //looks if this specific study matches
+												//the RevManID of the study we want to extract data of
+												dobj = new DichotomousOutcome(dichDataElement, comparisonNameElement, dichOutcomeNameElement, 
+														dichOutcomeElement, dichSubgroupElement, reviewTitle);//if it matched, an object is created
+												outcomeList.add(dobj);//object is added to list
 											}
 										}
 									}
