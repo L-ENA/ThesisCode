@@ -14,7 +14,26 @@ public class OtherOutcome extends Outcome{
 	protected String outcomeName = "";
 	protected String subgroupName = "";
 	protected String reviewTitle = "";
+	protected String comparisonName = "";
+	protected String revManID = "";
 	
+	public String getRevManID() {
+		return revManID;
+	}
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+
+	@XmlElement(name = "Comparison")
+	public String getComparisonName() {
+		return comparisonName;
+	}
+
+	public void setComparisonName(String comparisonName) {
+		this.comparisonName = comparisonName;
+	}
+
 	public String getReviewTitle() {
 		return reviewTitle;
 	}
@@ -55,9 +74,11 @@ public class OtherOutcome extends Outcome{
 		super();
 	}
 	
-public OtherOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
+public OtherOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review, String revManID) {
+	this.revManID = revManID;
 	this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();
+		comparisonName = comparisonNameElement.getTextContent();
 		
 		
 		if (oeSubgroupElement != null) {//because it is possible that the outcome is stored directly under the outcome node and not in a subgroup

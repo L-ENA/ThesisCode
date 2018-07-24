@@ -47,7 +47,7 @@ public String getOutcomeName() {
 	public String getOutcomeType() {
 		return outcomeType;
 	}
-	
+	@XmlElement(name = "Comparison")
 	public String getComparisonName() {
 		return comparisonName;
 	}
@@ -201,14 +201,23 @@ public String getOutcomeName() {
 	private String[] splitComparison = new String[2];
 	private String[] splitIC = new String[2];
 	
+	protected String revManID = "";
+	
+	public String getRevManID() {
+		return revManID;
+	}
 
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
 
 
 	public GenericInverseOutcome() {
 		super();
 	}
 	
-public GenericInverseOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
+public GenericInverseOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review, String revManID) {
+	this.revManID = revManID;
 	this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();
 		comparisonName = comparisonNameElement.getTextContent();

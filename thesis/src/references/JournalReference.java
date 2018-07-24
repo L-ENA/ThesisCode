@@ -23,10 +23,31 @@ public class JournalReference extends Reference{
 	protected String pages = "";
 	protected String originalTitle = "";
 	protected boolean primaryReference = false;
+	protected String revManID = "";
+	protected String reviewTitle = "";
+	
+	
+	public String getRevManID() {
+		return revManID;
+	}
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+
+	public String getReviewTitle() {
+		return reviewTitle;
+	}
+
+	public void setReviewTitle(String reviewTitle) {
+		this.reviewTitle = reviewTitle;
+	}
 	
 	
 
-	public JournalReference(String[] referencesArray, int i){
+	public JournalReference(String[] referencesArray, int i, String revManID, String reviewTitle){
+		this.reviewTitle = reviewTitle;
+		this.revManID = revManID;
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;
 		}

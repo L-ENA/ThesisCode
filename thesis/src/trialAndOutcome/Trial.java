@@ -48,6 +48,7 @@ public class Trial{
 	public static int counter = 0;
 	protected String mainAuthor = ""; //check
 	protected String year;//will contain year of publication
+	protected String firstPublicationYear = "";
 	protected String authorYearLetter = ""; //for comparison with MeerKatBE
 	protected String extractedAuthor = "";
 	
@@ -208,51 +209,51 @@ public class Trial{
 					
 					for (int i = 0; i < references.length; i++){
 						if (references[i].equals("JOURNAL_ARTICLE")){
-							refObject = new JournalReference(references, i);
+							refObject = new JournalReference(references, i, revManID, reviewTitle);
 							referenceList.add(refObject);
 							i = i + 14; //its plus 14 because +1 is added at the end of the loop and 
 							//this array contains new info to check on every 15th index
 						} else if (references[i].equals("CONFERENCE_PROC")){
-							refObject = new ConferenceReference(references, i);
+							refObject = new ConferenceReference(references, i, revManID, reviewTitle);
 							referenceList.add(refObject);
 							i = i + 14;
 						} else if (references[i].equals("UNPUBLISHED")){
-							refObject = new UnpublishedReference(references, i);
+							refObject = new UnpublishedReference(references, i, revManID, reviewTitle);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("OTHER")){
-							refObject = new OtherReference(references, i);
+							refObject = new OtherReference(references, i, revManID, reviewTitle);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("BOOK_SECTION")){
-							refObject = new BookSectionReference(references, i);
+							refObject = new BookSectionReference(references, i, revManID, reviewTitle);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("CORRESPONDENCE")){
-							refObject = new CorrespondenceReference(references, i);
+							refObject = new CorrespondenceReference(references, i, revManID, reviewTitle);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("BOOK")){
-							refObject = new BookReference(references, i);
+							refObject = new BookReference(references, i, revManID, reviewTitle);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("COCHRANE_REVIEW")){
-							refObject = new CochraneReviewReference(references, i);
+							refObject = new CochraneReviewReference(references, i, revManID, reviewTitle);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("COCHRANE_PROTOCOL")){
-							refObject = new CochraneProtocolReference(references, i);
+							refObject = new CochraneProtocolReference(references, i, revManID, reviewTitle);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						}else if (references[i].equals("COMPUTER_PROGRAM")){
-							refObject = new SoftwareReference(references, i);
+							refObject = new SoftwareReference(references, i, revManID, reviewTitle);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
@@ -262,59 +263,29 @@ public class Trial{
 					//tries to extract year when study was conducted
 					try {
 						year = studyElement.getAttribute("YEAR");
-						if (year.equals("")) {//if the year attribute is blank
-							for (Reference ref : referenceList) {//the year is attempted to be extracted from the references to this study.
-								if (ref.isPrimaryReference() == true) {//at first, the primary reference to this study is targeted
-									if (ref.getDate().matches("\\d+")) {
-										year = ref.getDate();
-										}
-								}
-							}
-							if (year.equals("")) {//all other references of this study will be searched, and the lowest year value is taken.
-								int lowestYear = 2147483647;
-								for (Reference ref : referenceList) {
-									
-									try {
-										int thisYear = Integer.parseInt(ref.getDate());
-										if (thisYear < lowestYear) {
-											lowestYear = thisYear;//only uses the new year value if it is lower than the previously lowest year
-										}
-										} catch (Exception e) {
-										//year could not be parsed, so the next reference is tried.
-									}
-								}
-								if (lowestYear != 2147483647) {//if no parsable year was found, this info is discarded and year stays empty
-									year = Integer.toString(lowestYear);
-									}
-							}
-							
-						}
 						
+						int lowestYear = 2147483647;//highest int possible
+							for (Reference ref : referenceList) {
+								try {
+									int thisYear = Integer.parseInt(ref.getDate());
+									if (thisYear < lowestYear) {
+										lowestYear = thisYear;//only uses the new year value if it is lower than the previously lowest year
+									}
+									} catch (Exception e) {//year could not be parsed, so the next reference is tried.
+								}
+							}
+							if (lowestYear != 2147483647) {//if no parsable year was found, this info is discarded and year stays empty
+								if (year.equals("")) {//uses the lowest year value if year is empty
+									year = Integer.toString(lowestYear);// a lower year was found
+									System.out.println(reviewTitle + ", " + revManID + ": new year is " + year);
+								} 
+								firstPublicationYear = Integer.toString(lowestYear);
+								}
 					} catch (NumberFormatException e8) {
-						try {
-							// if year can't be extracted as attribute it is tried via revman-ID. In case there is a hyphen or..., the characters resulting from this are eliminated and the String is restored to normal
-							//year = revManID.replaceAll("(_x002d_)", "-").replace("(_x0026_)", "&").replaceAll("[^\\d.]", "");
-							year = "";
-						
-						} catch (NumberFormatException e) {
-							try {
-								//tries to take year of publication from additional references, e.g.intensive case management review, when there is absolutely no date entered because this trial is just the description of one centre in the study, or in in vocational training, where authors deleted the years from RevMan ID or possibly forgot to enter it
-								year = refObject.getDate().replaceAll("[^\\d.]", "");
-								
-							} catch (NumberFormatException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-								// last resort
-								e.printStackTrace();
-								year = "";
-							}
-							
-							
-							
-						}
+						year = "";
 					}
 					
-					charObject = new Characteristics(studyToExtractElement, qualityItemList, revManID, reviewTitle, year);
+					charObject = new Characteristics(studyToExtractElement, qualityItemList, revManID, reviewTitle, year, firstPublicationYear);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Extracts OutcomeObjects for this trial
 					
@@ -337,7 +308,8 @@ public class Trial{
 						NodeList comparisonNameList = comparisonElement.getElementsByTagName("NAME");
 						Node comparisonNameNode = comparisonNameList.item(0);
 						Element comparisonNameElement = (Element) comparisonNameNode; //takeOver for comparisonname and groupnames
-						
+						//for readable revManID
+						String revManIdParameter = revManID.replaceAll("_x00df_", "ß").replaceAll("(_x002d_)", "-").replaceAll("(_x0026_)", "&").replaceAll("_x00e8_", "è").replaceAll("_x00f6_", "ö").replaceAll("_x00fc_", "ü").replaceAll("_x002b_", "+").replaceAll("_x002f_", "/").replaceAll("_x00a0_", " ").replaceAll("_x002c_", ",").replaceAll("_x0028_", "(").replaceAll("_x0029_", ")").replaceAll("_x00e7_", "ç").replaceAll("_x0027_", "'").replaceAll("_x002a_", "*").replaceAll("_x00e9_", "é").replaceAll("_x00e4_", "ä").replaceAll("_x00b4_", "´");
 						
 						try {////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 							//looks for dichotomous outcomes by their tag name. Elements are created and used as parameters for object creation. All
@@ -365,7 +337,7 @@ public class Trial{
 										
 										if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
 											
-											dobj = new DichotomousOutcome(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement, reviewTitle);
+											dobj = new DichotomousOutcome(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement, reviewTitle, revManIdParameter);
 											outcomeList.add(dobj);
 											//System.out.println("Outcome added to list");
 										}
@@ -383,7 +355,7 @@ public class Trial{
 											if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){ //looks if this specific study matches
 												//the RevManID of the study we want to extract data of
 												dobj = new DichotomousOutcome(dichDataElement, comparisonNameElement, dichOutcomeNameElement, 
-														dichOutcomeElement, dichSubgroupElement, reviewTitle);//if it matched, an object is created
+														dichOutcomeElement, dichSubgroupElement, reviewTitle, revManIdParameter);//if it matched, an object is created
 												outcomeList.add(dobj);//object is added to list
 											}
 										}
@@ -422,7 +394,7 @@ public class Trial{
 										
 										if (contDataElement.getAttribute("STUDY_ID").equals(revManID)){
 											
-											cobj = new ContinuousOutcome(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle);
+											cobj = new ContinuousOutcome(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle, revManIdParameter);
 											outcomeList.add(cobj);
 											//System.out.println("Outcome added to list");
 										}
@@ -439,7 +411,7 @@ public class Trial{
 											
 											if (contDataElement.getAttribute("STUDY_ID").equals(revManID)){
 												
-												cobj = new ContinuousOutcome(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle);
+												cobj = new ContinuousOutcome(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle, revManIdParameter);
 												outcomeList.add(cobj);
 												//System.out.println("Outcome added to list");
 											}
@@ -482,7 +454,7 @@ public class Trial{
 												
 												Element oSubgroupElement = null;
 												
-												oobj = new OtherOutcome(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle);
+												oobj = new OtherOutcome(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle, revManIdParameter);
 												outcomeList.add(oobj);
 												counter++;
 												
@@ -501,7 +473,7 @@ public class Trial{
 												
 												if (oDataElement.getAttribute("STUDY_ID").equals(revManID)){
 													
-													oobj = new OtherOutcome(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle);
+													oobj = new OtherOutcome(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle, revManIdParameter);
 													outcomeList.add(oobj);
 													counter++;
 													
@@ -547,7 +519,7 @@ public class Trial{
 												
 												Element ivSubgroupElement = null;
 												
-												givobj = new GenericInverseOutcome(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle);
+												givobj = new GenericInverseOutcome(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle, revManIdParameter);
 												outcomeList.add(givobj);
 												
 												
@@ -566,7 +538,7 @@ public class Trial{
 												
 												if (ivDataElement.getAttribute("STUDY_ID").equals(revManID)){
 													
-													givobj = new GenericInverseOutcome(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle);
+													givobj = new GenericInverseOutcome(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle, revManIdParameter);
 													outcomeList.add(givobj);
 													
 													
@@ -612,7 +584,7 @@ public class Trial{
 												
 												Element oeSubgroupElement = null;
 												
-												oeobj = new OEandVarianceOutcome(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle);
+												oeobj = new OEandVarianceOutcome(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle, revManIdParameter);
 												outcomeList.add(oeobj);
 												
 												
@@ -631,7 +603,7 @@ public class Trial{
 												
 												if (oeDataElement.getAttribute("STUDY_ID").equals(revManID)){
 													
-													oeobj = new OEandVarianceOutcome(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle);
+													oeobj = new OEandVarianceOutcome(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle, revManIdParameter);
 													outcomeList.add(oeobj);
 													
 												}
@@ -694,7 +666,7 @@ public class Trial{
 								
 								
 								
-								System.out.println(authorYearLetter);
+								//System.out.println(authorYearLetter);
 //					
 					//				
 //					System.out.println("Country or countries : " + countries);

@@ -46,6 +46,17 @@ public class OEandVarianceOutcome extends Outcome {
 	private String[] splitComparison = new String[2];
 	private String[] splitIC = new String[2];
 	
+	protected String revManID = "";
+	
+	public String getRevManID() {
+		return revManID;
+	}
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+	
+	@XmlElement(name = "Comparison")
 	public String getComparisonName() {
 		return comparisonName;
 	}
@@ -229,7 +240,8 @@ public class OEandVarianceOutcome extends Outcome {
 
 
 
-	public OEandVarianceOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review) {
+	public OEandVarianceOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review, String revManID) {
+		this.revManID = revManID;
 		this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();
 		comparisonName = comparisonNameElement.getTextContent();

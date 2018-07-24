@@ -15,7 +15,26 @@ public class BookSectionReference extends Reference{
 	protected String publisher = "";
 	protected String city = "";
 	protected boolean primaryReference = false;
+	protected String reviewTitle = "";
+	protected String revManID = "";
 	
+	
+	public String getReviewTitle() {
+		return reviewTitle;
+	}
+
+	public void setReviewTitle(String reviewTitle) {
+		this.reviewTitle = reviewTitle;
+	}
+
+	public String getRevManID() {
+		return revManID;
+	}
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+
 	public boolean isPrimaryReference() {
 		return primaryReference;
 	}
@@ -24,7 +43,9 @@ public class BookSectionReference extends Reference{
 		this.primaryReference = primaryReference;
 	}
 
-	public BookSectionReference(String[] referencesArray, int i){
+	public BookSectionReference(String[] referencesArray, int i, String revManID, String reviewTitle){
+		this.reviewTitle = reviewTitle;
+		this.revManID = revManID;
 		type = "Book section";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;

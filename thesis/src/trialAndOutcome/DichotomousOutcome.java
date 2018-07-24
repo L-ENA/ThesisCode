@@ -202,10 +202,21 @@ public void setControlTotalN(int controlTotalN) {
 	private String[] splitComparison = new String[2];
 	private String[] splitIC = new String[2];
 	
+	protected String revManID = "";
+	
+	public String getRevManID() {
+		return revManID;
+	}
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+	
 	//What does "ORDER" attribute mean?
 	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
-	DichotomousOutcome(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement, String review){
+	DichotomousOutcome(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement, String review, String revManID) {
+		this.revManID = revManID;
 		this.reviewTitle = review;
 		NodeList groupLabel1List = dichOutcomeElement.getElementsByTagName("GROUP_LABEL_1");	//for intervention name
 		Node groupLabel1Node = groupLabel1List.item(0);

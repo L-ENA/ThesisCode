@@ -10,7 +10,26 @@ public class UnpublishedReference extends Reference{
 		protected String date = "";
 		protected String originalTitle = "";
 		protected boolean primaryReference = false;
+		protected String revManID = "";
+		protected String reviewTitle = "";
 		
+		
+		public String getRevManID() {
+			return revManID;
+		}
+
+		public void setRevManID(String revManID) {
+			this.revManID = revManID;
+		}
+
+		public String getReviewTitle() {
+			return reviewTitle;
+		}
+
+		public void setReviewTitle(String reviewTitle) {
+			this.reviewTitle = reviewTitle;
+		}
+
 		public boolean isPrimaryReference() {
 			return primaryReference;
 		}
@@ -19,7 +38,9 @@ public class UnpublishedReference extends Reference{
 			this.primaryReference = primaryReference;
 		}
 
-		public UnpublishedReference(String[] referencesArray, int i){
+		public UnpublishedReference(String[] referencesArray, int i, String revManID, String reviewTitle){
+			this.reviewTitle = reviewTitle;
+			this.revManID = revManID;
 			type = "Unpublished Reference";
 
 			if (referencesArray[i + 1].equals("YES")) {

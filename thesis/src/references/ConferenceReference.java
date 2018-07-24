@@ -15,6 +15,25 @@ public class ConferenceReference extends Reference{
 	protected String publisher = "";
 	protected String city = "";
 	protected boolean primaryReference = false;
+	protected String revManID = "";
+	protected String reviewTitle = "";
+	
+	
+	public String getRevManID() {
+		return revManID;
+	}
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+
+	public String getReviewTitle() {
+		return reviewTitle;
+	}
+
+	public void setReviewTitle(String reviewTitle) {
+		this.reviewTitle = reviewTitle;
+	}
 	
 	
 	
@@ -33,7 +52,9 @@ public class ConferenceReference extends Reference{
 
 
 
-	public ConferenceReference(String[] referencesArray, int i){
+	public ConferenceReference(String[] referencesArray, int i, String revManID, String reviewTitle){
+		this.reviewTitle = reviewTitle;
+		this.revManID = revManID;
 		
 		type = "Conference Proceedings";
 		if (referencesArray[i + 1].equals("YES")) {

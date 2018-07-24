@@ -24,17 +24,21 @@ public class Interventions {
 		
 		
 		for(String thisItem : interventionsList) {
-			if (thisItem.matches("(([1-9])|([ABCDE]\\s?))[.:]\\s?.*")) {//if String starts with a number, followed by . or :, or if it is lettered
-				probObj = new ProbablyIntervention(thisItem, revManID, reviewTitle);
-				interventionList.add(probObj);
-			} else if (thisItem.matches("^([a-zA-Z]+\\s?){1,4}:.*")) { //If this String starts with up to 4 words that are followed by a :
-				unclearObj = new UnclearIntervention(thisItem, revManID, reviewTitle);
-				interventionList.add(unclearObj);
-				
-			} else {//most likely this String is a comment or extremely unpredictable.
-				unlikelyObj = new UnlikelyIntervention(thisItem, revManID, reviewTitle);
-				interventionList.add(unlikelyObj);
+			thisItem = thisItem.trim();
+			if (thisItem.equals("") == false) {
+				if (thisItem.matches("(([1-9])|([ABCDE]\\s?))[.:]\\s?.*")) {//if String starts with a number, followed by . or :, or if it is lettered
+					probObj = new ProbablyIntervention(thisItem, revManID, reviewTitle);
+					interventionList.add(probObj);
+				} else if (thisItem.matches("^([a-zA-Z]+\\s?){1,4}:.*")) { //If this String starts with up to 4 words that are followed by a :
+					unclearObj = new UnclearIntervention(thisItem, revManID, reviewTitle);
+					interventionList.add(unclearObj);
+					
+				} else {//most likely this String is a comment or extremely unpredictable.
+					unlikelyObj = new UnlikelyIntervention(thisItem, revManID, reviewTitle);
+					interventionList.add(unlikelyObj);
+				}
 			}
+			
 		}
 		
 	}

@@ -11,6 +11,25 @@ public class SoftwareReference extends Reference{
 	protected String city = "";
 	protected String medium = "";
 	protected boolean primaryReference = false;
+	protected String revManID = "";
+	protected String reviewTitle = "";
+	
+	
+	public String getRevManID() {
+		return revManID;
+	}
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+
+	public String getReviewTitle() {
+		return reviewTitle;
+	}
+
+	public void setReviewTitle(String reviewTitle) {
+		this.reviewTitle = reviewTitle;
+	}
 	
 	public boolean isPrimaryReference() {
 		return primaryReference;
@@ -20,7 +39,9 @@ public class SoftwareReference extends Reference{
 		this.primaryReference = primaryReference;
 	}
 
-	public SoftwareReference(String[] referencesArray, int i){
+	public SoftwareReference(String[] referencesArray, int i, String revManID, String reviewTitle){
+		this.reviewTitle = reviewTitle;
+		this.revManID = revManID;
 		type = "Software";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;

@@ -9,6 +9,25 @@ public class CochraneReviewReference extends Reference{
 	protected String date = "";
 	protected String issue = "";
 	protected boolean primaryReference = false;
+	protected String revManID = "";
+	protected String reviewTitle = "";
+	
+	
+	public String getRevManID() {
+		return revManID;
+	}
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+
+	public String getReviewTitle() {
+		return reviewTitle;
+	}
+
+	public void setReviewTitle(String reviewTitle) {
+		this.reviewTitle = reviewTitle;
+	}
 	
 	public boolean isPrimaryReference() {
 		return primaryReference;
@@ -18,7 +37,9 @@ public class CochraneReviewReference extends Reference{
 		this.primaryReference = primaryReference;
 	}
 
-	public CochraneReviewReference(String[] referencesArray, int i){
+	public CochraneReviewReference(String[] referencesArray, int i, String revManID, String reviewTitle){
+		this.reviewTitle = reviewTitle;
+		this.revManID = revManID;
 		type = "Cochrane Review";
 		if (referencesArray[i + 1].equals("YES")) {
 			primaryReference = true;

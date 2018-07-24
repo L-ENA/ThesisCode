@@ -45,10 +45,21 @@ public class ContinuousOutcome extends Outcome{
 	private String[] splitComparison = new String[2];
 	private String[] splitIC = new String[2];
 	
+	protected String revManID = "";
+	
+	public String getRevManID() {
+		return revManID;
+	}
+
+	public void setRevManID(String revManID) {
+		this.revManID = revManID;
+	}
+	
 	//What does "ORDER" attribute mean?
 	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
-	ContinuousOutcome(Element contDataElement, Element comparisonNameElement, Element contOutcomeNameElement, Element contOutcomeElement, Element contSubgroupElement, String review){
+	ContinuousOutcome(Element contDataElement, Element comparisonNameElement, Element contOutcomeNameElement, Element contOutcomeElement, Element contSubgroupElement, String review, String revManID) {
+		this.revManID = revManID;
 		
 		this.reviewTitle = review;
 		

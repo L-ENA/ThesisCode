@@ -46,7 +46,7 @@ public class Database {
 
 			}
 			reviewName = trialObj.getReviewTitle();
-			System.out.println(reviewName);
+			//System.out.println(reviewName);
 		}
 		
 	}

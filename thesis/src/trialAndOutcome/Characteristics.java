@@ -147,7 +147,10 @@ public class Characteristics {
 	protected String multicentreProse = "";
 	
 	protected String mainYear = "";
+	protected String firstPublicationYear = "";
 	
+
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////all the patterns for cleaning and extraction
@@ -203,13 +206,16 @@ protected Element charOutcomesElement;
 
 protected String revManID = "";
 protected String reviewTitle = "";
+
+
 protected Characteristics() {
 	//empty constructor for xml marshalling
 }
 
-	protected Characteristics(Element studyToExtractElement, NodeList qualityItemList, String revManID, String reviewTitle, String year) {
+	protected Characteristics(Element studyToExtractElement, NodeList qualityItemList, String revManID, String reviewTitle, String year, String firstPublicationYear) {
 		mainYear = year;
-		System.out.println(mainYear);
+		this.firstPublicationYear = firstPublicationYear;
+		//System.out.println(mainYear);
 		this.qualityItemList = qualityItemList;
 		this.revManID = revManID;
 		this.reviewTitle = reviewTitle;
@@ -429,58 +435,24 @@ private void allocationCleaner() {
 			
 			if (output.matches("\\bDiagnos[ie]s?\\b\\d?\\s?\\**[:=].*") || output.matches("\\bTypes?\\b\\d?\\s?\\**:.*")) {//since the whole String needs to match, the .* is used as wildcard for the rest of the String
 				
-				if (diagnosisProse != "") {
-					
-					diagnosisProse = diagnosisProse + " " + output;//this happens in Becker 1983 and others in the review Antidepressants for people with both schizophrenia and depression, because a field called "Medication history:" comes up. it is added to the standard participant history prose.
-				//System.out.println("Diagnosis stuff-- " + diagnosisProse);
-				} else {
-					diagnosisProse = output;
-				}
+				diagnosisProse = addProse(output, diagnosisProse);
 				
 				
 				//System.out.println(diagnosisProse);
 			} else if (output.matches("\\b[Hh]istory\\b\\d?\\s?\\**[:=].*") || output.matches("[Mm]edication\\s[Hh]istory\\b\\d?\\s?\\**[:=].*")) {
-				if (historyProse != "") {
-					
-					historyProse = historyProse + " " + output;//this happens in Becker 1983 and others in the review Antidepressants for people with both schizophrenia and depression, because a field called "Medication history:" comes up. it is added to the standard participant history prose.
-					//System.out.println("history stuff-- " + historyProse);
-				} else {
-					historyProse = output;
-					
-				}
+				historyProse = addProse(output, historyProse);
 				
 			} else if (output.matches("([Mm]ean\\s)?[Aa]ge((\\srange)|(,\\syears))?[*\\d]?\\s?\\**[:=].*")) {//the word boundaries before age and sex are deleted because of the possible missing . character after "n"
-				if (ageProse != "") {
-					
-					ageProse = ageProse + " " + output; // antipsychotics childhood schizophrenia, xiaong study has "Age:" and "Mean age:", ocurrences like this are combined here.
-					//System.out.println("age stuff-- " + ageProse);
-				} else {
-					ageProse = output;
-				}
+				ageProse = addProse(output, ageProse);
 				
 			} else if (output.matches("(\\b[Gg]ender)[*\\d]?\\s?\\**[:=].*") || output.matches("([Ss]ex)[*\\d]?\\s?\\**[:=].*")) {
-				if (genderProse != "") {
-					genderProse = genderProse + " " + output;
-					//System.out.println("gender stuff-- " + genderProse);
-				} else {
-					genderProse = output;
-				}
+				genderProse = addProse(output, genderProse);
 				
 			} else if (output.matches("(\\b[Ee]xcluded?\\b)\\d?\\s?\\**[:=].*") || output.matches("\\b[Ee]xclusion\\scriteria?\\d?\\s?\\**[:=].*") || output.matches("\\b[Ee]xclusions?\\b\\d?\\s?[:=].*")) {
-				if (excludedProse != "") {
-					excludedProse = excludedProse + " " + output;
-					//System.out.println("excluded stuff-- " + excludedProse);
-				} else {
-					excludedProse = output;
-				}
+				excludedProse = addProse(output, excludedProse);
 				
 			} else if (output.matches("(\\b[Ii]ncluded\\b)\\d?\\s?\\**[:=].*") || output.matches("\\b[Ii]nclusion\\scriteria\\d?\\s?\\**[:=].*") || output.matches("\\b[Ii]nclusions?\\b\\d?\\s?[:=].*")) {
-				if (includedProse != "") {
-					includedProse = includedProse + " " + output;
-					//System.out.println("included stuff-- " + includedProse);
-				} else {
-					includedProse = output;
-				}
+				includedProse = addProse(output, includedProse);
 				
 			} else if (output.matches("([Tt]otal\\s)?\\b[Nn]\\b\\s?\\d?\\s?\\**[:=].*") || output.matches("\\b[Cc]ompleted?\\s(study\\b)?:?\\s[Nn].*")) {
 				if (nProse != "") {
@@ -497,85 +469,26 @@ private void allocationCleaner() {
 				}
 				
 			} else if (output.matches("\\b[lL]ocations?\\b\\d?\\s?\\**[:=].*")) {//next 3(location, country, setting) have special treatment because they can appear in methods section also. Sometimes they appear double, so Strings have to be appended to each other
-				if (locationProse.equals("")) {//if it is empty, there is no double occurrence, so it can be filled as usual
-					locationProse = output;
-					
-				} else {//it was not empty, so the new found String is appended to old content
-					locationProse = locationProse + " " + output;
-					//System.out.println("Location stuff-- " + locationProse);
-				}
+				locationProse = addProse(output, locationProse);
 			} else if (output.matches("\\b[cC]ountr(y|ies)\\b\\d?\\s?\\**[:=].*")) {
-				if (countryProse.equals("")) {
-					countryProse = output;
-					
-				} else {
-					countryProse = countryProse + " " + output;
-					//System.out.println("country stuff-- " + countryProse);
-				}
+				countryProse = addProse(output, countryProse);
 			} else if (output.matches("\\b[sS]ettings?\\b\\d?\\s?\\**[:=].*")) {
-				if (settingProse != "") {
-					
-					settingProse = settingProse + " " + output; //Xu 2007, Yan 2008a, Yang 2006.. in aripiprazole vs other atypials has setting twice, here the Strings are appended.
-					//System.out.println("setting stuff-- " + settingProse);
-				} else {
-					settingProse = output;
-				}
-					
-				
-				
-				
-				
+				settingProse = addProse(output, settingProse);
 			} else if (output.matches("(?<!Lost\\sto\\s)\\b[Ff]ollow[-\\s]up\\d?\\s?\\**[:=].*")) {
-				
-				if (followUpOrAnalysisProse.equals("")) {
-					followUpOrAnalysisProse = output;
-				} else {
-					
-					followUpOrAnalysisProse = followUpOrAnalysisProse + " " + output;
-					//System.out.println("followUp stuff-- " + followUpProse);
-				}
-				
+				followUpOrAnalysisProse = addProse(output, followUpOrAnalysisProse);
 			} 
 			
 			else if (output.matches("\\b[cC]onsent(given)?\\d?\\s?\\**[:=].*") || output.matches("Consent\\sand\\sethics\\d?\\s?\\**[:=].*")) {
-				if (consentProse != "") {
-					consentProse = consentProse + " " + output;
-					//System.out.println("consent stuff-- " + consentProse);
-				} else {
-					consentProse = output;
-				}
-				
+				consentProse = addProse(output, consentProse);
 			} else if (output.matches("\\b[Dd]uration\\s[Ii]ll\\d?\\s?\\**[:=].*") || output.matches("\\b[Dd]uration\\sof\\s[Ii]llness\\d?\\s?\\**[:=].*") || output.matches("Average\\slength\\sof\\sillness\\d?\\s?[:=].*") || output.matches("Length\\sof\\sillness\\d?\\s?[:=].*")) {
-				if (durationIllProse != "") {
-					durationIllProse = durationIllProse + " " + output;
-					//System.out.println("durationIll stuff-- " + durationIllProse);
-				} else {
-					durationIllProse = output;
-				}
+				durationIllProse = addProse(output, durationIllProse);
 				
 			} else if (output.matches("\\b([Rr]ace)\\b\\d?\\s?\\**[:=].*") || output.matches("\\b([Ee]thnicit(y|ies))\\b\\d?\\s?\\**[:=].*") || output.matches("Racial\\sorigins?\\b\\d?\\s?\\**[:=].*")) {
-				if (ethnicityProse != "") {
-					ethnicityProse = ethnicityProse + " " + output;
-					//System.out.println("ethnicity stuff-- " + ethnicityProse);
-				} else {
-					ethnicityProse = output;
-				}
-				
+				ethnicityProse = addProse(output, ethnicityProse);
 			} else if (output.matches("\\b[Ff]unding\\b\\d?\\s?\\**[:=].*") || output.matches("(\\b[Ff]unded\\sby\\b)\\d?\\s?\\**[:=].*")) {
-				if (fundingProse != "") {
-					fundingProse = fundingProse + " " + output;
-					//System.out.println("funding stuff-- " + fundingProse);
-				} else {
-					fundingProse = output;
-				}
-				
+				fundingProse = addProse(output, fundingProse);
 			} else if (output.matches("\\bPhase\\b\\d?\\s?\\**[:=].*")){ 
-				if (phaseProse != "") {
-					phaseProse = phaseProse + " " + output;
-					//System.out.println("phase stuff-- " + phaseProse);
-				} else {
-					phaseProse = output;
-				}
+				phaseProse = addProse(output, phaseProse);
 			} else {
 				otherParticipantProse = output.trim();
 				if (otherParticipantProse.contains("Exclusion criteria:") || otherParticipantProse.contains("Exclusion:") || otherParticipantProse.contains("Excluded:") || otherParticipantProse.contains("Exclusions:")) {
@@ -678,6 +591,7 @@ private void allocationCleaner() {
 		}
 		
 	}
+	
 	private String addProse(String output, String toAddto){
 		
 		if (toAddto != "") {
@@ -722,7 +636,7 @@ private void allocationCleaner() {
 			 }
 			 
 			 m = inPatient.matcher(prose);//looks if this prose is about inpatiens
-			 if (m.find() || inP == true ){
+			 if (m.find() || inP == true || bothP == true){
 				 if (outP == true || bothP == true){	//outP was set true before if outpatients came up
 					 trialSetting = SETTING.INANDOUT;
 					 bothP = true;
@@ -956,10 +870,7 @@ private void allocationCleaner() {
 		countryArray = countryTree.toArray();//this way, they are all separate
 		countries = countries.replaceAll("\\[|\\]", "");
 		
-		if (countryProse.contains("(Georgia)")) {//in case that the state georgia is not abbreviated
-			countries = countries.replaceAll("Georgia", "USA");
-			
-		}
+		
 		/*Pattern pattern = Pattern.compile("(((\\d+)|(one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine)|(ten))\\scountries)");//it can possibly alse say "x countries" instead of actual country names, so this is covered below. If the original says "4 countries", this will appear in cleaned version as well
 		
 		m = pattern.matcher(locationProse);
@@ -1897,6 +1808,14 @@ private void cleanBlinding(String str){//looks which kind of blinding methods we
 
 	public void setMainYear(String mainYear) {
 		this.mainYear = mainYear;
+	}
+	
+	public String getFirstPublicationYear() {
+		return firstPublicationYear;
+	}
+
+	public void setFirstPublicationYear(String firstPublicationYear) {
+		this.firstPublicationYear = firstPublicationYear;
 	}
 }
 
