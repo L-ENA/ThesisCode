@@ -1,7 +1,7 @@
 package core;
 import java.io.File;
 
-
+import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -16,6 +16,7 @@ public class Main {
 
 	
 	public static void main(String[] args)  throws Exception{
+		JOptionPane.showMessageDialog(null, "Instructions\nPlease select one or more ReviewManager5 (.rm5) files in the next step. \n\nMake sure that you have a folder called \"Raptor\" located on your PC's \"C\" drive. \nIts path should look like this: \"C:\\NewReviews\" \nThe new XML will be saved there, your original review file remains untouched.\nIf this folder already contains an XML created by RAPTOR, it will be overwritten");
 		
 		
 		Database d = new Database();
@@ -77,15 +78,16 @@ public class Main {
 				
 				
 				
-				String path = "C:\\Users\\msals12\\Desktop\\Thesis\\XMLs\\2206.xml";
+				String path = "C:\\Raptor\\extraction.xml";
 				jaxbMarshaller.marshal(d, new File(path));	//puts database into a xml file that is saved according to path String
 				
 				System.out.println("File created successfully");
 				System.out.println(Trial.counter);
+				JOptionPane.showMessageDialog(null, "Extraction finished successfully");
 				
 				
 			} catch (JAXBException e) {
-				
+				JOptionPane.showMessageDialog(null, "Something went wrong. Please contact Clive.Adams@nottingham.ac.uk or lena.schmidt.0493@gmail.com");
 				e.printStackTrace();
 			}
 		}
