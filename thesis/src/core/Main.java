@@ -16,7 +16,7 @@ public class Main {
 
 	
 	public static void main(String[] args)  throws Exception{
-		JOptionPane.showMessageDialog(null, "Instructions\nPlease select one or more ReviewManager5 (.rm5) files in the next step. \n\nMake sure that you have a folder called \"Raptor\" located on your PC's \"C\" drive. \nIts path should look like this: \"C:\\NewReviews\" \nThe new XML will be saved there, your original review file remains untouched.\nIf this folder already contains an XML created by RAPTOR, it will be overwritten");
+		JOptionPane.showMessageDialog(null, "Instructions\nPlease select one or more ReviewManager5 (.rm5) files in the next step. \n\nMake sure that you have a folder called \"Raptor\" located on your PC's \"C\" drive. \nIts path should look like this: \"C:\\Raptor\" \nThe new XML will be saved there, your original review file remains untouched.\nIf this folder already contains an XML created by RAPTOR, it will be overwritten");
 		
 		
 		Database d = new Database();

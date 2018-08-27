@@ -207,6 +207,8 @@ protected Element charOutcomesElement;
 protected String revManID = "";
 protected String reviewTitle = "";
 
+private int biasExtractionCounter = 0;
+
 
 protected Characteristics() {
 	//empty constructor for xml marshalling
@@ -219,12 +221,13 @@ protected Characteristics() {
 		this.qualityItemList = qualityItemList;
 		this.revManID = revManID;
 		this.reviewTitle = reviewTitle;
-		breakBiasVerification = qualityItemList.getLength();
+		breakBiasVerification = qualityItemList.getLength();//to determine the end of the recursive method
+		
 		
 		///////extracts all info on biases that the review author added. The Risk is a three field option (High, low or unclear Risk), judgement of bias includes : justification or quotes from the trials
 		String[] biasArray;
 		
-		biasArray = biasAnalyser(0, "random sequence generation");
+		biasArray = biasAnalyser(0, "sequence generation");
 		selectionBiasRandomSequenceBiasRisk = biasArray[0];
 		selectionBiasRandomSequenceJudgement = biasArray[1];
 		
@@ -235,6 +238,16 @@ protected Characteristics() {
 		biasArray = biasAnalyser(0, "performance bias");
 		performanceBiasRisk = biasArray[0];
 		performanceBiasJudgement = biasArray[1];
+		
+		System.out.println(performanceBiasRisk);
+		
+		if (performanceBiasRisk.equals("Information could not be retrieved")) {
+			
+			biasArray = biasAnalyser(0, "blinding");
+			performanceBiasRisk = biasArray[0];
+			performanceBiasJudgement = biasArray[1];
+			System.out.println("New perf risk: "+performanceBiasRisk);
+		}
 		
 		biasArray = biasAnalyser(0, "detection bias");
 		detectionBiasRisk = biasArray[0];
@@ -251,6 +264,8 @@ protected Characteristics() {
 		biasArray = biasAnalyser(0, "other bias");
 		otherBiasRisk = biasArray[0];
 		otherBiasJudgement = biasArray[1];
+		
+	
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		//extracts prose about interventions
@@ -1056,6 +1071,7 @@ private String[] biasAnalyser(int index, String description){
 			Node specificDataEntryNode = specificItemDataEntryList.item(l);
 			Element specificDataEntryElement = (Element) specificDataEntryNode;
 			if (specificDataEntryElement.getAttribute("STUDY_ID").equals(revManID)) { //searches the desired trial for this object
+				biasExtractionCounter++; //in the end this int will be compared with the total number of entries for the bias list to see if there are differences.
 				if (specificDataEntryElement.getAttribute("RESULT").equals("UNKNOWN")) { //These are the options from RevMans dropdown menu in the bias table
 					forReturn[0] = "Unclear Risk";
 				} else if (specificDataEntryElement.getAttribute("RESULT").equals("YES")) {
