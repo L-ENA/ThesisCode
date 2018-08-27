@@ -14,6 +14,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ParseReview {
+	String path = "";
+	public ParseReview() {
+		
+	}
 	
 public Document[] chooseAndParse() throws ParserConfigurationException{
 		
@@ -28,6 +32,11 @@ File[] files = null;//declare and initialising the file array
 		}
 		//File review = chooser.getSelectedFile().getAbsoluteFile();
 			Document[] rm5 = new Document[files.length];//here, the parsed SR files will be stored.
+			
+			path = files[0].getAbsoluteFile().getParent();///path where data comes from
+			if (path.equals(null)) {
+				path = "";
+			}
 			for (int i = 0; i < files.length; i++) {//loop to process all selected files
 				
 				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -44,6 +53,8 @@ File[] files = null;//declare and initialising the file array
 				} catch (IOException e) {
 				} 
 			}
+			
+			
 			return rm5;//returns array with parsed SR documents
 }
 	

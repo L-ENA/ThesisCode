@@ -18,6 +18,7 @@ public class Database {
 
 	List<Trial> trialList = new ArrayList<>();
 	protected String reviewName = "";
+	protected String path = ""; // for saving extraction file
 	
 	@XmlElement(name = "TRIAL")
 	public List<Trial> getTrialList() {
@@ -31,7 +32,9 @@ public class Database {
 		
 		
 		ParseReview parser = new ParseReview();
+		
 		Document[] reviewArray = parser.chooseAndParse(); //contains reviews specified by user via pop up browsing window
+		path = parser.path;
 		
 		for (int i = 0; i < reviewArray.length; i++) {
 			int numberOfStudies = parser.numberOfIncludedStudies(reviewArray[i]);//looks at how many trials there are to extract

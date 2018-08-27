@@ -16,7 +16,7 @@ public class Main {
 
 	
 	public static void main(String[] args)  throws Exception{
-		JOptionPane.showMessageDialog(null, "Instructions\nPlease select one or more ReviewManager5 (.rm5) files in the next step. \n\nMake sure that you have a folder called \"Raptor\" located on your PC's \"C\" drive. \nIts path should look like this: \"C:\\Raptor\" \nThe new XML will be saved there, your original review file remains untouched.\nIf this folder already contains an XML created by RAPTOR, it will be overwritten");
+		JOptionPane.showMessageDialog(null, "Instructions:\nPlease select one or more ReviewManager5 (.rm5) files in the next step. \n\nThe new file, called \"RAPTOR.xml\" will be saved there.\nYour original review file remains untouched.\nIf this folder already contains an XML created by RAPTOR, it will be overwritten.");
 		
 		
 		Database d = new Database();
@@ -78,9 +78,10 @@ public class Main {
 				
 				
 				
-				String path = "C:\\Raptor\\extraction.xml";
+				String path = d.path + "\\RAPTOR.xml";
 				jaxbMarshaller.marshal(d, new File(path));	//puts database into a xml file that is saved according to path String
 				
+				System.out.println(d.path);
 				System.out.println("File created successfully");
 				System.out.println(Trial.counter);
 				JOptionPane.showMessageDialog(null, "Extraction finished successfully");
