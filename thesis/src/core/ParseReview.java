@@ -65,7 +65,13 @@ File[] files = null;//declare and initialising the file array
 		NodeList rootList = rm5.getElementsByTagName("COCHRANE_REVIEW");
 		Element rootElement = (Element) rootList.item(0);
 		
-		NodeList characteristicsOfStudiesList = rootElement.getElementsByTagName("CHARACTERISTICS_OF_STUDIES");
+		
+		NodeList characteristicsOfStudiesList;
+		try {
+			characteristicsOfStudiesList = rootElement.getElementsByTagName("CHARACTERISTICS_OF_STUDIES");
+		} catch (Exception e) {
+			return 0;
+		}
 		Element characteristicsOfStudiesElement = (Element) characteristicsOfStudiesList.item(0);
 		
 		NodeList characteristicsOfIncludedStudiesList = 
