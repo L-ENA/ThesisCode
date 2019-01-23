@@ -24,6 +24,7 @@ public class Main {
 		
 		if (d.reviewName == "") {//if reviewName is empty it indicates that only the default constructor for trial objects was called in the database class. Therefore, there are no trials included in the review that was analysed.
 			System.out.println("No trials included");
+			JOptionPane.showMessageDialog(null, "The last review in your list of selected reviews needs to have at least one included study. Please change the order of your reviews if that's not the case. \nSorry for the inconvenience! Please try it again.");
 		} else {
 			try {
 				JAXBContext jaxbContext = JAXBContext.newInstance(

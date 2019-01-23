@@ -54,11 +54,19 @@ public class ContinuousOutcome extends Outcome{
 	public void setRevManID(String revManID) {
 		this.revManID = revManID;
 	}
+	protected String studyLevelLink;
 	
-	//What does "ORDER" attribute mean?
-	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
-	ContinuousOutcome(Element contDataElement, Element comparisonNameElement, Element contOutcomeNameElement, Element contOutcomeElement, Element contSubgroupElement, String review, String revManID) {
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
+
+	ContinuousOutcome(Element contDataElement, Element comparisonNameElement, Element contOutcomeNameElement, Element contOutcomeElement, Element contSubgroupElement, String review, String revManID, String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
 		this.revManID = revManID;
 		
 		this.reviewTitle = review;

@@ -45,7 +45,16 @@ public class OEandVarianceOutcome extends Outcome {
 	private Matcher m;
 	private String[] splitComparison = new String[2];
 	private String[] splitIC = new String[2];
+protected String studyLevelLink;
 	
+	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	protected String revManID = "";
 	
 	public String getRevManID() {
@@ -240,7 +249,8 @@ public class OEandVarianceOutcome extends Outcome {
 
 
 
-	public OEandVarianceOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review, String revManID) {
+	public OEandVarianceOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review, String revManID, String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
 		this.revManID = revManID;
 		this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();

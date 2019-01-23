@@ -16,7 +16,16 @@ public class OtherOutcome extends Outcome{
 	protected String reviewTitle = "";
 	protected String comparisonName = "";
 	protected String revManID = "";
+protected String studyLevelLink;
 	
+	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	public String getRevManID() {
 		return revManID;
 	}
@@ -74,7 +83,8 @@ public class OtherOutcome extends Outcome{
 		super();
 	}
 	
-public OtherOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review, String revManID) {
+public OtherOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review, String revManID, String studyLevelLink) {
+	this.studyLevelLink = studyLevelLink;
 	this.revManID = revManID;
 	this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();

@@ -121,8 +121,16 @@ public class Characteristics {
 	protected String blindingProse = "";
 	protected String additionalBlindingInfo = "";
 	
+	protected String studyLevelLink = "";
 	
-	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
+
 	public String getAdditionalBlindingProse() {
 		return additionalBlindingInfo;
 	}
@@ -214,7 +222,8 @@ protected Characteristics() {
 	//empty constructor for xml marshalling
 }
 
-	protected Characteristics(Element studyToExtractElement, NodeList qualityItemList, String revManID, String reviewTitle, String year, String firstPublicationYear) {
+	protected Characteristics(Element studyToExtractElement, NodeList qualityItemList, String revManID, String reviewTitle, String year, String firstPublicationYear,String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
 		mainYear = year;
 		this.firstPublicationYear = firstPublicationYear;
 		//System.out.println(mainYear);
@@ -239,14 +248,14 @@ protected Characteristics() {
 		performanceBiasRisk = biasArray[0];
 		performanceBiasJudgement = biasArray[1];
 		
-		System.out.println(performanceBiasRisk);
+		//System.out.println(performanceBiasRisk);
 		
 		if (performanceBiasRisk.equals("Information could not be retrieved")) {
 			
 			biasArray = biasAnalyser(0, "blinding");
 			performanceBiasRisk = biasArray[0];
 			performanceBiasJudgement = biasArray[1];
-			System.out.println("New perf risk: "+performanceBiasRisk);
+			//System.out.println("New perf risk: "+performanceBiasRisk);
 		}
 		
 		biasArray = biasAnalyser(0, "detection bias");

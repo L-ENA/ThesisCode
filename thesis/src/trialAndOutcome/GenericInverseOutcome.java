@@ -12,7 +12,16 @@ import org.w3c.dom.NodeList;
 
 public class GenericInverseOutcome extends Outcome{
 	
+protected String studyLevelLink;
 	
+	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	public String getReviewTitle() {
 	return reviewTitle;
 }
@@ -216,7 +225,8 @@ public String getOutcomeName() {
 		super();
 	}
 	
-public GenericInverseOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review, String revManID) {
+public GenericInverseOutcome(Element oeDataElement, Element comparisonNameElement, Element oeOutcomeNameElement, Element oeOutcomeElement, Element oeSubgroupElement, String review, String revManID, String studyLevelLink) {
+	this.studyLevelLink = studyLevelLink;
 	this.revManID = revManID;
 	this.reviewTitle = review;
 		outcomeName = oeOutcomeNameElement.getTextContent();

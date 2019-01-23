@@ -12,7 +12,16 @@ import org.w3c.dom.NodeList;
 //@XmlRootElement(name = "DichOutcome")
 public class DichotomousOutcome extends Outcome{
 	
+protected String studyLevelLink;
 	
+	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	public String getReviewTitle() {
 		return reviewTitle;
 	}
@@ -215,7 +224,8 @@ public void setControlTotalN(int controlTotalN) {
 	//What does "ORDER" attribute mean?
 	//extract nothing to do with CI, weight, fixed/ random effects, 
 	
-	DichotomousOutcome(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement, String review, String revManID) {
+	DichotomousOutcome(Element dichDataElement, Element comparisonNameElement, Element dichOutcomeNameElement, Element dichOutcomeElement, Element dichSubgroupElement, String review, String revManID, String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
 		this.revManID = revManID;
 		this.reviewTitle = review;
 		NodeList groupLabel1List = dichOutcomeElement.getElementsByTagName("GROUP_LABEL_1");	//for intervention name

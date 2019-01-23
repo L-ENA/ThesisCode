@@ -59,7 +59,7 @@ public class Trial{
 	protected String doi = "";
 	
 	protected String revManID;//check
-	protected String[] references; //to contain all references to this trial
+	private String[] references; //to contain all references to this trial
 	
 	protected List<Outcome> outcomeList = new ArrayList<>();///array list that will contain all outcomes and their data
 	
@@ -82,7 +82,11 @@ public class Trial{
 	protected List<Identifier> referenceIdList = new ArrayList<>();
 	
 	
-
+	protected String studyLevelLink = "";
+	
+	
+	
+	
 	/////////////////////////////////////////////////////////////xml related attributes that are used between different methods in the big constructor
 	private Element qualityItemsElement;
 	Element studyElement;
@@ -204,7 +208,7 @@ public class Trial{
 					/////////////////////////////////////////////////////////////////////////////////////////////////
 					////////////////////////////////////////////
 					
-					
+					trialIdentifiersExtracting();
 					referenceExtracting(); //Extracts all information on references of this trial. See method referenceExtracting() below for more details. Puts info into array of strings that will be further analysed below
 					
 					for (int i = 0; i < references.length; i++){
@@ -277,7 +281,7 @@ public class Trial{
 							if (lowestYear != 2147483647) {//if no parsable year was found, this info is discarded and year stays empty
 								if (year.equals("")) {//uses the lowest year value if year is empty
 									year = Integer.toString(lowestYear);// a lower year was found
-									System.out.println(reviewTitle + ", " + revManID + ": new year is " + year);
+									//System.out.println(reviewTitle + ", " + revManID + ": new year is " + year);
 								} 
 								firstPublicationYear = Integer.toString(lowestYear);
 								}
@@ -285,7 +289,7 @@ public class Trial{
 						year = "";
 					}
 					
-					charObject = new Characteristics(studyToExtractElement, qualityItemList, revManID, reviewTitle, year, firstPublicationYear);
+					charObject = new Characteristics(studyToExtractElement, qualityItemList, revManID, reviewTitle, year, firstPublicationYear, studyLevelLink);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Extracts OutcomeObjects for this trial
 					
@@ -337,7 +341,7 @@ public class Trial{
 										
 										if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){
 											
-											dobj = new DichotomousOutcome(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement, reviewTitle, revManIdParameter);
+											dobj = new DichotomousOutcome(dichDataElement, comparisonNameElement, dichOutcomeNameElement, dichOutcomeElement, dichSubgroupElement, reviewTitle, revManIdParameter, studyLevelLink);
 											outcomeList.add(dobj);
 											//System.out.println("Outcome added to list");
 										}
@@ -355,7 +359,7 @@ public class Trial{
 											if (dichDataElement.getAttribute("STUDY_ID").equals(revManID)){ //looks if this specific study matches
 												//the RevManID of the study we want to extract data of
 												dobj = new DichotomousOutcome(dichDataElement, comparisonNameElement, dichOutcomeNameElement, 
-														dichOutcomeElement, dichSubgroupElement, reviewTitle, revManIdParameter);//if it matched, an object is created
+														dichOutcomeElement, dichSubgroupElement, reviewTitle, revManIdParameter, studyLevelLink);//if it matched, an object is created
 												outcomeList.add(dobj);//object is added to list
 											}
 										}
@@ -394,7 +398,7 @@ public class Trial{
 										
 										if (contDataElement.getAttribute("STUDY_ID").equals(revManID)){
 											
-											cobj = new ContinuousOutcome(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle, revManIdParameter);
+											cobj = new ContinuousOutcome(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle, revManIdParameter, studyLevelLink);
 											outcomeList.add(cobj);
 											//System.out.println("Outcome added to list");
 										}
@@ -411,7 +415,7 @@ public class Trial{
 											
 											if (contDataElement.getAttribute("STUDY_ID").equals(revManID)){
 												
-												cobj = new ContinuousOutcome(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle, revManIdParameter);
+												cobj = new ContinuousOutcome(contDataElement, comparisonNameElement, contOutcomeNameElement, contOutcomeElement, contSubgroupElement, reviewTitle, revManIdParameter, studyLevelLink);
 												outcomeList.add(cobj);
 												//System.out.println("Outcome added to list");
 											}
@@ -454,7 +458,7 @@ public class Trial{
 												
 												Element oSubgroupElement = null;
 												
-												oobj = new OtherOutcome(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle, revManIdParameter);
+												oobj = new OtherOutcome(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle, revManIdParameter, studyLevelLink);
 												outcomeList.add(oobj);
 												counter++;
 												
@@ -473,7 +477,7 @@ public class Trial{
 												
 												if (oDataElement.getAttribute("STUDY_ID").equals(revManID)){
 													
-													oobj = new OtherOutcome(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle, revManIdParameter);
+													oobj = new OtherOutcome(oDataElement, comparisonNameElement, oOutcomeNameElement, oOutcomeElement, oSubgroupElement, reviewTitle, revManIdParameter, studyLevelLink);
 													outcomeList.add(oobj);
 													counter++;
 													
@@ -519,7 +523,7 @@ public class Trial{
 												
 												Element ivSubgroupElement = null;
 												
-												givobj = new GenericInverseOutcome(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle, revManIdParameter);
+												givobj = new GenericInverseOutcome(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle, revManIdParameter, studyLevelLink);
 												outcomeList.add(givobj);
 												
 												
@@ -538,7 +542,7 @@ public class Trial{
 												
 												if (ivDataElement.getAttribute("STUDY_ID").equals(revManID)){
 													
-													givobj = new GenericInverseOutcome(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle, revManIdParameter);
+													givobj = new GenericInverseOutcome(ivDataElement, comparisonNameElement, ivOutcomeNameElement, ivOutcomeElement, ivSubgroupElement, reviewTitle, revManIdParameter, studyLevelLink);
 													outcomeList.add(givobj);
 													
 													
@@ -584,7 +588,7 @@ public class Trial{
 												
 												Element oeSubgroupElement = null;
 												
-												oeobj = new OEandVarianceOutcome(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle, revManIdParameter);
+												oeobj = new OEandVarianceOutcome(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle, revManIdParameter, studyLevelLink);
 												outcomeList.add(oeobj);
 												
 												
@@ -603,7 +607,7 @@ public class Trial{
 												
 												if (oeDataElement.getAttribute("STUDY_ID").equals(revManID)){
 													
-													oeobj = new OEandVarianceOutcome(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle, revManIdParameter);
+													oeobj = new OEandVarianceOutcome(oeDataElement, comparisonNameElement, oeOutcomeNameElement, oeOutcomeElement, oeSubgroupElement, reviewTitle, revManIdParameter, studyLevelLink);
 													outcomeList.add(oeobj);
 													
 												}
@@ -622,35 +626,7 @@ public class Trial{
 						
 						
 						
-						
-//						NodeList comparisonNameList = comparisonElement.getElementsByTagName("NAME");
-//						Node comparisonNameNode = comparisonNameList.item(0);
-//						Element comparisonNameElement = (Element) comparisonNameNode;
-//						
-//						comparisonName = comparisonNameElement.getTextContent();
-//						System.out.println(comparisonName);
-					}//closes the for loop that starts with the comparison elements
-					
-					
-//					System.out.println(mainAuthor);
-//					
-//					System.out.println("RandomSequenceBias: " + selectionBiasRandomSequenceBiasRisk + ". " + selectionBiasRandomSequenceJudgement 
-//							+ "\n" + "AllocationBias: " + selectionBiasAllocationConcealmentBiasRisk + ". " + selectionBiasAllocationConcealmentJudgement
-//							+ "\n" + "PerformanceBias: " + performanceBiasRisk + ". " + performanceBiasJudgement
-//							+ "\n" + "DetectionBias: " + detectionBiasRisk + ". " + detectionBiasJudgement
-//							+ "\n" + "AttritionBias: " + attritionBiasRisk + ". " + attritionBiasJudgement
-//							+ "\n" + "ReportingBias: " + reportingBiasRisk + ". " + reportingBiasJudgement
-//							+ "\n" + "OtherBias: " + otherBiasRisk + ". " + otherBiasJudgement
-//							);
-//				
-					
-//					for (int j = 0; j<references.length; j++){
-//						System.out.println(references[j]);
-//					}
-					
-//								System.out.println(year);
-//					
-//								System.out.println(revManID);
+					}
 								authorYearLetter = mainAuthor + year + yearLetter;
 								revManID = revManID.replaceAll("_x00df_", "ß").replaceAll("(_x002d_)", "-").replaceAll("(_x0026_)", "&").replaceAll("_x00e8_", "è").replaceAll("_x00f6_", "ö").replaceAll("_x00fc_", "ü").replaceAll("_x002b_", "+").replaceAll("_x002f_", "/").replaceAll("_x00a0_", " ").replaceAll("_x002c_", ",").replaceAll("_x0028_", "(").replaceAll("_x0029_", ")").replaceAll("_x00e7_", "ç").replaceAll("_x0027_", "'").replaceAll("_x002a_", "*").replaceAll("_x00e9_", "é").replaceAll("_x00e4_", "ä").replaceAll("_x00b4_", "´");
 								charObject.revManID = revManID;
@@ -661,7 +637,7 @@ public class Trial{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 								/////extracts identifiers
 
-								trialIdentifiersExtracting();
+								
 //////////////////////////////////////////////////////////////////////////////////////
 								
 								
@@ -741,41 +717,57 @@ public class Trial{
 		//this is on study level and not single references level
 		
 		NodeList identifiersList = studyElement.getElementsByTagName("IDENTIFIERS");
+		System.out.println(studyElement.getAttribute("ID"));
 		Node identifiersNode = identifiersList.item(1);
 		Element identifiersElement = (Element) identifiersNode;
-		
-		if (identifiersElement.getParentNode().getNodeName().equals("STUDY")) {
-			NodeList identifierList = identifiersElement.getElementsByTagName("IDENTIFIER");
-			
-			
-			
-			for (int i = 0; i < identifierList.getLength(); i ++) {
-				
-				Element identifierElement = (Element) identifierList.item(i);
-				String idValue = identifierElement.getAttribute("TYPE");
-				
-				if (idValue.equals("DOI")) {
-					trialIdObject = new DoiIdentifier(identifierElement, revManID, reviewTitle);
-					trialIdList.add(trialIdObject);
-					//System.out.println("DOI added " );
+		for (int i = 0; i < identifiersList.getLength(); i ++) {
+			identifiersNode = identifiersList.item(i);
+			identifiersElement = (Element) identifiersNode;
+			if (identifiersElement.getParentNode().getNodeName().equals("STUDY")) {
+				System.out.println(identifiersElement.getAttribute("MODIFIED"));
+				NodeList identifierList = identifiersElement.getElementsByTagName("IDENTIFIER");
+				for (int j = 0; j < identifierList.getLength(); j ++) {
 					
-				} else if (idValue.equals("CTG")){
-					trialIdObject = new ClinTrialGovIdentifier(identifierElement, revManID, reviewTitle);
-					trialIdList.add(trialIdObject);
-					//System.out.println("CTG added " );
-					
-				} else if (idValue.equals("ISRCTN")){
-					trialIdObject = new IsrctnIdentifier(identifierElement, revManID, reviewTitle);
-					trialIdList.add(trialIdObject);
-					//System.out.println("ISRCTN added " );
-					
-				} else if (idValue.equals("OTHER")){
-					trialIdObject = new OtherIdentifier(identifierElement, revManID, reviewTitle);
-					trialIdList.add(trialIdObject);
-					//System.out.println("Other added " );
+					Element identifierElement = (Element) identifierList.item(j);
+					String idValue = identifierElement.getAttribute("TYPE");
+					//System.out.println("Some study id");
+					if (idValue.equals("DOI")) {
+						trialIdObject = new DoiIdentifier(identifierElement, revManID, reviewTitle);
+						trialIdList.add(trialIdObject);
+						//System.out.println("DOI added " );
+						
+					} else if (idValue.equals("CTG")){
+						trialIdObject = new ClinTrialGovIdentifier(identifierElement, revManID, reviewTitle);
+						trialIdList.add(trialIdObject);
+						//System.out.println("CTG added " );
+						
+					} else if (idValue.equals("ISRCTN")){
+						trialIdObject = new IsrctnIdentifier(identifierElement, revManID, reviewTitle);
+						trialIdList.add(trialIdObject);
+						//System.out.println("ISRCTN added " );
+						
+					} else if (idValue.equals("OTHER")){
+						trialIdObject = new OtherIdentifier(identifierElement, revManID, reviewTitle);
+						trialIdList.add(trialIdObject);
+						if (trialIdObject.getExactType().equals("CSzG")) {//if the current identifier is a study level link
+							this.studyLevelLink = trialIdObject.getValue();
+						System.out.println("Found cszg ID" + studyLevelLink);
+							
+						}
+						//System.out.println("Other added " );
+					}
 				}
+			
 			}
+			
 		}
+		
+		
+			
+			//System.out.println(identifierList.getLength());
+			
+			
+		
 		
 		
 	}
@@ -1184,16 +1176,16 @@ public class Trial{
 	}
 
 
-@XmlElement
-	public String[] getReferences() {
-		return references;
-	}
+
+	//public String[] getReferences() {
+		//return references;
+	//}
 
 
 
-	public void setReferences(String[] references) {
-		this.references = references;
-	}
+	//public void setReferences(String[] references) {
+		//this.references = references;
+	//}
 
 
 
@@ -1333,6 +1325,13 @@ public class Trial{
 	}
 	public void setReferenceIdList(List<Identifier> referenceIdList) {
 		this.referenceIdList = referenceIdList;
+	}
+	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+    public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
 	}
 
 }
