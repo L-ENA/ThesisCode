@@ -717,14 +717,14 @@ public class Trial{
 		//this is on study level and not single references level
 		
 		NodeList identifiersList = studyElement.getElementsByTagName("IDENTIFIERS");
-		System.out.println(studyElement.getAttribute("ID"));
+		//System.out.println(studyElement.getAttribute("ID"));
 		Node identifiersNode = identifiersList.item(1);
 		Element identifiersElement = (Element) identifiersNode;
 		for (int i = 0; i < identifiersList.getLength(); i ++) {
 			identifiersNode = identifiersList.item(i);
 			identifiersElement = (Element) identifiersNode;
 			if (identifiersElement.getParentNode().getNodeName().equals("STUDY")) {
-				System.out.println(identifiersElement.getAttribute("MODIFIED"));
+				//System.out.println(identifiersElement.getAttribute("MODIFIED"));
 				NodeList identifierList = identifiersElement.getElementsByTagName("IDENTIFIER");
 				for (int j = 0; j < identifierList.getLength(); j ++) {
 					
@@ -748,12 +748,16 @@ public class Trial{
 						
 					} else if (idValue.equals("OTHER")){
 						trialIdObject = new OtherIdentifier(identifierElement, revManID, reviewTitle);
-						trialIdList.add(trialIdObject);
+						
 						if (trialIdObject.getExactType().equals("CSzG")) {//if the current identifier is a study level link
 							this.studyLevelLink = trialIdObject.getValue();
-						System.out.println("Found cszg ID" + studyLevelLink);
+							this.studyLevelLink = this.studyLevelLink.replace("Std", ""); //replace the std prefix if it exists
+							trialIdObject.setValue(this.studyLevelLink);
+							System.out.println(this.studyLevelLink);
+							System.out.println("Found cszg ID" + studyLevelLink);
 							
 						}
+						trialIdList.add(trialIdObject);//add it now, so that in case the value was changed, the new value is added
 						//System.out.println("Other added " );
 					}
 				}

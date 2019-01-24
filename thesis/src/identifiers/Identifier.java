@@ -18,4 +18,9 @@ public String getValue() {
 		return "";
 	}
 
+public void setValue(String value) {
+	
+	
+}
+
 }
