@@ -1,6 +1,7 @@
 package trialAndOutcome;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -213,51 +214,51 @@ public class Trial{
 					
 					for (int i = 0; i < references.length; i++){
 						if (references[i].equals("JOURNAL_ARTICLE")){
-							refObject = new JournalReference(references, i, revManID, reviewTitle);
+							refObject = new JournalReference(references, i, revManID, reviewTitle, studyLevelLink);
 							referenceList.add(refObject);
 							i = i + 14; //its plus 14 because +1 is added at the end of the loop and 
 							//this array contains new info to check on every 15th index
 						} else if (references[i].equals("CONFERENCE_PROC")){
-							refObject = new ConferenceReference(references, i, revManID, reviewTitle);
+							refObject = new ConferenceReference(references, i, revManID, reviewTitle, studyLevelLink);
 							referenceList.add(refObject);
 							i = i + 14;
 						} else if (references[i].equals("UNPUBLISHED")){
-							refObject = new UnpublishedReference(references, i, revManID, reviewTitle);
+							refObject = new UnpublishedReference(references, i, revManID, reviewTitle, studyLevelLink);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("OTHER")){
-							refObject = new OtherReference(references, i, revManID, reviewTitle);
+							refObject = new OtherReference(references, i, revManID, reviewTitle, studyLevelLink);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("BOOK_SECTION")){
-							refObject = new BookSectionReference(references, i, revManID, reviewTitle);
+							refObject = new BookSectionReference(references, i, revManID, reviewTitle, studyLevelLink);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("CORRESPONDENCE")){
-							refObject = new CorrespondenceReference(references, i, revManID, reviewTitle);
+							refObject = new CorrespondenceReference(references, i, revManID, reviewTitle, studyLevelLink);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("BOOK")){
-							refObject = new BookReference(references, i, revManID, reviewTitle);
+							refObject = new BookReference(references, i, revManID, reviewTitle, studyLevelLink);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("COCHRANE_REVIEW")){
-							refObject = new CochraneReviewReference(references, i, revManID, reviewTitle);
+							refObject = new CochraneReviewReference(references, i, revManID, reviewTitle, studyLevelLink);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						} else if (references[i].equals("COCHRANE_PROTOCOL")){
-							refObject = new CochraneProtocolReference(references, i, revManID, reviewTitle);
+							refObject = new CochraneProtocolReference(references, i, revManID, reviewTitle, studyLevelLink);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
 						}else if (references[i].equals("COMPUTER_PROGRAM")){
-							refObject = new SoftwareReference(references, i, revManID, reviewTitle);
+							refObject = new SoftwareReference(references, i, revManID, reviewTitle, studyLevelLink);
 							referenceList.add(refObject);
 							//System.out.println(refObject.getClass());
 							i = i + 14;
@@ -676,32 +677,32 @@ public class Trial{
 				String idType = referenceIdentifierElement.getAttribute("TYPE");//to test which object type has to be created below
 				//System.out.println("Value ist: " + idType);
 				if (idType.equals("DOI")) {
-					referenceIdObj = new DoiIdentifier(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new DoiIdentifier(referenceIdentifierElement, revManID, reviewTitle,this.studyLevelLink);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("DOI added");
 
 				} else if (idType.equals("OTHER")) {
-					referenceIdObj = new OtherIdentifier(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new OtherIdentifier(referenceIdentifierElement, revManID, reviewTitle,this.studyLevelLink);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("Other added ");
 
 				} else if (idType.equals("EMBASE")) {
-					referenceIdObj = new EmbaseIdentifier(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new EmbaseIdentifier(referenceIdentifierElement, revManID, reviewTitle,this.studyLevelLink);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("Embase added ");
 
 				} else if (idType.equals("CENTRAL")) {
-					referenceIdObj = new CentralIdentifier(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new CentralIdentifier(referenceIdentifierElement, revManID, reviewTitle,this.studyLevelLink);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("Central added ");
 
 				} else if (idType.equals("MEDLINE")) {
-					referenceIdObj = new MedlineIdentifier(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new MedlineIdentifier(referenceIdentifierElement, revManID, reviewTitle,this.studyLevelLink);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("Medline added " + revManID + reviewTitle);
 
 				} else if (idType.equals("PUBMED")) {
-					referenceIdObj = new PubMedIdentifier(referenceIdentifierElement, revManID, reviewTitle);
+					referenceIdObj = new PubMedIdentifier(referenceIdentifierElement, revManID, reviewTitle,this.studyLevelLink);
 					referenceIdList.add(referenceIdObj);
 					//System.out.println("Pubmed added ");
 
@@ -732,32 +733,44 @@ public class Trial{
 					String idValue = identifierElement.getAttribute("TYPE");
 					//System.out.println("Some study id");
 					if (idValue.equals("DOI")) {
-						trialIdObject = new DoiIdentifier(identifierElement, revManID, reviewTitle);
+						trialIdObject = new DoiIdentifier(identifierElement, revManID, reviewTitle,this.studyLevelLink);
 						trialIdList.add(trialIdObject);
 						//System.out.println("DOI added " );
 						
 					} else if (idValue.equals("CTG")){
-						trialIdObject = new ClinTrialGovIdentifier(identifierElement, revManID, reviewTitle);
+						trialIdObject = new ClinTrialGovIdentifier(identifierElement, revManID, reviewTitle,this.studyLevelLink);
 						trialIdList.add(trialIdObject);
 						//System.out.println("CTG added " );
 						
 					} else if (idValue.equals("ISRCTN")){
-						trialIdObject = new IsrctnIdentifier(identifierElement, revManID, reviewTitle);
+						trialIdObject = new IsrctnIdentifier(identifierElement, revManID, reviewTitle,this.studyLevelLink);
 						trialIdList.add(trialIdObject);
 						//System.out.println("ISRCTN added " );
 						
 					} else if (idValue.equals("OTHER")){
-						trialIdObject = new OtherIdentifier(identifierElement, revManID, reviewTitle);
-						
+						trialIdObject = new OtherIdentifier(identifierElement, revManID, reviewTitle,this.studyLevelLink);
+						trialIdObject.setStudyLevelLink(this.studyLevelLink);
 						if (trialIdObject.getExactType().equals("CSzG")) {//if the current identifier is a study level link
 							this.studyLevelLink = trialIdObject.getValue();
 							this.studyLevelLink = this.studyLevelLink.replace("Std", ""); //replace the std prefix if it exists
 							trialIdObject.setValue(this.studyLevelLink);
 							System.out.println(this.studyLevelLink);
 							System.out.println("Found cszg ID" + studyLevelLink);
+							trialIdObject.setStudyLevelLink(this.studyLevelLink);
 							
 						}
 						trialIdList.add(trialIdObject);//add it now, so that in case the value was changed, the new value is added
+						//for o in trialIdList
+						//////////////////////////////add identifier
+						ListIterator<Identifier> listIterator = trialIdList.listIterator();
+
+							    if (listIterator.hasNext()) {
+							      // Need to call next, before set.
+							      Identifier idf = listIterator.next();
+							      // Replace item returned from next()
+							      idf.setStudyLevelLink(this.studyLevelLink);
+							    }
+							    
 						//System.out.println("Other added " );
 					}
 				}

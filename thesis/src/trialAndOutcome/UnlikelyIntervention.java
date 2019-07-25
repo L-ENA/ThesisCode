@@ -5,16 +5,24 @@ public class UnlikelyIntervention extends Interventions{
 	protected String reviewTitle;
 	protected String value;
 	protected String isIntervention = "Unlikely";
-
+	protected String studyLevelLink="";
 	public UnlikelyIntervention() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UnlikelyIntervention(String thisItem, String revManID, String reviewTitle) {
+	public UnlikelyIntervention(String thisItem, String revManID, String reviewTitle, String sll) {
 		this.reviewTitle = reviewTitle;
 		this.revManID = revManID;
 		this.value = thisItem;
+		this.studyLevelLink = sll;
+	}
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
 	}
 
 	public String getRevManID() {

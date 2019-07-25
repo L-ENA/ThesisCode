@@ -9,12 +9,14 @@ public class IsrctnIdentifier extends Identifier {
 	protected String link = "";
 	protected String value = "";
 	protected String review = "";
+	protected String studyLevelLink="";
 
-
-	public IsrctnIdentifier(Element identifierElement, String link, String review) {
+	public IsrctnIdentifier(Element identifierElement, String link, String review, String sll) {
+		super();
 		type = "ISRCTN";
 		this.link = link;
 		this.review = review;
+		this.studyLevelLink= sll;
 		try {
 			value = identifierElement.getAttribute("VALUE");
 			
@@ -26,7 +28,13 @@ public class IsrctnIdentifier extends Identifier {
 	
 	}
 	
-	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	
 public IsrctnIdentifier() {
 		

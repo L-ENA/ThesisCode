@@ -15,7 +15,7 @@ public class OutcomeCharTable {
 	private UsedOutcome usedObj;
 	
 	
-	public OutcomeCharTable(String revManID,String reviewTitle, String outcomesString) {
+	public OutcomeCharTable(String revManID,String reviewTitle, String outcomesString, String sll) {
 		
 		revManID = revManID.replaceAll("_x00df_", "ß").replaceAll("(_x002d_)", "-").replaceAll("(_x0026_)", "&").replaceAll("_x00e8_", "è").replaceAll("_x00f6_", "ö").replaceAll("_x00fc_", "ü").replaceAll("_x002b_", "+").replaceAll("_x002f_", "/").replaceAll("_x00a0_", " ").replaceAll("_x002c_", ",").replaceAll("_x0028_", "(").replaceAll("_x0029_", ")").replaceAll("_x00e7_", "ç").replaceAll("_x0027_", "'").replaceAll("_x002a_", "*").replaceAll("_x00e9_", "é").replaceAll("_x00e4_", "ä").replaceAll("_x00b4_", "´");
 		
@@ -27,7 +27,7 @@ public class OutcomeCharTable {
 			for (String thisItem : used) {
 				thisItem = thisItem.trim();
 				if (thisItem.equals("") == false) {//if it is not empty
-					usedObj = new UsedOutcome(thisItem, revManID, reviewTitle);
+					usedObj = new UsedOutcome(thisItem, revManID, reviewTitle, sll);
 					outcomeCharTableList.add(usedObj);
 				}
 				
@@ -42,7 +42,7 @@ public class OutcomeCharTable {
 			for (String thisItem : unused) {
 				thisItem = thisItem.trim();
 				if (thisItem.equals("") == false) {
-					unusedObj = new UnusedOutcome(thisItem, revManID, reviewTitle);
+					unusedObj = new UnusedOutcome(thisItem, revManID, reviewTitle, sll);
 					outcomeCharTableList.add(unusedObj);
 				}
 				

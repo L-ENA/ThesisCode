@@ -17,8 +17,14 @@ public class BookSectionReference extends Reference{
 	protected boolean primaryReference = false;
 	protected String reviewTitle = "";
 	protected String revManID = "";
-	
-	
+	protected String studyLevelLink="";
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	public String getReviewTitle() {
 		return reviewTitle;
 	}
@@ -43,7 +49,8 @@ public class BookSectionReference extends Reference{
 		this.primaryReference = primaryReference;
 	}
 
-	public BookSectionReference(String[] referencesArray, int i, String revManID, String reviewTitle){
+	public BookSectionReference(String[] referencesArray, int i, String revManID, String reviewTitle, String sll){
+		this.studyLevelLink = sll;
 		this.reviewTitle = reviewTitle;
 		this.revManID = revManID;
 		type = "Book section";

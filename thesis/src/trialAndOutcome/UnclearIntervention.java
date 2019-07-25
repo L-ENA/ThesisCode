@@ -5,16 +5,25 @@ public class UnclearIntervention extends Interventions{
 	protected String reviewTitle;
 	protected String value;
 	protected String isIntervention = "Unclear";
+	protected String studyLevelLink="";
 
 	public UnclearIntervention() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UnclearIntervention(String thisItem, String revManID, String reviewTitle) {
+	public UnclearIntervention(String thisItem, String revManID, String reviewTitle, String sll) {
 		this.reviewTitle = reviewTitle;
 		this.revManID = revManID;
 		this.value = thisItem;
+		this.studyLevelLink = sll;
+	}
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
 	}
 
 	public String getRevManID() {

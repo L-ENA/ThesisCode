@@ -9,16 +9,17 @@ public class DoiIdentifier extends Identifier {
 	protected String value = "";
 	protected String link = "";
 	protected String review = "";
-	
+	protected String studyLevelLink="";
 
 
 
 
-	public DoiIdentifier(Element identifierElement, String link, String review) {
-		
+	public DoiIdentifier(Element identifierElement, String link, String review, String sll) {
+		super();
 		this.link = link;
 		this.review = review;
 		type = "DOI";
+		this.studyLevelLink= sll;
 		try {
 			value = identifierElement.getAttribute("VALUE");
 			
@@ -31,7 +32,13 @@ public class DoiIdentifier extends Identifier {
 	}
 	
 	
-	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	
 public DoiIdentifier() {
 		

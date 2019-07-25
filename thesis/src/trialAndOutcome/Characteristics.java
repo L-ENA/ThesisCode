@@ -281,7 +281,10 @@ protected Characteristics() {
 		
 		NodeList charInterventionsList = studyToExtractElement.getElementsByTagName("CHAR_INTERVENTIONS");
 		Element charInterventionsElement = (Element) charInterventionsList.item(0);
-		
+		////////////debugging
+		System.out.println(this.reviewTitle);
+		System.out.println(this.revManID);
+		///////////////////
 		interventionsString = charInterventionsElement.getTextContent();
 		
 		//System.out.println("INTERVENTIONS: " + interventionsString);
@@ -299,7 +302,7 @@ protected Characteristics() {
 			
 			}
 		
-		interventionsObj = new Interventions(revManID,reviewTitle, interventionsList);
+		interventionsObj = new Interventions(revManID,reviewTitle, interventionsList, studyLevelLink);
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		//extracts prose about outcomes
@@ -309,7 +312,7 @@ protected Characteristics() {
 		
 		outcomesString = charOutcomesElement.getTextContent();
 		
-		outcomeCharObj = new OutcomeCharTable(revManID, reviewTitle, outcomesString);
+		outcomeCharObj = new OutcomeCharTable(revManID, reviewTitle, outcomesString, studyLevelLink);
 		
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////

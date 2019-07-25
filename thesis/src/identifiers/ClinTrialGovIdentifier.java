@@ -12,15 +12,16 @@ public class ClinTrialGovIdentifier extends Identifier {
 	protected String link = "";
 
 	protected String review = "";
-
+	protected String studyLevelLink="";
 	
 
 
 
-	public ClinTrialGovIdentifier(Element identifierElement, String link, String review) {
+	public ClinTrialGovIdentifier(Element identifierElement, String link, String review, String sll) {
+		super();
 		this.link = link;
 		this.review = review;
-		
+		this.studyLevelLink= sll;
 		type = "ClinicalTrials.gov";
 		
 		try {
@@ -34,7 +35,13 @@ public class ClinTrialGovIdentifier extends Identifier {
 	
 	}
 	
-	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	
 	
 public ClinTrialGovIdentifier() {

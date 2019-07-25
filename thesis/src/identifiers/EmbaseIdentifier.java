@@ -9,15 +9,16 @@ public class EmbaseIdentifier extends Identifier {
 	protected String value = "";
 	protected String link = "";
 	protected String review = "";
-	
+	protected String studyLevelLink="";
 
 
 
 
-	public EmbaseIdentifier(Element identifierElement, String link, String review) {
-		
+	public EmbaseIdentifier(Element identifierElement, String link, String review, String sll) {
+		super();
 		this.link = link;
 		this.review = review;
+		this.studyLevelLink= sll;
 		type = "EMBASE";
 		try {
 			value = identifierElement.getAttribute("VALUE");
@@ -32,7 +33,13 @@ public class EmbaseIdentifier extends Identifier {
 	
 	}
 	
-	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	
 	
 public EmbaseIdentifier() {

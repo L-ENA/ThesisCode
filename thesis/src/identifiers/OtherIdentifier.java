@@ -10,14 +10,16 @@ public class OtherIdentifier extends Identifier {
 	protected String value = "";
 	protected String link = "";
 	protected String review = "";
-	
+	protected String studyLevelLink="";
 	
 
 
-	public OtherIdentifier(Element identifierElement, String link, String review) {
+	public OtherIdentifier(Element identifierElement, String link, String review, String sll) {
+		super();
 		type = "Other";
 		this.link = link;
 		this.review = review;
+		this.studyLevelLink= sll;
 		try {
 			
 			try {
@@ -38,7 +40,13 @@ public class OtherIdentifier extends Identifier {
 	
 	}
 
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
 
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 
 
 	public OtherIdentifier() {

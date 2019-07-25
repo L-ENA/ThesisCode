@@ -9,16 +9,17 @@ public class CentralIdentifier extends Identifier {
 	protected String value = "";
 	protected String link = "";
 	protected String review = "";
-	
+	protected String studyLevelLink="";
 
 
 
 
-	public CentralIdentifier(Element identifierElement, String link, String review) {
-		
+	public CentralIdentifier(Element identifierElement, String link, String review, String sll) {
+		super();
 		this.link = link;
 		this.review = review;
 		type = "CENTRAL";
+		this.studyLevelLink= sll;
 		try {
 			value = identifierElement.getAttribute("VALUE");
 			
@@ -31,7 +32,13 @@ public class CentralIdentifier extends Identifier {
 	}
 	
 	
-	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	
 public CentralIdentifier() {
 		

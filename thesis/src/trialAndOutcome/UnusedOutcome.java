@@ -5,19 +5,30 @@ public class UnusedOutcome extends OutcomeCharTable{
 	protected String reviewTitle;
 	protected String value;//the String that represents the unused outcome
 	protected String status = "Unused";//indicated that this outcome was not used in the review
-
+	protected String studyLevelLink;
 	
 
+	
 	public UnusedOutcome() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UnusedOutcome(String thisItem, String revManID, String reviewTitle) {
+	public UnusedOutcome(String thisItem, String revManID, String reviewTitle, String sll) {
 		this.reviewTitle = reviewTitle;
 		this.revManID = revManID;
 		this.value = thisItem;
+		this.studyLevelLink = sll;
 	}
+	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
+
 
 	public String getRevManID() {
 		return revManID;

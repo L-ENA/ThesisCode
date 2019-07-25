@@ -9,13 +9,14 @@ public class MedlineIdentifier extends Identifier {
 	protected String value = "";
 	protected String link = "";
 	protected String review = "";
-	
+	protected String studyLevelLink="";
 
 
 
 
-	public MedlineIdentifier(Element identifierElement, String link, String review) {
-		
+	public MedlineIdentifier(Element identifierElement, String link, String review, String sll) {
+		super();
+		this.studyLevelLink= sll;
 		this.link = link;
 		this.review = review;
 		type = "MEDLINE";
@@ -31,7 +32,13 @@ public class MedlineIdentifier extends Identifier {
 	}
 	
 	
-	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 	
 public MedlineIdentifier() {
 		

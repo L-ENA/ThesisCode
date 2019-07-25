@@ -3,7 +3,7 @@ package references;
 public class Reference {
 	protected String date = "";
 	protected boolean primaryReference = false;
-
+	protected String studyLevelLink="";
 	public String getDate() {
 		return date;
 	}
@@ -20,6 +20,12 @@ public class Reference {
 		this.primaryReference = primaryReference;
 	}
 	
-	
+	public String getStudyLevelLink() {
+		return studyLevelLink;
+	}
+
+	public void setStudyLevelLink(String studyLevelLink) {
+		this.studyLevelLink = studyLevelLink;
+	}
 
 }
